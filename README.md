@@ -1,0 +1,34 @@
+# Scottish Budget 2027-28 dashboard
+
+PolicyEngine dashboard for the Scottish Budget 2027-28, planned for 3 December 2026 alongside the Scottish Fiscal Commission's economic and fiscal forecasts. It will show the tax and benefit changes in the draft Budget and their effect on households in Scotland.
+
+**Status: pre-release template.** Nothing in this repository is a costing of the Budget. Until the Budget is published, every measure is a placeholder and every figure is a placeholder.
+
+## What the dashboard will show
+
+- **Cost or yield** of each personal tax and benefit measure in 2027-28 and 2028-29, beside the Scottish Fiscal Commission's costing where one exists.
+- **Scottish income tax**: the 2026-27 and 2027-28 band schedules, marginal rates by gross income, and how much more or less an identical taxpayer pays in Scotland than in the rest of the UK.
+- **Who gains and who loses**: average change in net income by income decile and by family type, and the share of households better or worse off.
+- **Poverty**: the change in relative child poverty before and after housing costs.
+- **Social security**: Scottish Child Payment (including the under-one premium), carer payments and other Scottish payments the model covers.
+- **Council tax**: any payment keyed on council tax band, a freeze or cap on bills, and Bands I and J (from April 2028).
+- **Household examples**: net income for a set of example households in 2026-27 and 2027-28, with the rest-of-UK equivalent.
+- **Method and data**: what is modelled, what is not, and why.
+
+## Method in brief
+
+The figures will come from PolicyEngine UK, a static microsimulation model of the UK tax and benefit system, run on Microcosm, PolicyEngine's calibrated survey-based dataset. Each measure is a change to model parameters (or, where needed, a change to a formula) compared against current law. Results are static: they do not include changes in behaviour unless a section says so. Costs are on a fiscal-year basis (April to March). A measure that acts only through something the data do not hold is reported as not computable, with the reason, and never as £0.
+
+## Data and model versions
+
+| Component | Version |
+|---|---|
+| policyengine (Python) | 6.11.1 (certified bundle) |
+| policyengine-uk | 2.151.0 (pinned by the bundle) |
+| Microcosm | `microcosm-uk-2024-25-national-20261025T091414Z-a6299504` |
+
+These versions are provisional. policyengine-uk 2.151.0 lacks some measures announced in the UK Budget on 28 October 2026, so the pin may move before 3 December. The README will record the final engine and data pair used on the day.
+
+## Licence
+
+[GNU Affero General Public License v3.0](LICENSE), like other PolicyEngine repositories.
