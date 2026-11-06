@@ -31,6 +31,9 @@ class Reform(BaseModel):
         default=None,
         description="Parameter changes for a custom baseline",
     )
+    parameter_changes_factory: Optional[Callable[[], dict]] = None
+    """Parameter changes computed from the installed release when the
+    scenario is built (the council tax freeze reads weight growth)."""
     baseline_simulation_modifier: Optional[Callable] = None
     simulation_modifier: Optional[Callable] = None
 
@@ -41,8 +44,11 @@ class Reform(BaseModel):
         kwargs = {}
         if self.simulation_modifier is not None:
             kwargs["simulation_modifier"] = self.simulation_modifier
-        if self.parameter_changes is not None:
-            kwargs["parameter_changes"] = self.parameter_changes
+        changes = dict(self.parameter_changes or {})
+        if self.parameter_changes_factory is not None:
+            changes.update(self.parameter_changes_factory())
+        if changes:
+            kwargs["parameter_changes"] = changes
         return _scenario(**kwargs)
 
     def to_baseline_scenario(self):
@@ -64,4 +70,5 @@ class Reform(BaseModel):
         return (
             self.simulation_modifier is not None
             or self.baseline_simulation_modifier is not None
+            or self.parameter_changes_factory is not None
         )

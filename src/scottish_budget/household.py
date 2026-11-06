@@ -6,8 +6,10 @@ presets computed by the pipeline. Nothing here calls a hosted API.
 Each preset is a PolicyEngine UK situation for one year. Its rest-of-UK
 twin is the same household with ``pays_scottish_income_tax`` set to False
 for every person, so only the income tax schedule changes and Scottish
-benefits stay. PLACEHOLDER: the input variable names are to be checked
-against the pinned release at G0.
+benefits stay. The input variable names are checked against the pinned
+release by tests/test_engine_households.py (run with the model extra).
+
+Every calculation runs on the forecast overlay, as the population runs do.
 """
 
 import copy
@@ -15,6 +17,13 @@ import copy
 from scottish_budget.years import BUDGET_YEAR
 
 SCOTTISH_TAX_INPUT = "pays_scottish_income_tax"
+
+# The full new State Pension in 2027-28: £250.71 a week (2.151.0; £250.70
+# on 2.175.4) times 52. G0 re-checks it against the pinned release
+# (``state_pension_amount``); 2026-27's £12,548 would sit below the
+# personal allowance and hide any tax change for pensioners.
+FULL_NEW_STATE_PENSION_2027 = 13_036
+STATE_PENSION = "gov.dwp.state_pension.new_state_pension.amount"
 
 
 def _adult(age, year, **incomes):
@@ -95,18 +104,48 @@ def presets(year: int = BUDGET_YEAR) -> dict[str, dict]:
         "pensioner_full_state_pension": (
             "Single pensioner on the full new State Pension",
             _situation(
-                {"pensioner": _adult(70, y, state_pension=12_548)},
+                {
+                    "pensioner": _adult(
+                        70, y, state_pension=FULL_NEW_STATE_PENSION_2027
+                    )
+                },
                 ["pensioner"],
                 [],
                 y,
                 band="D",
             ),
         ),
+        "carer_part_time": (
+            "Carer on Carer Support Payment, earning £8,000",
+            _situation(
+                {
+                    "carer": _adult(
+                        45,
+                        y,
+                        employment_income=8_000,
+                        carer_support_payment=4_200,
+                    )
+                },
+                ["carer"],
+                [],
+                y,
+                rent=5_400,
+                band="B",
+            ),
+        ),
     }
     return {
-        key: {"label": label, "situation": situation}
+        key: {"label": label, "year": year, "situation": situation}
         for key, (label, situation) in {**single, **others}.items()
     }
+
+
+def state_pension_amount(year: int = BUDGET_YEAR) -> float:
+    """The full new State Pension a year on the installed release."""
+    from policyengine_uk.system import system
+
+    weekly = system.parameters.get_child(STATE_PENSION)(f"{year}-04-06")
+    return round(float(weekly) * 52, 2)
 
 
 def rest_of_uk_twin(situation: dict, year: int = BUDGET_YEAR) -> dict:
@@ -117,18 +156,31 @@ def rest_of_uk_twin(situation: dict, year: int = BUDGET_YEAR) -> dict:
     return twin
 
 
-def calculate(situation: dict, year: int, reform=None) -> dict[str, float]:
+def combined_scenario(reforms=()):
+    """The reforms' scenarios added together, or None for current law."""
+    scenario = None
+    for reform in reforms or ():
+        part = reform.to_scenario()
+        scenario = part if scenario is None else scenario + part
+    return scenario
+
+
+def calculate(situation: dict, year: int, reforms=()) -> dict[str, float]:
     """Net income and income tax for one situation (needs the model extra).
 
-    Not exercised by the tests: it loads policyengine_uk. Check one preset
-    by hand per coded measure at G2 (docs/RUNBOOK.md).
+    ``reforms`` is a list of registry Reforms applied together, on the
+    forecast overlay. Check one preset by hand per coded measure at G2.
     """
     from policyengine_uk import Simulation
 
-    kwargs = {"situation": situation}
-    if reform is not None:
-        kwargs["scenario"] = reform.to_scenario()
-    sim = Simulation(**kwargs)
+    from scottish_budget.forecast import with_forecast
+
+    if not isinstance(reforms, (list, tuple)):
+        reforms = (reforms,)
+    sim = Simulation(
+        situation=situation,
+        scenario=with_forecast(combined_scenario(reforms)),
+    )
     return {
         "household_net_income": float(
             sim.calculate("household_net_income", year).sum()

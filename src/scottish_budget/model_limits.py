@@ -1,15 +1,27 @@
 """What the model cannot do yet, by policyengine-uk release.
 
-From the model audit of 5 November 2026: 2.151.0 is the release the
-certified bundle (policyengine.py 6.11.1) pins; 2.175.4 is the newest on
-PyPI. A measure listed here is routed ``needs-pe-uk-first`` until the
-pinned release has what it needs.
+From the model audits of 5 and 6 November 2026. Three tiers of release
+matter (issue #1):
+
+- 2.151.0: what policyengine.py 6.11.1 to 6.14.0 pin, with Microcosm
+  a6299504 (the certified pair this repo locks);
+- 2.165.1: what policyengine.py#731 (unreleased) would pin, with Microcosm
+  0639b9c7; it uprates the carer supplement but has none of the Budget 2026
+  measures;
+- 2.170.2 and later: the Budget 2026 measures (Pension Tax Allowance,
+  household energy payment, 24/44/49 property rates), with no certified
+  Microcosm build yet.
+
+A limit here is either worked round in this repo (a modifier in
+``measures/``) or makes a measure ``needs-pe-uk-first``.
 """
 
 from dataclasses import dataclass
 
 BUNDLE_RELEASE = "2.151.0"
-NEWEST_RELEASE = "2.175.4"
+NEXT_BUNDLE_RELEASE = "2.165.1"
+BUDGET_2026_RELEASE = "2.170.2"
+NEWEST_RELEASE = "2.175.7"
 
 
 @dataclass(frozen=True)
@@ -24,16 +36,19 @@ class ModelLimit:
 MODEL_LIMITS: tuple[ModelLimit, ...] = (
     ModelLimit(
         "no_scottish_property_rates",
-        "No parameter for Scottish property income rates; "
-        "property_income_tax sends Scottish taxpayers to the main scale.",
+        "No parameter for Scottish property income rates on any release; "
+        "property_income_tax sends Scottish taxpayers to the main scale. "
+        "Worked round by measures/scottish_property_rates.py.",
         None,
         2,
     ),
     ModelLimit(
         "energy_payment_england_only",
-        "The £100 household energy payment exists from 2.175.4, for "
-        "England only, and is £0 from 2027-04-06.",
-        "2.175.4",
+        "The £100 household energy payment exists from 2.170.2, for "
+        "England only, and is £0 from 2027-04-06; its countries list "
+        "cannot take a parameter change. Worked round by "
+        "measures/energy_payment_scotland.py on every release.",
+        "2.170.2",
         3,
     ),
     ModelLimit(
@@ -45,20 +60,23 @@ MODEL_LIMITS: tuple[ModelLimit, ...] = (
     ModelLimit(
         "no_scottish_payments",
         "No variable for ADP, Best Start, Child Winter Heating Payment, "
-        "Winter Heating Payment, a young parent top-up or DHP mitigation.",
+        "Winter Heating Payment, a young parent top-up or DHP mitigation. "
+        "The top-up and the mitigation are worked round by modifiers in "
+        "measures/.",
         None,
         6,
     ),
     ModelLimit(
         "pension_tax_allowance",
-        "The Pension Tax Allowance exists from 2.175.4 only.",
-        "2.175.4",
+        "The Pension Tax Allowance exists from 2.170.2 only.",
+        "2.170.2",
         1,
     ),
     ModelLimit(
         "carer_supplement_not_uprated",
-        "The carer supplement stays at £11.70 in 2027-28 on 2.151.0.",
-        "2.175.4",
+        "The carer supplement stays at £11.70 in 2027-28 on 2.151.0; "
+        "2.165.1 uprates it to £12.10.",
+        "2.165.1",
         1,
     ),
 )

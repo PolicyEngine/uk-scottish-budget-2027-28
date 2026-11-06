@@ -26,10 +26,14 @@ DATA_LIMITS: tuple[DataLimit, ...] = (
         id="no_local_geography",
         inputs=("local_authority", "constituency"),
         reason=(
-            "The national Microcosm file has no Scottish geography below "
-            "region, so results are for Scotland as a whole."
+            "Results are for Scotland as a whole. The national Microcosm "
+            "file has no geography below region; the bundle's local-area "
+            "file has all 32 Scottish councils, but its fit to income tax "
+            "by council is not yet checked, so council results are not "
+            "shown."
         ),
         issue=8,
+        blocks=False,
     ),
     DataLimit(
         id="no_band_j_homes",
