@@ -38,3 +38,4 @@ Written to `dashboard/public/data/results.json` by `scottish-budget generate --p
 - `winners_losers[]`, `poverty[]`, `council_tax_bands[]`, `scotland_vs_rest_of_uk[]`: from the package run (`measure_id` `package`), because they do not add across measures.
 - `official_costings[]`: `{measure_id, year, official_value_bn, source, basis}` once the costings file exists.
 - `households[]`: `{id, label, year, baseline_net_income, reform_net_income, change, rest_of_uk_net_income, scotland_minus_rest_of_uk}`, £ a year. All null in the pre-release file.
+- `income_tax_curve[]`: `{year, gross, scotland_current_law, scotland_with_measures, rest_of_uk}`, a single adult's income tax at each £1,000 of gross earnings to £150,000 in the Budget year. Empty in the pre-release file.

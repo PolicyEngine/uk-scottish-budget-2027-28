@@ -6,6 +6,7 @@ import BudgetaryImpactChart from "./BudgetaryImpactChart";
 import CouncilTaxBands from "./CouncilTaxBands";
 import DistributionalChart from "./DistributionalChart";
 import HouseholdCalculator from "./HouseholdCalculator";
+import IncomeTaxCurve from "./IncomeTaxCurve";
 import MethodologyTab from "./MethodologyTab";
 import OfficialComparison from "./OfficialComparison";
 import PolicyCards from "./PolicyCards";
@@ -156,7 +157,12 @@ export default function Dashboard({ data }) {
                     <WinnersLosers rows={data.winners_losers ?? []} year={year.year} />
                   </>
                 )}
-                {state.sub === "ruk" && <ScotlandVsRestOfUk rows={data.scotland_vs_rest_of_uk ?? []} year={year.year} />}
+                {state.sub === "ruk" && (
+                  <>
+                    <ScotlandVsRestOfUk rows={data.scotland_vs_rest_of_uk ?? []} year={year.year} />
+                    <IncomeTaxCurve rows={data.income_tax_curve ?? []} yearLabel={meta.years[0].label} />
+                  </>
+                )}
                 {state.sub === "poverty" && <PovertyCard rows={data.poverty ?? []} year={year.year} />}
                 {state.sub === "council_tax" && <CouncilTaxBands cells={data.council_tax_bands ?? []} year={year.year} />}
               </div>
