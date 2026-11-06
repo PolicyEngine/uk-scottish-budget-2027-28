@@ -67,6 +67,8 @@ export default function DistributionalChart({ cells, selectedIds, year, yearLabe
             <XAxis
               dataKey="decile"
               tick={axisStyle}
+              interval={0}
+              tickFormatter={(d) => (shown[d - 1]?.withheld ? `${d} (withheld)` : String(d))}
               label={{ value: "Income decile (1 = bottom, 10 = top)", position: "insideBottom", offset: -16, ...axisStyle }}
             />
             <YAxis tick={axisStyle} tickFormatter={(v) => format(v)} width={80} />
@@ -87,6 +89,7 @@ export default function DistributionalChart({ cells, selectedIds, year, yearLabe
           </BarChart>
         </ResponsiveContainer>
       </div>
+      {placeholder && <p className="mt-2 text-sm text-slate-600">Placeholder figures.</p>}
       {rows.some((r) => r.withheld) && (
         <p className="mt-2 text-sm text-slate-600" data-testid="withheld-note">
           A decile marked withheld rests on too few survey households for at least one selected measure (see{" "}
