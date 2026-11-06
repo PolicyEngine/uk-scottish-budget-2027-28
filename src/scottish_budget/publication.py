@@ -130,14 +130,22 @@ def validate_results(results: dict) -> None:
         problems.append("published measure in a provisional file")
     if not meta.get("placeholder") and not meta.get("dataset_sha256"):
         problems.append("meta.dataset_sha256 missing on a model file")
-    ids = {m.get("id") for m in results.get("measures", [])}
-    for table in ("decile_impact", "winners_losers", "poverty"):
+    ids = {m.get("id") for m in results.get("measures", [])} | {"package"}
+    for table in (
+        "decile_impact",
+        "winners_losers",
+        "poverty",
+        "council_tax_bands",
+    ):
         for cell in results.get(table, []):
             if cell.get("measure_id") not in ids:
                 problems.append(
                     f"{table}: unknown measure {cell.get('measure_id')!r}"
                 )
-    for cell in results.get("decile_impact", []):
+    for cell in [
+        *results.get("decile_impact", []),
+        *results.get("council_tax_bands", []),
+    ]:
         n = cell.get("n_records", 0)
         if n < meta.get("disclosure_floor", DISCLOSURE_FLOOR) and (
             cell.get("avg_change_gbp") is not None

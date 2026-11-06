@@ -136,3 +136,64 @@ def test_computable_measure_without_a_partial_is_refused(day):
     (day / "scp_increase.json").unlink()
     with pytest.raises(pipeline.CombineError, match="no partial"):
         pipeline.combine(provisional=True, out_dir=day, with_households=False)
+
+
+def _package(measure_ids):
+    p = _partial("package")
+    p["measures"] = measure_ids
+    p["poverty"] = [
+        {
+            "measure_id": "package",
+            "year": 2027,
+            "group": "children",
+            "basis": "ahc",
+            "baseline_rate": 0.2,
+            "reform_rate": 0.19,
+            "change_count": -5000,
+            "n_records": 3000,
+        }
+    ]
+    p["council_tax_bands"] = [
+        {
+            "measure_id": "package",
+            "year": 2027,
+            "band": "H",
+            "avg_change_gbp": 3.0,
+            "n_records": 4,
+        }
+    ]
+    p["scotland_vs_rest_of_uk"] = [
+        {"year": 2027, "scenario": "current_law", "share_paying_less": 0.55}
+    ]
+    return p
+
+
+def test_package_tables_come_from_the_package_run(day):
+    package = _package(["starter_basic_thresholds", "scp_increase"])
+    package["council_tax_bands"][0]["avg_change_gbp"] = None
+    (day / "package.json").write_text(json.dumps(package))
+    results, receipt = pipeline.combine(
+        provisional=True, out_dir=day, with_households=False
+    )
+    assert receipt["package_run"] is True
+    assert results["poverty"][0]["change_count"] == -5000
+    assert results["scotland_vs_rest_of_uk"][0]["share_paying_less"] == 0.55
+    assert {c["measure_id"] for c in results["winners_losers"]} == {"package"}
+
+
+def test_a_package_over_other_measures_is_refused(day):
+    (day / "package.json").write_text(
+        json.dumps(_package(["starter_basic_thresholds"]))
+    )
+    with pytest.raises(pipeline.CombineError, match="package run covers"):
+        pipeline.combine(provisional=True, out_dir=day, with_households=False)
+
+
+def test_cells_below_the_floor_must_be_withheld(day):
+    from scottish_budget.publication import PublicationError
+
+    (day / "package.json").write_text(
+        json.dumps(_package(["starter_basic_thresholds", "scp_increase"]))
+    )
+    with pytest.raises(PublicationError, match="below the disclosure floor"):
+        pipeline.combine(provisional=True, out_dir=day, with_households=False)

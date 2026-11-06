@@ -2452,6 +2452,9 @@
   ],
   "winners_losers": [],
   "poverty": [],
+  "council_tax_bands": [],
+  "scotland_vs_rest_of_uk": [],
+  "official_costings": [],
   "households": [
     {
       "id": "single_25k",

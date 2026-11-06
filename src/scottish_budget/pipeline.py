@@ -202,6 +202,9 @@ def placeholder_results() -> dict:
         "decile_impact": _placeholder_cells(rows),
         "winners_losers": [],
         "poverty": [],
+        "council_tax_bands": [],
+        "scotland_vs_rest_of_uk": [],
+        "official_costings": [],
         "households": _placeholder_households(),
     }
     validate_results(results)
@@ -227,6 +230,58 @@ def run_one(measure_id: str, dataset_path=None, out_dir=PARTIAL_DIR) -> Path:
     path = out_dir / f"{measure_id}.json"
     path.write_text(json.dumps(partial, indent=2) + "\n")
     return path
+
+
+PACKAGE_ID = "package"
+OFFICIAL_COSTINGS = (
+    ROOT / "data_inputs" / "official" / "sfc_costings_2027_28.csv"
+)
+
+
+def package_measures(provisional: bool) -> list[Measure]:
+    """The measures the package run covers: every computable measure for
+    G2, the signed-off ones for the final file."""
+    from scottish_budget.reforms import computable
+
+    return [m for m in computable() if provisional or m.publish]
+
+
+def run_package(
+    provisional: bool, dataset_path=None, out_dir=PARTIAL_DIR
+) -> Path:
+    """All the package's measures together (heavy: one process)."""
+    from scottish_budget.national import run_package as engine_package
+
+    measures = package_measures(provisional)
+    if not measures:
+        raise CombineError("No measure to run as a package.")
+    partial = engine_package(measures, dataset_path)
+    partial["versions"] = installed_versions()
+    partial["provisional"] = provisional
+    out_dir.mkdir(parents=True, exist_ok=True)
+    path = out_dir / f"{PACKAGE_ID}.json"
+    path.write_text(json.dumps(partial, indent=2) + "\n")
+    return path
+
+
+def official_costings(path=OFFICIAL_COSTINGS) -> list[dict]:
+    """The official costings, once filled in on the day (G3)."""
+    if not Path(path).exists():
+        return []
+    from scottish_budget.reconcile import read_official
+
+    return [
+        {
+            "measure_id": row["measure_id"],
+            "year": int(row["year"]),
+            "official_value_bn": float(row["official_value_bn"])
+            if row.get("official_value_bn")
+            else None,
+            "source": row.get("official_source", ""),
+            "basis": row.get("basis", ""),
+        }
+        for row in read_official(path)
+    ]
 
 
 def read_partials(out_dir=PARTIAL_DIR) -> dict[str, dict]:
@@ -308,6 +363,7 @@ def combine(
             f"No partial files in {out_dir}: run "
             "`scottish-budget generate --reforms ID` for each measure first."
         )
+    package = partials.pop(PACKAGE_ID, None)
     unknown = sorted(set(partials) - {m.id for m in MEASURES})
     if unknown:
         raise CombineError(
@@ -330,13 +386,26 @@ def combine(
             if signed or provisional:
                 row["budgetary_impact"] = partial["budgetary_impact"]
                 cells += partial["decile_impact"]
-                winners += partial["winners_losers"]
-                poverty += partial["poverty"]
                 scored.append(m)
             else:
                 row["reason"] = "Awaiting sign-off after reconciliation."
         rows.append(row)
-    engine = _engine_meta(partials)
+    bands, versus = [], []
+    if package is not None:
+        if sorted(package.get("measures", [])) != sorted(m.id for m in scored):
+            raise CombineError(
+                "The package run covers other measures than this file: "
+                "re-run `scottish-budget generate --package`."
+            )
+        # Winners and losers, poverty and the rest do not add up across
+        # measures, so they come from the package run only.
+        winners = package["winners_losers"]
+        poverty = package["poverty"]
+        bands = package.get("council_tax_bands", [])
+        versus = package.get("scotland_vs_rest_of_uk", [])
+    engine = _engine_meta(
+        {**partials, **({PACKAGE_ID: package} if package else {})}
+    )
     status = "provisional" if provisional else "published"
     results = {
         "meta": {
@@ -358,12 +427,16 @@ def combine(
         "decile_impact": cells,
         "winners_losers": winners,
         "poverty": poverty,
+        "council_tax_bands": bands,
+        "scotland_vs_rest_of_uk": versus,
+        "official_costings": official_costings(),
         "households": (
             household_rows(scored, calculate) if with_households else []
         ),
     }
     validate_results(results)
     receipt = {
+        "package_run": package is not None,
         **git_identity(),
         "generated_at": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         "versions": installed_versions(),

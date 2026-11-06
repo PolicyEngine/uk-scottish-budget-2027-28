@@ -54,3 +54,31 @@ def test_summarise_counts_children_lifted_out_of_poverty():
     row = [p for p in out["poverty"] if p["basis"] == "bhc"][0]
     assert row["baseline_rate"] == 1.0 and row["reform_rate"] == 0.0
     assert row["change_count"] == -20 * 100
+
+
+def test_band_cells_and_scotland_against_rest_of_uk():
+    from scottish_budget.national import (
+        by_council_tax_band,
+        scotland_vs_rest_of_uk,
+    )
+
+    def frame(n, tax):
+        f = _frame(n)
+        f["council_tax_band"] = np.array(["A", "B"] * (n // 2))
+        f["income_tax"] = np.full(2 * n, tax)
+        return f
+
+    base = {y: frame(400, 1000.0) for y in POLICY_YEARS}
+    reform = {y: frame(400, 900.0) for y in POLICY_YEARS}
+    twin = {y: frame(400, 950.0) for y in POLICY_YEARS}
+    bands = by_council_tax_band("package", base, reform)
+    a = [c for c in bands if c["band"] == "A" and c["year"] == POLICY_YEARS[0]]
+    assert a[0]["n_records"] == 200
+    # Band H has no records, so it is withheld, never shown as 0.
+    h = [c for c in bands if c["band"] == "H"][0]
+    assert h["avg_change_gbp"] is None and "withheld" in h
+    rows = scotland_vs_rest_of_uk(base, reform, twin)
+    now = [r for r in rows if r["scenario"] == "current_law"][0]
+    after = [r for r in rows if r["scenario"] == "with_measures"][0]
+    assert now["share_paying_more"] == 1.0
+    assert after["share_paying_less"] == 1.0

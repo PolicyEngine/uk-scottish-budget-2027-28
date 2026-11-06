@@ -3,6 +3,8 @@
 ``scottish-budget generate --placeholder``: the pre-release file.
 ``scottish-budget generate --reforms ID``: one measure through the engine
   (heavy: take the lock, one measure per process), written as a partial.
+``scottish-budget generate --package provisional|final``: the scored
+  measures together, for the figures that do not add across measures.
 ``scottish-budget combine [--provisional]``: partials into results.json and
   receipt.json.
 ``scottish-budget freeze``: the G0 record.
@@ -28,10 +30,27 @@ def _generate(args) -> int:
         write,
     )
 
+    if args.dataset_sha256 and not args.dataset:
+        print("--dataset-sha256 needs --dataset", file=sys.stderr)
+        return 2
+    if args.dataset:
+        from scottish_budget.engine import check_dataset
+
+        check_dataset(args.dataset, args.dataset_sha256)
     if args.placeholder:
         results = placeholder_results()
         path = write(results, args.out)
         print(json.dumps({"written": str(path), **manifest(results)}))
+        return 0
+    if args.package:
+        from scottish_budget.pipeline import run_package
+
+        path = run_package(
+            args.package == "provisional",
+            args.dataset,
+            args.partial_dir or PARTIAL_DIR,
+        )
+        print(json.dumps({"partial": str(path)}))
         return 0
     if not args.reforms:
         print(
@@ -40,13 +59,6 @@ def _generate(args) -> int:
             file=sys.stderr,
         )
         return 2
-    if args.dataset_sha256 and not args.dataset:
-        print("--dataset-sha256 needs --dataset", file=sys.stderr)
-        return 2
-    if args.dataset:
-        from scottish_budget.engine import check_dataset
-
-        check_dataset(args.dataset, args.dataset_sha256)
     path = run_one(args.reforms, args.dataset, args.partial_dir or PARTIAL_DIR)
     print(json.dumps({"partial": str(path)}))
     return 0
@@ -124,6 +136,11 @@ def main(argv=None) -> int:
     gen = sub.add_parser("generate", help="Placeholder file, or one measure")
     gen.add_argument("--placeholder", action="store_true")
     gen.add_argument("--reforms", metavar="ID", help="One measure id")
+    gen.add_argument(
+        "--package",
+        choices=("provisional", "final"),
+        help="All scored measures together (winners, poverty, bands)",
+    )
     gen.add_argument("--dataset", type=Path, help="Explicit dataset path")
     gen.add_argument("--dataset-sha256", help="Refuse a different file")
     gen.add_argument("--partial-dir", type=Path)
