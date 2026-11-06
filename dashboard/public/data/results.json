@@ -324,7 +324,7 @@
         5
       ],
       "status": "not-computable",
-      "reason": "No Scottish home in the data is worth over £2m and the model has no Band J, so Bands I and J cannot be costed.",
+      "reason": "Bands I and J apply from 2028-29. Scottish home values in the data are not revalued from sale prices, no Scottish home in the data is worth over £2m and the model has no Band J, so the new bands cannot be costed.",
       "basis_note": null,
       "first_year": 2028,
       "placeholder": true,
@@ -343,7 +343,8 @@
       "in_baseline": false,
       "calculator": true,
       "issues": [
-        1
+        1,
+        6
       ],
       "status": "placeholder",
       "reason": null,

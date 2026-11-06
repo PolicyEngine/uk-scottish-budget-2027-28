@@ -62,6 +62,10 @@ export default function MethodologyTab({ meta, measures, repoUrl, onOpenPolicy }
             payments to households.
           </li>
           <li>Geography: Scotland as a whole. Council results are not shown until the local data fit is checked.</li>
+          <li>
+            Adult Disability Payment and Carer Support Payment: the data are not calibrated to Social Security
+            Scotland&apos;s caseloads for these payments, so costs of changes to them may differ from official estimates.
+          </li>
           {notComputable.length > 0 && (
             <li>
               Not computable, with the reason on each card:{" "}

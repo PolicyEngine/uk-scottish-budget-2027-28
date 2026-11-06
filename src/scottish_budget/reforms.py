@@ -373,7 +373,8 @@ MEASURES: tuple[Measure, ...] = (
             "2.151.0 holds it at £11.70; 2.165.1 and later uprate it to "
             "£12.10 (2027) and £12.50 (2028)."
         ),
-        issues=(1,),
+        issues=(1, 6),
+        data_limits=("scottish_disability_carer_caseloads",),
         model_limits=("carer_supplement_not_uprated",),
         placeholder_sign=-1,
     ),
@@ -393,7 +394,10 @@ MEASURES: tuple[Measure, ...] = (
             "rule changes cannot."
         ),
         issues=(6,),
-        data_limits=("adp_carried_as_pip",),
+        data_limits=(
+            "adp_carried_as_pip",
+            "scottish_disability_carer_caseloads",
+        ),
         model_limits=("no_scottish_payments",),
         calculator=False,
     ),

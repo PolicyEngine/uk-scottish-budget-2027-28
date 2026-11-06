@@ -39,8 +39,10 @@ DATA_LIMITS: tuple[DataLimit, ...] = (
         id="no_band_j_homes",
         inputs=("council_tax_band",),
         reason=(
-            "No Scottish home in the data is worth over £2m and the model "
-            "has no Band J, so Bands I and J cannot be costed."
+            "Bands I and J apply from 2028-29. Scottish home values in the "
+            "data are not revalued from sale prices, no Scottish home in the "
+            "data is worth over £2m and the model has no Band J, so the new "
+            "bands cannot be costed."
         ),
         issue=5,
     ),
@@ -52,6 +54,18 @@ DATA_LIMITS: tuple[DataLimit, ...] = (
             "rules cannot be applied to the data."
         ),
         issue=6,
+    ),
+    DataLimit(
+        id="scottish_disability_carer_caseloads",
+        inputs=("adult_disability_payment", "carer_support_payment"),
+        reason=(
+            "The data are not calibrated to Social Security Scotland's "
+            "caseloads for Adult Disability Payment and Carer Support "
+            "Payment, so costs of changes to them may differ from official "
+            "estimates."
+        ),
+        issue=6,
+        blocks=False,
     ),
     DataLimit(
         id="thin_scottish_property_income",
