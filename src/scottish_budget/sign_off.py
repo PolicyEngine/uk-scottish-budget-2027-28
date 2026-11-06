@@ -1,10 +1,10 @@
 """Whether publishing needs people's sign-off: one switch, on.
 
-On (``REQUIRED = True``) while this repository is a pre-release template:
-no measure is published unless its registry entry has ``publish=True``,
-``placeholder=False`` and the integrator has recorded the engine and data
-pair at G0 (docs/RUNBOOK.md). Every automated check in
-``scripts/check_public_data.py`` blocks whatever this switch says.
+On (``REQUIRED = True``): a measure is published only if its registry entry
+has ``publish=True`` and ``placeholder=False``, which the integrator sets
+after G3 (docs/RUNBOOK.md). Two places read it:
+``reforms.publishable()`` and ``publication.validate_results`` (a measure
+marked published without ``publish=True`` is refused). Leave it on.
 """
 
 REQUIRED = True

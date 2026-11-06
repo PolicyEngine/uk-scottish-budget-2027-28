@@ -20,7 +20,7 @@ dependencies = [
 # The engine and data pair for real runs. One certified bundle, pinned
 # exactly; see docs/METHOD.md and issue #1 before changing it.
 model = [
-    "policyengine[uk]==6.11.1",
+    "policyengine[uk]==6.14.0",
     "pandas>=2.2.0",
     "numpy>=1.24.0",
     "h5py>=3.0.0",
@@ -28,6 +28,8 @@ model = [
 dev = [
     "pytest>=8.0.0",
     "ruff>=0.6.0",
+    "numpy>=1.24.0",
+    "pyyaml>=6.0",
 ]
 
 [project.scripts]
@@ -37,11 +39,14 @@ scottish-budget = "scottish_budget.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-scottish_budget = ["years.json"]
+scottish_budget = ["years.json", "forecast/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q --tb=short"
+addopts = "-q --tb=short -m 'not engine'"
+markers = [
+    "engine: needs the model extra (household situations, no microdata)",
+]
 
 [tool.ruff]
 line-length = 79

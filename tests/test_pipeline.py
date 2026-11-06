@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from scottish_budget.pipeline import model_results, placeholder_results
+from scottish_budget.pipeline import CombineError, combine, placeholder_results
 from scottish_budget.publication import (
     PublicationError,
     apply_floor,
@@ -41,9 +41,42 @@ def test_committed_file_matches_the_generator():
     assert committed == json.loads(json.dumps(placeholder_results()))
 
 
-def test_model_run_refuses_while_everything_is_a_placeholder():
-    with pytest.raises(RuntimeError, match="placeholder"):
-        model_results()
+def test_combine_refuses_without_partials(tmp_path):
+    with pytest.raises(CombineError, match="No partial"):
+        combine(out_dir=tmp_path)
+
+
+def test_placeholder_signs_follow_the_measure():
+    for row in placeholder_results()["measures"]:
+        from scottish_budget.reforms import measure
+
+        sign = measure(row["id"]).placeholder_sign
+        for f in row["budgetary_impact"] or []:
+            assert f["value_bn"] * sign > 0, row["id"]
+
+
+def test_placeholder_households_carry_no_numbers():
+    for h in placeholder_results()["households"]:
+        assert h["baseline_net_income"] is None
+        assert h["year"] == 2027
+
+
+def test_no_internal_notes_or_jargon_in_public_text():
+    import re
+
+    for row in placeholder_results()["measures"]:
+        assert "internal_note" not in row
+        for key in ("name", "description", "reason", "basis_note"):
+            text = row.get(key) or ""
+            assert not re.search(
+                r"PLACEHOLDER|TRAP|measures/|\w+_\w+", text
+            ), (
+                row["id"],
+                key,
+                text,
+            )
+        if row["reason"] and row["basis_note"]:
+            assert row["reason"] != row["basis_note"]
 
 
 def test_floor_withholds_small_cells():

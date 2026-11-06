@@ -22,5 +22,9 @@ next-env.d.ts
 
 # Local and deployment config
 .env*
+!.env.example
 .vercel
 .DS_Store
+
+# Pipeline outputs (partials, reconciliation): regenerated, never committed
+data_outputs/

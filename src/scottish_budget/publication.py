@@ -9,6 +9,8 @@ a reason, never as 0).
 import hashlib
 import json
 
+from scottish_budget import sign_off
+
 DISCLOSURE_FLOOR = 10
 
 FORBIDDEN_KEYS = frozenset(
@@ -45,7 +47,15 @@ REQUIRED_MEASURE = (
     "publish",
     "budgetary_impact",
 )
-STATUSES = ("placeholder", "published", "not-computable", "ledger", "pending")
+STATUSES = (
+    "placeholder",
+    "provisional",
+    "published",
+    "not-computable",
+    "ledger",
+    "pending",
+)
+RESULT_STATUSES = ("pre-release template", "provisional", "published")
 
 
 class PublicationError(ValueError):
@@ -102,12 +112,31 @@ def validate_results(results: dict) -> None:
                 problems.append(f"measure {m['id']}: no reason given")
         if m.get("publish") and m.get("placeholder"):
             problems.append(f"measure {m['id']}: placeholder marked publish")
-        if status == "published" and not m.get("publish"):
+        if (
+            sign_off.REQUIRED
+            and status == "published"
+            and not m.get("publish")
+        ):
             problems.append(f"measure {m['id']}: published without sign-off")
         if not meta.get("placeholder") and m.get("placeholder"):
             problems.append(
                 f"measure {m['id']}: placeholder in a non-placeholder file"
             )
+    if meta.get("status") not in RESULT_STATUSES:
+        problems.append(f"meta.status {meta.get('status')!r} unknown")
+    if meta.get("status") == "provisional" and any(
+        m.get("status") == "published" for m in results.get("measures", [])
+    ):
+        problems.append("published measure in a provisional file")
+    if not meta.get("placeholder") and not meta.get("dataset_sha256"):
+        problems.append("meta.dataset_sha256 missing on a model file")
+    ids = {m.get("id") for m in results.get("measures", [])}
+    for table in ("decile_impact", "winners_losers", "poverty"):
+        for cell in results.get(table, []):
+            if cell.get("measure_id") not in ids:
+                problems.append(
+                    f"{table}: unknown measure {cell.get('measure_id')!r}"
+                )
     for cell in results.get("decile_impact", []):
         n = cell.get("n_records", 0)
         if n < meta.get("disclosure_floor", DISCLOSURE_FLOOR) and (
