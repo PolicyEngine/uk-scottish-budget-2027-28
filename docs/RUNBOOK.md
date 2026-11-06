@@ -21,7 +21,7 @@ until [ "$(free_gb)" -ge 14 ]; do sleep 30; done
 uv run --extra model scottish-budget generate --reforms <measure id>
 ```
 
-`make measures IDS="a b c"` runs that block once per measure, each in its own process. Unit tests, lint and the household engine tests (`pytest -m engine`) do not need the lock.
+One measure took 2 min 16 s and peaked at 11.3 GB resident (6 November, 6.14.0 on a6299504, cached data); the package run builds three simulations one after another, so allow about 3 to 4 minutes for it. `make measures IDS="a b c"` runs that block once per measure, each in its own process. Unit tests, lint and the household engine tests (`pytest -m engine`) do not need the lock.
 
 ## Gates
 
