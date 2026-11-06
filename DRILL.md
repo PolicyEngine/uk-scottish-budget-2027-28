@@ -2,7 +2,9 @@
 
 A timed rehearsal of Scottish Budget day (3 December 2026) on a mock statement. It uses the compressed clock for an afternoon drill. All times are London time.
 
-This file holds the plan only. It says nothing about the mock measures. The statement, documents, correction notice and answer key are held outside this repository by the drill owner and are released at the times below. For this drill, this file replaces `docs/DRILL.md` on the template branch (PR #10).
+This file holds the plan only, and is the only copy of the clock and the packet hashes; the drill issue (#11) links here. It says nothing about the mock measures. The statement, documents, correction notice and answer key are held outside this repository by the drill owner and are released at the times below.
+
+The drill branch is stacked on the template branch (`template-dashboard`, PR #10), so it has the pipeline, the page and CI. Before G0 the integrator merges the latest `template-dashboard` into it and records the start SHA.
 
 ## Clock
 
@@ -12,32 +14,38 @@ This file holds the plan only. It says nothing about the mock measures. The stat
 | 14:00 | T+0 | statement | G1 by 14:10: coverage ledger, every line routed |
 | 14:30 | T+30 | none | G2: provisional numbers against the statement, one hand-checked household per coded measure |
 | 14:40 | T+40 | documents: costings table, mock forecast, example households, blank scoring sheet | G3 by 15:10: re-base and reconcile; every gap over 10% has a written reason |
-| 15:15 | T+75 | correction notice | G5: re-run everything affected, new scoring SHA |
+| 15:15 | T+75 | correction notice | G5 by 15:35: re-run everything affected, new scoring SHA |
 | 15:40 | T+100 | none | G4: full page on a local production build, MOCK banner and noindex checked |
 | 15:50 | T+110 | none | stop: log the stop commit |
 | 16:00 | T+120 | answer key | scoring (to about 16:20) |
 | 16:30 | – | none | retro filed on the drill issue |
 
+### Engine and data pair
+
+The drill runs on the pair locked on the drill branch: policyengine 6.14.0, policyengine-uk 2.151.0, policyengine-core 3.33.3, Microcosm `microcosm-uk-2024-25-national-20261025T091414Z-a6299504`, on the OBR October 2026 forecast overlay. This holds whatever is released before 13 November. Figures from any pair not recorded at G0 are not scored.
+
 ### Gates
 
-- **G0, freeze record (by 13:30).** Start SHA, policyengine and policyengine-uk versions, Microcosm dataset name and SHA-256, and either the certified engine and data pair or the label "unvalidated under this engine" on every figure.
-- **G1, coverage ledger (14:00–14:10).** One line per statement item, each with a route and a cause class (below). Items already in the baseline are flagged here, not coded.
-- **G2, provisional numbers (by 14:30).** National figures for each coded line, and one hand-checked household per coded measure.
-- **G3, re-base and reconcile (14:40–15:10).** Re-base to the baseline the costings use, fill the reconciliation CSV, and give every gap over 10% a written reason and a cause class. Update ledger causes after G3.
-- **G5, correction (from 15:15).** Re-run every affected figure, including hand-computed household rows, and record a new scoring SHA.
-- **G4, publication path (by 15:40).** `next build` then `next start` on the drill branch, locally. Nothing is deployed.
+Every heavy command below (a `generate`, a production build) runs under the lock with at least 14 GB free, as in `docs/RUNBOOK.md` ("Heavy runs"), one measure per process.
+
+- **G0, freeze record (by 13:30).** `uv run --extra model scottish-budget freeze`, pasted into the clock table as a PR comment: start SHA, clean tree, policyengine, policyengine-uk and core versions, bundle dataset name and SHA-256. Every figure carries the certified pair above, or the label "unvalidated under this engine".
+- **G1, coverage ledger (14:00–14:10).** One line per statement item in `data_inputs/drill/coverage-ledger.csv`, each with a route and a cause class (below). Items already in the baseline are flagged here, not coded. Kept measures get their values and `placeholder=False` in `reforms.py`; registry entries the statement does not contain are deleted.
+- **G2, provisional numbers (by 14:30).** For each coded measure: `uv run --extra model scottish-budget generate --reforms <id>`; then `generate --package provisional` and `scottish-budget combine --provisional`. Measures are not signed off at G2 (`publish` stays False); the file says "provisional". One hand-checked household per coded measure, starting from `data_inputs/household_fixtures/`.
+- **G3, re-base and reconcile (14:40–15:10).** Re-base to the baseline the costings use, fill `data_inputs/drill/reconciliation.csv` and run `uv run scottish-budget reconcile --official data_inputs/drill/reconciliation.csv` until it exits 0: every gap over 10% has a written reason and a cause class. Then set `publish=True` on each reconciled measure. Update ledger causes after G3.
+- **G5, correction (15:15–15:35).** Re-run every affected measure and the package, including hand-computed household rows, `combine` again, and record the new scoring SHA (`results_sha256` in `dashboard/public/data/receipt.json`).
+- **G4, publication path (by 15:40).** `generate --package final` and `combine`; then from the repository root `uv run python scripts/check_public_data.py dashboard/public/data`, and under the lock `cd dashboard && bun run check-public && NEXT_PUBLIC_MOCK=1 bun run build && bun run start`. In a second shell, `scripts/smoke-built-site.sh http://localhost:3000/uk/scottish-budget-2027-28 MOCK` checks every tab, the banner starting with MOCK, the robots meta (`curl -s <url> | grep -o '<meta name="robots"[^>]*>'` must contain `noindex` and `nofollow`; Next adds `nocache`) and the `X-Robots-Tag` header (`curl -sI <url> | grep -i x-robots-tag`). Then stop the server and release the lock. Nothing is deployed.
 - **Stop (15:50).** Log the stop commit in the clock table. Nothing is pushed after it.
 
 ## Roles
 
-| Role | Person | Owns | Does not |
-|---|---|---|---|
-| Integrator | Vahid | branch, clock table, every commit, generation, re-basing | score households; open sealed files early |
-| Reconciler | to be confirmed | ledger, reconciliation CSV, defects posted as PR comments within 5 minutes | push code |
-| Scorer (the reconciler after the documents) | to be confirmed | example households, one commit SHA per scoring run, hash checks | edit reform code |
-| Drill owner | to be confirmed (not the integrator) | the sealed packet, releases at the set times, the answer key | take part in coding |
+| Role | Owns | Does not |
+|---|---|---|
+| Integrator | branch, clock table, every commit, generation, re-basing | score households; open sealed files early |
+| Reconciler | ledger, reconciliation CSV, defects posted as PR comments within 5 minutes; the hash check of each file on its release (14:00, 14:40, 15:15) | push code |
+| Scorer (the reconciler after the documents) | example households, one commit SHA per scoring run; the hash check of the answer key at 16:00 | edit reform code |
+| Drill owner (not the integrator) | the sealed packet, releases at the set times, the answer key | take part in coding |
 
-Only the integrator pushes. Reviews are posted as PR comments and read at once.
+Who holds each role is recorded on the drill issue, not here. Only the integrator pushes. Reviews are posted as PR comments and read at once.
 
 ## Routes and cause classes
 
@@ -79,8 +87,8 @@ The integrator fills the clock table as the drill runs. For each step, record st
 | Documents received | | | | | |
 | G3 | | | | | |
 | Correction received | | | | | |
-| G5 | | | | | |
-| G4 | | | | | |
+| G5 (due 15:35) | | | | | |
+| G4 (due 15:40) | | | | | |
 | Stop | | | | | |
 
 Also log:
@@ -93,16 +101,16 @@ Also log:
 
 ## MOCK and noindex rules
 
-- The drill branch shows a banner on every view that starts with **MOCK** and says the figures are drill figures, not the Scottish Budget. The template's "Pre-release template" banner is not enough.
-- The served HTML carries `<meta name="robots" content="noindex, nofollow">`. Check it in the output of `next start`, not only in the source.
+- The drill branch shows a banner on every view that starts with **MOCK** and says the figures are drill figures, not the Scottish Budget. The page does this when built with `NEXT_PUBLIC_MOCK=1`; the template's "Pre-release template" banner is not enough.
+- The served HTML carries a robots meta with `noindex` and `nofollow` (Next renders `noindex, nofollow, nocache`), and every response carries `X-Robots-Tag: noindex, nofollow`. Check both in the output of `next start` (G4 above), not only in the source.
 - Nothing from the drill is deployed, posted or shared outside the drill PR and the drill issue.
 - The drill PR is a draft labelled `not for merge`. It is never merged.
-- Public files on the drill branch pass `scripts/check_public_data.py` and `scripts/check-public-files.mjs`: no ids or weights, the 10-record floor, no area codes.
+- Public files on the drill branch pass both checks: from the repository root `uv run python scripts/check_public_data.py dashboard/public/data`, and from `dashboard/` `bun run check-public`. No ids or weights, the 10-record floor, no area codes.
 
 ## Packet hygiene
 
 - The packet is written and held outside this repository. Only the hashes are committed, below.
-- Files are released at the set times, not before. The scorer checks each file's SHA-256 when it arrives (`shasum -a 256 <file>`).
+- Files are released at the set times, not before. The reconciler (the scorer at 16:00) checks each file's SHA-256 when it arrives (`shasum -a 256 <file>`) against the table below and logs the result.
 - The integrator does not open any packet file before its release time.
 - Code goes in waves: parameters, then modifiers, then new variables.
 
