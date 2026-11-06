@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scottish_budget"
+version = "0.1.0"
+description = "Data pipeline and household calculator for the Scottish Budget 2027-28 dashboard"
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "AGPL-3.0-only" }
+authors = [{ name = "PolicyEngine", email = "hello@policyengine.org" }]
+# The core package (registry, limits, presets, placeholder results, public
+# data checks) is pure Python so the tests run without microdata.
+dependencies = [
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+# The engine and data pair for real runs. One certified bundle, pinned
+# exactly; see docs/METHOD.md and issue #1 before changing it.
+model = [
+    "policyengine[uk]==6.14.0",
+    "pandas>=2.2.0",
+    "numpy>=1.24.0",
+    "h5py>=3.0.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.6.0",
+    "numpy>=1.24.0",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+scottish-budget = "scottish_budget.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+scottish_budget = ["years.json", "forecast/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --tb=short -m 'not engine'"
+markers = [
+    "engine: needs the model extra (household situations, no microdata)",
+]
+
+[tool.ruff]
+line-length = 79
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E501"]
