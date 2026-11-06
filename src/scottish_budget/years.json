@@ -1,0 +1,11 @@
+{
+  "base_year": 2024,
+  "budget_year": 2027,
+  "policy_years": [2027, 2028],
+  "basis": {
+    "period": "fiscal year (April to March); 2027 means 2027-28",
+    "gross_or_net": "gross cost or yield to the Scottish Government before any block grant adjustment",
+    "cash_or_accrued": "cash, in nominal terms",
+    "behaviour": "static: no behavioural response unless a measure says so"
+  }
+}

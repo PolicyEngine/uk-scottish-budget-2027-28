@@ -23,11 +23,51 @@ The figures will come from PolicyEngine UK, a static microsimulation model of th
 
 | Component | Version |
 |---|---|
-| policyengine (Python) | 6.11.1 (certified bundle) |
+| policyengine (Python) | 6.14.0 (certified bundle; `uv.lock`) |
 | policyengine-uk | 2.151.0 (pinned by the bundle) |
 | Microcosm | `microcosm-uk-2024-25-national-20261025T091414Z-a6299504` |
+| Forecast | OBR October 2026, applied to every simulation |
 
-These versions are provisional. policyengine-uk 2.151.0 lacks some measures announced in the UK Budget on 28 October 2026, so the pin may move before 3 December. The README will record the final engine and data pair used on the day.
+`docs/METHOD.md` explains the pin and what it lacks; a run records what it actually loaded in `receipt.json`.
+
+## How to run
+
+Pipeline (Python 3.13, [uv](https://docs.astral.sh/uv/)):
+
+```
+uv sync --extra dev
+uv run pytest
+uv run scottish-budget generate --placeholder   # writes dashboard/public/data/results.json
+```
+
+Real runs need the model extra (`uv sync --extra model --extra dev`) and load Microcosm; see `docs/RUNBOOK.md` first. Each measure runs in its own process (`scottish-budget generate --reforms ID`), then `scottish-budget combine` writes `results.json`. A placeholder measure refuses to run. `make help` lists the shortcuts.
+
+Dashboard (Next.js 16, React 19, Recharts, [bun](https://bun.sh)):
+
+```
+cd dashboard
+bun install
+bun run test
+bun run dev
+```
+
+Every page shows a pre-release banner and is marked noindex. Nothing deploys from this repository.
+
+## Layout
+
+| Path | What |
+|---|---|
+| `src/scottish_budget/reforms.py` | Measure registry: every candidate measure, its route and limits (all placeholders) |
+| `src/scottish_budget/data_limits.py`, `model_limits.py` | What the data and the model cannot show yet |
+| `src/scottish_budget/household.py` | Example households and their rest-of-UK twins |
+| `src/scottish_budget/engine.py`, `forecast/` | The engine entry point, provenance and the forecast overlay |
+| `src/scottish_budget/national.py`, `pipeline.py`, `cli.py` | One measure per run, combined into `results.json` |
+| `src/scottish_budget/measures/` | Hand-written modifiers, one per module |
+| `src/scottish_budget/reconcile.py` | G3 reconciliation against official costings |
+| `src/scottish_budget/publication.py`, `scripts/check_public_data.py` | Disclosure floor and public-data checks |
+| `docs/` | Method, schema, runbook, drill, candidate reforms, risk register |
+| `data_inputs/` | Expected effects, official figures, drill packet hashes |
+| `dashboard/` | The page |
 
 ## Licence
 

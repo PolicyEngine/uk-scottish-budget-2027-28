@@ -1,0 +1,7 @@
+measure_id,year,expected_sign,official_value_bn,official_source,basis,note
+starter_basic_thresholds,2027,negative,,Scottish Fiscal Commission costings (Budget day),behavioural,PLACEHOLDER: fill from the costings table on the day
+upper_thresholds_frozen,2027,none,0,Already in the baseline,static,Trap row
+intermediate_rate_plus_1p,2027,positive,0.154,Scottish Government tax ready reckoners 2026-27 Table 1,behavioural,The 2026-27 reckoner figure stands in for 2027-28 until the day; re-base it
+scp_under_one_premium,2027,negative,-0.003,Scottish Fiscal Commission January 2026 forecasts,behavioural,Part year; £7m a year from 2028-29
+scp_under_one_premium,2028,negative,-0.007,Scottish Fiscal Commission January 2026 forecasts,behavioural,
+energy_payment_bands_a_d,2027,negative,,Scottish Government (to confirm),static,About 1.9m homes x £100; tax year to confirm
