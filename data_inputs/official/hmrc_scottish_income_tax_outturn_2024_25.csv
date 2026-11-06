@@ -1,0 +1,9 @@
+item,year,value,unit,source,source_url,read_on
+nsnd_income_tax_receipts,2024,18635,£m,HMRC Scottish Income Tax Outturn Statistics 2024 to 2025 Table A,,2026-11-06
+scottish_taxpayers,2024,3036400,people,HMRC Scottish Income Tax Outturn Statistics 2024 to 2025 Table A,,2026-11-06
+share_starter,2024,8.5,% of NSND liabilities,HMRC Scottish Income Tax Outturn Statistics 2024 to 2025 Table D,,2026-11-06
+share_basic,2024,34.9,% of NSND liabilities,HMRC Scottish Income Tax Outturn Statistics 2024 to 2025 Table D,,2026-11-06
+share_intermediate,2024,34.4,% of NSND liabilities,HMRC Scottish Income Tax Outturn Statistics 2024 to 2025 Table D,,2026-11-06
+share_higher,2024,17.0,% of NSND liabilities,HMRC Scottish Income Tax Outturn Statistics 2024 to 2025 Table D,,2026-11-06
+share_advanced,2024,3.8,% of NSND liabilities,HMRC Scottish Income Tax Outturn Statistics 2024 to 2025 Table D,,2026-11-06
+share_top,2024,1.4,% of NSND liabilities,HMRC Scottish Income Tax Outturn Statistics 2024 to 2025 Table D,,2026-11-06
