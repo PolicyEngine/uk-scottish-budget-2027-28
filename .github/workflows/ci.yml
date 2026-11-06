@@ -1,12 +1,15 @@
 name: CI
 
+# Runs on every pull request, whatever its base branch, so a stacked drill
+# PR is checked too.
 on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -16,13 +19,14 @@ jobs:
   python:
     name: Pipeline tests (pytest, ruff, public data guard)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v8.1.0
         with:
-          enable-cache: true
-      - name: Install (no model extra, no microdata)
-        run: uv sync --frozen --extra dev
+          save-cache: false
+      - name: Install (no model extra, no microdata; lockfile must be current)
+        run: uv sync --locked --extra dev
       - name: Lint
         run: uv run ruff check . && uv run ruff format --check .
       - name: Test
@@ -30,14 +34,53 @@ jobs:
       - name: Public data guard
         run: uv run python scripts/check_public_data.py dashboard/public/data
 
-  dashboard:
-    name: Dashboard (guard, lint, test, build)
+  engine:
+    name: Engine checks (household situations on the pinned release)
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v8.1.0
+        with:
+          save-cache: false
+      - name: Install with the model extra (lockfile must be current)
+        run: uv sync --locked --extra dev --extra model
+      - name: Presets, modifiers and placeholder signs on the pinned engine
+        run: uv run pytest -m engine
+
+  certified-data:
+    name: Certified data
+    # The private-data token is given only to pushes and pull requests from
+    # branches of this repository; fork PRs receive no secrets. Never run
+    # this workflow on pull_request_target. Until an organisation admin adds
+    # this repository to the secret's selected repositories, the token is
+    # empty and this job fails with that message.
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      HUGGING_FACE_TOKEN: ${{ secrets.PE_UK_PRIVATE_HF_READ_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v8.1.0
+        with:
+          save-cache: false
+      - name: Install with the model extra (lockfile must be current)
+        run: uv sync --locked --extra dev --extra model
+      - name: Check access to the bundle's certified data and its SHA-256
+        run: uv run python -m scottish_budget.certified_data
+
+  dashboard:
+    name: Dashboard (guard, lint, test, build, served page)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: dashboard
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
       - name: Install
         run: bun install --frozen-lockfile
@@ -49,3 +92,12 @@ jobs:
         run: bun run test
       - name: Build
         run: bun run build
+      - name: Serve the build and check the page, noindex and banner
+        run: |
+          bun run start > next-start.log 2>&1 &
+          for _ in $(seq 1 60); do
+            curl --silent --output /dev/null http://127.0.0.1:3000/uk/scottish-budget-2027-28 && break
+            sleep 1
+          done
+          ../scripts/smoke-built-site.sh http://127.0.0.1:3000/uk/scottish-budget-2027-28 \
+            || { cat next-start.log; exit 1; }
