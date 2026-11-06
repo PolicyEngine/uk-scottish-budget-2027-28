@@ -16,20 +16,24 @@ describe("utils", () => {
 
   it("charted and calculator measures come from the catalogue", () => {
     const ms = [
-      { id: "a", calculator: true, budgetary_impact: [] },
-      { id: "b", calculator: false, budgetary_impact: null },
+      { id: "a", calculator: true, status: "placeholder", budgetary_impact: [] },
+      { id: "b", calculator: false, status: "placeholder", budgetary_impact: null },
+      { id: "c", calculator: true, status: "pending", budgetary_impact: null },
+      { id: "d", calculator: true, status: "not-computable", first_year: 2028, budgetary_impact: null },
     ];
     expect(chartedMeasures(ms).map((m) => m.id)).toEqual(["a"]);
     expect(calculatorMeasures(ms).map((m) => m.id)).toEqual(["a"]);
   });
 
-  it("a withheld cell withholds its decile", () => {
+  it("a withheld cell withholds its decile, and years are kept apart", () => {
     const cells = [
-      { measure_id: "a", decile: 1, avg_change_gbp: 5 },
-      { measure_id: "b", decile: 1, avg_change_gbp: null },
+      { measure_id: "a", year: 2027, decile: 1, avg_change_gbp: 5 },
+      { measure_id: "a", year: 2028, decile: 1, avg_change_gbp: 7 },
+      { measure_id: "b", year: 2027, decile: 1, avg_change_gbp: null },
     ];
-    expect(decileRows(cells, ["a"])[0].avg_change_gbp).toBe(5);
-    expect(decileRows(cells, ["a", "b"])[0].avg_change_gbp).toBeNull();
+    expect(decileRows(cells, ["a"], 2027)[0].value).toBe(5);
+    expect(decileRows(cells, ["a"], 2028)[0].value).toBe(7);
+    expect(decileRows(cells, ["a", "b"], 2027)[0].value).toBeNull();
   });
 
   it("formats and exports", () => {
