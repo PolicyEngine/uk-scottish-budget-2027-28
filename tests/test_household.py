@@ -29,3 +29,21 @@ def test_twin_changes_only_the_tax_schedule():
 def test_lone_parent_preset_has_a_child_under_one():
     situation = presets(2027)["lone_parent_under_one"]["situation"]
     assert situation["people"]["baby"]["age"] == {"2027": 0}
+
+
+def test_household_fixtures_match_the_presets():
+    import importlib.util
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location(
+        "fixtures", root / "scripts" / "write_household_fixtures.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    folder = root / "data_inputs" / "household_fixtures"
+    expected = module.fixtures()
+    assert {p.stem for p in folder.glob("*.json")} == set(expected)
+    for key, body in expected.items():
+        assert json.loads((folder / f"{key}.json").read_text()) == body, key

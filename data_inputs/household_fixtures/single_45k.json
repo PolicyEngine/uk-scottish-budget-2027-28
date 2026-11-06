@@ -1,0 +1,71 @@
+{
+  "label": "Single adult earning \u00a345,000",
+  "year": 2027,
+  "situation": {
+    "people": {
+      "adult": {
+        "age": {
+          "2027": 35
+        },
+        "employment_income": {
+          "2027": 45000
+        }
+      }
+    },
+    "benunits": {
+      "benunit": {
+        "members": [
+          "adult"
+        ]
+      }
+    },
+    "households": {
+      "household": {
+        "members": [
+          "adult"
+        ],
+        "region": {
+          "2027": "SCOTLAND"
+        },
+        "council_tax_band": {
+          "2027": "C"
+        }
+      }
+    }
+  },
+  "rest_of_uk_twin": {
+    "people": {
+      "adult": {
+        "age": {
+          "2027": 35
+        },
+        "employment_income": {
+          "2027": 45000
+        },
+        "pays_scottish_income_tax": {
+          "2027": false
+        }
+      }
+    },
+    "benunits": {
+      "benunit": {
+        "members": [
+          "adult"
+        ]
+      }
+    },
+    "households": {
+      "household": {
+        "members": [
+          "adult"
+        ],
+        "region": {
+          "2027": "SCOTLAND"
+        },
+        "council_tax_band": {
+          "2027": "C"
+        }
+      }
+    }
+  }
+}
