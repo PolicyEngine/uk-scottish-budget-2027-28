@@ -187,3 +187,59 @@ def calculate(situation: dict, year: int, reforms=()) -> dict[str, float]:
         ),
         "income_tax": float(sim.calculate("income_tax", year).sum()),
     }
+
+
+CURVE_MAX = 150_000
+CURVE_STEP = 1_000
+
+
+def _curve_situation(year: int, scottish: bool) -> dict:
+    y = str(year)
+    person = {"age": {y: 40}}
+    if not scottish:
+        person[SCOTTISH_TAX_INPUT] = {y: False}
+    situation = _situation({"adult": person}, ["adult"], [], y, band="C")
+    situation["axes"] = [
+        [
+            {
+                "name": "employment_income",
+                "min": 0,
+                "max": CURVE_MAX,
+                "count": CURVE_MAX // CURVE_STEP + 1,
+                "period": y,
+            }
+        ]
+    ]
+    return situation
+
+
+def income_tax_curve(year: int = BUDGET_YEAR, reforms=()) -> list[dict]:
+    """Income tax for a single adult by gross earnings, £1,000 steps:
+    Scotland under current law and with the measures, and the rest-of-UK
+    schedule (needs the model extra)."""
+    import numpy as np
+    from policyengine_uk import Simulation
+
+    from scottish_budget.forecast import with_forecast
+
+    def tax(scottish, scenario):
+        sim = Simulation(
+            situation=_curve_situation(year, scottish),
+            scenario=with_forecast(scenario),
+        )
+        return np.asarray(sim.calculate("income_tax", year))
+
+    scenario = combined_scenario(reforms)
+    now = tax(True, None)
+    after = tax(True, scenario) if scenario is not None else now
+    ruk = tax(False, None)
+    return [
+        {
+            "year": year,
+            "gross": i * CURVE_STEP,
+            "scotland_current_law": round(float(now[i]), 2),
+            "scotland_with_measures": round(float(after[i]), 2),
+            "rest_of_uk": round(float(ruk[i]), 2),
+        }
+        for i in range(len(now))
+    ]

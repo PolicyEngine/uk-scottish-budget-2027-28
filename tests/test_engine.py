@@ -133,3 +133,15 @@ def test_no_placeholder_sits_below_its_baseline_in_any_policy_year():
             for year in POLICY_YEARS:
                 base = _value(params, path, f"{year}-06-01")
                 assert values[str(year)] >= base, (m.id, path, year, base)
+
+
+def test_income_tax_curve_compares_scotland_with_the_rest_of_the_uk():
+    from scottish_budget.household import income_tax_curve
+
+    rows = income_tax_curve(
+        YEAR, [measure("intermediate_rate_plus_1p").reform]
+    )
+    assert rows[0]["gross"] == 0 and rows[-1]["gross"] == 150_000
+    at_60k = next(r for r in rows if r["gross"] == 60_000)
+    assert at_60k["scotland_current_law"] > at_60k["rest_of_uk"]
+    assert at_60k["scotland_with_measures"] > at_60k["scotland_current_law"]

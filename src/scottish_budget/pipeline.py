@@ -206,6 +206,7 @@ def placeholder_results() -> dict:
         "scotland_vs_rest_of_uk": [],
         "official_costings": [],
         "households": _placeholder_households(),
+        "income_tax_curve": [],
     }
     validate_results(results)
     return results
@@ -350,11 +351,21 @@ def household_rows(measures, calculate=None) -> list[dict]:
     return rows
 
 
+def income_tax_curve_rows(measures, curve=None) -> list[dict]:
+    """Income tax by gross earnings for the Budget year (injectable)."""
+    from scottish_budget.household import income_tax_curve
+    from scottish_budget.years import BUDGET_YEAR
+
+    curve = curve or income_tax_curve
+    return curve(BUDGET_YEAR, [m.reform for m in measures])
+
+
 def combine(
     provisional: bool = False,
     out_dir=PARTIAL_DIR,
     calculate=None,
     with_households: bool = True,
+    curve=None,
 ) -> tuple[dict, dict]:
     """results.json and its receipt from the partials and the registry."""
     partials = read_partials(out_dir)
@@ -432,6 +443,9 @@ def combine(
         "official_costings": official_costings(),
         "households": (
             household_rows(scored, calculate) if with_households else []
+        ),
+        "income_tax_curve": (
+            income_tax_curve_rows(scored, curve) if with_households else []
         ),
     }
     validate_results(results)

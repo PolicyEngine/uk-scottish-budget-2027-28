@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { decileRows } from "../components/DistributionalChart";
+import { curveRows } from "../components/IncomeTaxCurve";
 import { calculatorMeasures, chartedMeasures } from "./calculatorOnlyMeasures";
 import { yearColour } from "./chartTheme";
 import { formatBn, toCsv } from "./format";
@@ -34,6 +35,17 @@ describe("utils", () => {
     expect(decileRows(cells, ["a"], 2027)[0].value).toBe(5);
     expect(decileRows(cells, ["a"], 2028)[0].value).toBe(7);
     expect(decileRows(cells, ["a", "b"], 2027)[0].value).toBeNull();
+  });
+
+  it("income tax curve gives the gap and marginal rates", () => {
+    const rows = curveRows([
+      { gross: 0, scotland_current_law: 0, scotland_with_measures: 0, rest_of_uk: 0 },
+      { gross: 1000, scotland_current_law: 210, scotland_with_measures: 220, rest_of_uk: 200 },
+    ]);
+    expect(rows[1].gap_now).toBe(10);
+    expect(rows[1].gap_after).toBe(20);
+    expect(rows[1].rate_scotland).toBe(22);
+    expect(rows[1].rate_ruk).toBe(20);
   });
 
   it("formats and exports", () => {

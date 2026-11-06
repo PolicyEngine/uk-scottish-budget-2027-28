@@ -94,8 +94,12 @@ def fake_calculate(situation, year, reforms=()):
 
 def test_provisional_file_passes_validation(day):
     results, receipt = pipeline.combine(
-        provisional=True, out_dir=day, calculate=fake_calculate
+        provisional=True,
+        out_dir=day,
+        calculate=fake_calculate,
+        curve=lambda year, reforms: [{"year": year, "gross": 0}],
     )
+    assert results["income_tax_curve"] == [{"year": 2027, "gross": 0}]
     validate_results(results)
     assert results["meta"]["status"] == "provisional"
     assert results["meta"]["placeholder"] is False
@@ -114,7 +118,9 @@ def test_provisional_file_passes_validation(day):
 
 
 def test_final_file_shows_only_signed_off_figures(day):
-    results, _ = pipeline.combine(out_dir=day, calculate=fake_calculate)
+    results, _ = pipeline.combine(
+        out_dir=day, calculate=fake_calculate, curve=lambda y, r: []
+    )
     rows = {m["id"]: m for m in results["measures"]}
     assert rows["starter_basic_thresholds"]["status"] == "published"
     assert rows["starter_basic_thresholds"]["budgetary_impact"]

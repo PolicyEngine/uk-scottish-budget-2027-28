@@ -2536,5 +2536,6 @@
       "rest_of_uk_net_income": null,
       "scotland_minus_rest_of_uk": null
     }
-  ]
+  ],
+  "income_tax_curve": []
 }
