@@ -20,7 +20,7 @@ dependencies = [
 # The engine and data pair for real runs. One certified bundle, pinned
 # exactly; see docs/METHOD.md and issue #1 before changing it.
 model = [
-    "policyengine[uk]==6.14.0",
+    "policyengine[uk]==6.17.2",
     "pandas>=2.2.0",
     "numpy>=1.24.0",
     "h5py>=3.0.0",

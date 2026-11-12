@@ -4,13 +4,13 @@ From the model audits of 5 and 6 November 2026. Three tiers of release
 matter (issue #1):
 
 - 2.151.0: what policyengine.py 6.11.1 to 6.14.0 pin, with Microcosm
-  a6299504 (the certified pair this repo locks);
+  a6299504 (the pair this repo locked before 12 November 2026);
 - 2.165.1: what policyengine.py#731 (unreleased) would pin, with Microcosm
   0639b9c7; it uprates the carer supplement but has none of the Budget 2026
   measures;
 - 2.170.2 and later: the Budget 2026 measures (Pension Tax Allowance,
-  household energy payment, 24/44/49 property rates), with no certified
-  Microcosm build yet.
+  household energy payment, 24/44/49 property rates). policyengine.py
+  6.17.2 pins 2.174.1 with Microcosm eeb6093e, the pair this repo now locks.
 
 A limit here is either worked round in this repo (a modifier in
 ``measures/``) or makes a measure ``needs-pe-uk-first``.
@@ -18,7 +18,7 @@ A limit here is either worked round in this repo (a modifier in
 
 from dataclasses import dataclass
 
-BUNDLE_RELEASE = "2.151.0"
+BUNDLE_RELEASE = "2.174.1"
 NEXT_BUNDLE_RELEASE = "2.165.1"
 BUDGET_2026_RELEASE = "2.170.2"
 NEWEST_RELEASE = "2.175.7"

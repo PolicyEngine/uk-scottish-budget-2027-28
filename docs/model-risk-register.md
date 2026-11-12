@@ -2,7 +2,7 @@
 
 | Risk | Effect on the day | Likelihood | Mitigation | Issue |
 |---|---|---|---|---|
-| Bundle pins policyengine-uk 2.151.0 | Baseline lacks the Pension Tax Allowance; the carer supplement is not uprated. #731 (2.165.1) still lacks the UK Budget 2026 measures, which start in 2.170.2 with no certified data | High | OBR October 2026 forecast overlay for the baseline paths; label figures "unvalidated under this engine" if not on a certified pair | #1 |
+| Bundle pins policyengine-uk 2.174.1 (policyengine 6.17.2) | The Budget 2026 measures and the carer supplement uprating are in the baseline now; route notes and figures written on 2.151.0 need re-checking on 2.174.1 | Medium | OBR October 2026 forecast overlay for the baseline paths; label figures "unvalidated under this engine" if not on a certified pair | #1 |
 | No Scottish property income rate parameter | No parameter route | Medium | Modifier in `measures/scottish_property_rates.py`; parameter upstream later | #2 |
 | £100 payment England only, £0 from 2027-28 | A Scottish payment reads £0 | High | Modifier in `measures/energy_payment_scotland.py`; confirm tax year | #3 |
 | Council tax freeze needs re-projection | g = 0 overstates the cut | Medium | g = weight growth from the installed release, before data load (`measures/council_tax_freeze.py`); time it in the drill | #4 |

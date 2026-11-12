@@ -9,7 +9,7 @@ from scottish_budget import pipeline, reforms
 from scottish_budget.publication import validate_results
 from scottish_budget.years import POLICY_YEARS
 
-SHA = "b96a8cd625b645a409c063b1de5158532708a2f0d3c3897a794a8fb0bbd5064e"
+SHA = "0a9b77db1c0dee2693cb2d47bad68da34cb662916eee4829942bcd45de581f25"
 
 
 def _partial(measure_id):
@@ -43,13 +43,13 @@ def _partial(measure_id):
         ],
         "poverty": [],
         "versions": {
-            "policyengine": "6.14.0",
-            "policyengine-uk": "2.151.0",
+            "policyengine": "6.17.2",
+            "policyengine-uk": "2.174.1",
             "policyengine-core": "3.33.3",
         },
         "provenance": {
             "runtime_dataset": "microcosm_uk_2024_25",
-            "runtime_dataset_revision": "microcosm-a6299504",
+            "runtime_dataset_revision": "microcosm-eeb6093e",
             "runtime_dataset_sha256": SHA,
         },
     }

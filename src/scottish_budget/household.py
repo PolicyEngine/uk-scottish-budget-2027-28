@@ -18,8 +18,8 @@ from scottish_budget.years import BUDGET_YEAR
 
 SCOTTISH_TAX_INPUT = "pays_scottish_income_tax"
 
-# The full new State Pension in 2027-28: £250.71 a week (2.151.0; £250.70
-# on 2.175.4) times 52. G0 re-checks it against the pinned release
+# The full new State Pension in 2027-28: £250.70 a week (2.174.1 and
+# 2.175.4; £250.71 on 2.151.0) times 52. G0 re-checks it against the pinned release
 # (``state_pension_amount``); 2026-27's £12,548 would sit below the
 # personal allowance and hide any tax change for pensioners.
 FULL_NEW_STATE_PENSION_2027 = 13_036
