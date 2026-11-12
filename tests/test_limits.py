@@ -24,7 +24,8 @@ def test_blocking_filter():
 
 
 def test_release_comparison():
-    assert not fixed_in_release("pension_tax_allowance", BUNDLE_RELEASE)
+    assert fixed_in_release("pension_tax_allowance", BUNDLE_RELEASE)
+    assert fixed_in_release("carer_supplement_not_uprated", BUNDLE_RELEASE)
     assert fixed_in_release("pension_tax_allowance", NEWEST_RELEASE)
     assert not fixed_in_release("no_band_j", NEWEST_RELEASE)
     assert fixed_in_release("carer_supplement_not_uprated", "2.165.1")

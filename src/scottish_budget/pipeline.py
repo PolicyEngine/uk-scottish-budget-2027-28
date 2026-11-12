@@ -48,9 +48,9 @@ PARTIAL_DIR = ROOT / "data_outputs" / "partials"
 # simulation loaded (the partials' provenance). tests/test_provenance.py
 # checks these against uv.lock.
 LOCKED_ENGINE = {
-    "policyengine": "6.14.0",
-    "policyengine_uk": "2.151.0",
-    "dataset": "microcosm-uk-2024-25-national-20261025T091414Z-a6299504",
+    "policyengine": "6.17.2",
+    "policyengine_uk": "2.174.1",
+    "dataset": "microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
 }
 
 ROUTE_LABELS = {

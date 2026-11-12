@@ -1,6 +1,6 @@
 # Candidate reforms
 
-Ranked by likelihood. Routes are for policyengine-uk 2.151.0 (the certified bundle) unless stated; every modifier named here also runs on 2.175.4. Every entry in `reforms.py` is a placeholder until the Budget is published.
+Ranked by likelihood. Routes were written for policyengine-uk 2.151.0 (the bundle then; it is now 2.174.1, from policyengine 6.17.2) unless stated; every modifier named here also runs on 2.175.4. Every entry in `reforms.py` is a placeholder until the Budget is published.
 
 | # | Measure | Likelihood | Plausible range | Route | Data or model need |
 |---|---|---|---|---|---|

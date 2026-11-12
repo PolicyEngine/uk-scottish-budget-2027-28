@@ -23,9 +23,9 @@ The figures will come from PolicyEngine UK, a static microsimulation model of th
 
 | Component | Version |
 |---|---|
-| policyengine (Python) | 6.14.0 (certified bundle; `uv.lock`) |
-| policyengine-uk | 2.151.0 (pinned by the bundle) |
-| Microcosm | `microcosm-uk-2024-25-national-20261025T091414Z-a6299504` |
+| policyengine (Python) | 6.17.2 (certified bundle; `uv.lock`) |
+| policyengine-uk | 2.174.1 (pinned by the bundle) |
+| Microcosm | `microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e` |
 | Forecast | OBR October 2026, applied to every simulation |
 
 `docs/METHOD.md` explains the pin and what it lacks; a run records what it actually loaded in `receipt.json`.
