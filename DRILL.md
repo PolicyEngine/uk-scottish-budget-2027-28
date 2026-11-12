@@ -4,7 +4,7 @@ A timed rehearsal of Scottish Budget day (3 December 2026) on a mock statement. 
 
 This file holds the plan only, and is the only copy of the clock and the packet hashes; the drill issue (#11) links here. It says nothing about the mock measures. The statement, documents, correction notice and answer key are held outside this repository by the drill owner and are released at the times below.
 
-The drill branch is stacked on the template branch (`template-dashboard`, PR #10), so it has the pipeline, the page and CI. Before G0 the integrator merges the latest `template-dashboard` into it and records the start SHA.
+The drill runs on a local run branch cut from the head of `bump-policyengine-6.17.2` (PR #15, which is stacked on the template branch `template-dashboard`, PR #10, and moves the engine to policyengine 6.17.2), so it has the pipeline, the page, CI and the new pin. Before G0 the integrator cuts it, merges `drill-plan` into it for this file and the drill CSVs, and records the start SHA and the bump-branch SHA it was cut from. Drills never merge, so the unmerged bump branch is allowed as the base.
 
 ## Clock
 
@@ -22,7 +22,7 @@ The drill branch is stacked on the template branch (`template-dashboard`, PR #10
 
 ### Engine and data pair
 
-The drill runs on the pair locked on the drill branch: policyengine 6.14.0, policyengine-uk 2.151.0, policyengine-core 3.33.3, Microcosm `microcosm-uk-2024-25-national-20261025T091414Z-a6299504`, on the OBR October 2026 forecast overlay. This holds whatever is released before 13 November. Figures from any pair not recorded at G0 are not scored.
+The drill runs on the pair locked on the run branch: policyengine 6.17.2, policyengine-uk 2.174.1, policyengine-core 3.33.3, Microcosm `microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e` (SHA-256 `0a9b77db1c0dee2693cb2d47bad68da34cb662916eee4829942bcd45de581f25`, the build 6.17.2 certifies), on the OBR October 2026 forecast overlay (2.174.1 already ships most of that forecast; see PR #15). This holds whatever is released before 13 November. Figures from any pair not recorded at G0 are not scored.
 
 ### Gates
 
