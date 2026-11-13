@@ -149,6 +149,7 @@ MEASURES: tuple[Measure, ...] = (
         ),
         issues=(1,),
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -171,6 +172,7 @@ MEASURES: tuple[Measure, ...] = (
         in_baseline=True,
         calculator=False,
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -191,6 +193,7 @@ MEASURES: tuple[Measure, ...] = (
         ),
         issues=(7,),
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -215,6 +218,7 @@ MEASURES: tuple[Measure, ...] = (
         issues=(2,),
         data_limits=("thin_scottish_property_income",),
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -239,6 +243,7 @@ MEASURES: tuple[Measure, ...] = (
         ),
         calculator=False,
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -256,6 +261,7 @@ MEASURES: tuple[Measure, ...] = (
         basis_note="A business tax, outside the model; the official costing is recorded.",
         calculator=False,
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -270,6 +276,7 @@ MEASURES: tuple[Measure, ...] = (
         basis_note="Not a household tax in the model; the official costing is recorded.",
         calculator=False,
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -294,6 +301,7 @@ MEASURES: tuple[Measure, ...] = (
         issues=(4,),
         data_limits=("council_tax_is_an_input",),
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -315,6 +323,7 @@ MEASURES: tuple[Measure, ...] = (
         model_limits=("no_band_j",),
         first_year=2028,
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -340,6 +349,7 @@ MEASURES: tuple[Measure, ...] = (
         in_baseline=True,
         calculator=False,
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -369,6 +379,7 @@ MEASURES: tuple[Measure, ...] = (
             "the total weekly amount (40.80 in 2028 in the parameter)."
         ),
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -395,6 +406,7 @@ MEASURES: tuple[Measure, ...] = (
         ),
         issues=(6,),
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -423,6 +435,7 @@ MEASURES: tuple[Measure, ...] = (
         calculator=False,
         first_year=2028,
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -449,6 +462,7 @@ MEASURES: tuple[Measure, ...] = (
         issues=(3,),
         calculator=False,
         placeholder=False,
+        publish=True,
     ),
     Measure(
         reform=Reform(
@@ -463,6 +477,7 @@ MEASURES: tuple[Measure, ...] = (
         basis_note="Spending, outside the model; the official costing is recorded.",
         calculator=False,
         placeholder=False,
+        publish=True,
     ),
 )
 
