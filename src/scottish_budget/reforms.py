@@ -270,10 +270,11 @@ MEASURES: tuple[Measure, ...] = (
             description="Air Departure Tax rates for 2027-28 match the UK's Air Passenger Duty.",
         ),
         route="ledger",
-        cause="coverage",
+        cause="baseline_mismatch",
         likelihood="medium",
         topic="other",
         basis_note="Not a household tax in the model; the official costing is recorded.",
+        in_baseline=True,
         calculator=False,
         placeholder=False,
         publish=True,
@@ -452,8 +453,8 @@ MEASURES: tuple[Measure, ...] = (
         topic="council_tax",
         basis_note=(
             "Paid by 31 March 2027, so it falls in 2026-27, before the "
-            "years scored here (2027-28 and 2028-29); the official costing "
-            "is recorded."
+            "years shown here (2027-28 and 2028-29). PolicyEngine static "
+            "estimate for 2026-27: £185m to about 1.85 million households."
         ),
         internal_note=(
             "measures/energy_payment_scotland.py could pay it in fiscal "

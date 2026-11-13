@@ -11,8 +11,8 @@ lbtt_ads_increase,2027,0.045,mock costings S5,"post-behavioural; cash; fiscal ye
 lbtt_ads_increase,2028,0.047,mock costings S5,"post-behavioural; cash; fiscal year",Within 10%.,
 non_domestic_rates,2027,-0.023,mock costings S6,"post-behavioural; cash; fiscal year; against CPI-linked poundage",Business tax outside the model; official costing recorded.,coverage
 non_domestic_rates,2028,-0.024,mock costings S6,"post-behavioural; cash; fiscal year; against CPI-linked poundage",Business tax outside the model; official costing recorded.,coverage
-air_departure_tax,2027,0,mock costings S7,in the baseline,Not a household tax in the model; official costing recorded (nil).,coverage
-air_departure_tax,2028,0,mock costings S7,in the baseline,Not a household tax in the model; official costing recorded (nil).,coverage
+air_departure_tax,2027,0,mock costings S7,in the baseline,Trap row: in the baseline per the costings (nil); not modelled.,baseline_mismatch
+air_departure_tax,2028,0,mock costings S7,in the baseline,Trap row: in the baseline per the costings (nil); not modelled.,baseline_mismatch
 council_tax_freeze,2027,-0.151,mock costings S8,spending: grant to councils,"Different measures of the same freeze: ours is the static fall in Scottish household council tax bills (gross, before council tax reduction effects on the grant); the costing is the grant paid to councils.",basis
 council_tax_freeze,2028,,mock costings S8,spending: grant to councils; 2028-29 not yet decided,No official figure for 2028-29; ours carries the 2027-28 freeze forward in the bill level.,timing_fiscal_calendar
 council_tax_bands_i_j,2027,0,mock costings S9,"post-behavioural; cash; yield to councils",Applies from 2028-29.,coverage
@@ -25,7 +25,7 @@ young_parent_top_up,2027,-0.005,mock costings S12,spending; take-up as in the SC
 young_parent_top_up,2028,-0.011,mock costings S12,spending; take-up as in the SCP forecast,"Parents under 25 receiving SCP are thin in the survey and the model's SCP take-up differs from the SCP forecast, so the caseload is lower.",data_calibration
 adp_changes,2027,0,mock costings S13,spending,Applies from 2028-29.,coverage
 adp_changes,2028,-0.012,mock costings S13,spending,Not computable: ADP is carried as PIP and the mobility descriptors are not in the data; published with the reason.,coverage
-energy_payment_bands_a_d,2027,0,mock costings S14,spending; paid by 31 March 2027,"Nothing in 2027-28: the payment falls in 2026-27 (costing -189m). Model estimate for 2026-27, outside the scored years: -185m (1.85m households).",timing_fiscal_calendar
+energy_payment_bands_a_d,2027,0,mock costings S14,spending; paid by 31 March 2027,"Nothing in 2027-28: the payment falls in 2026-27. Model static estimate for 2026-27 -185m (1.85m households) vs costing -189m: within 10%.",timing_fiscal_calendar
 energy_payment_bands_a_d,2028,0,mock costings S14,spending; paid by 31 March 2027,Nothing in 2028-29.,timing_fiscal_calendar
 bus_fare_cap,2027,-0.018,mock costings S15,spending,Spending outside the model; official costing recorded.,coverage
 bus_fare_cap,2028,-0.019,mock costings S15,spending,Spending outside the model; official costing recorded.,coverage
