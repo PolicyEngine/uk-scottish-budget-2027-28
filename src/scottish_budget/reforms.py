@@ -126,19 +126,26 @@ MEASURES: tuple[Measure, ...] = (
                     f"{SCOT_RATES}[2].threshold", _flat(17_989)
                 ),
             },
+            baseline_parameter_changes={
+                **threshold_change(f"{SCOT_RATES}[1].threshold", _flat(3_967)),
+                **threshold_change(
+                    f"{SCOT_RATES}[2].threshold", _flat(16_956)
+                ),
+            },
         ),
         route="dashboard-param",
         cause="parameter",
         likelihood="high",
         topic="income_tax",
         basis_note=(
-            "Measured against thresholds uprated by CPI on the October 2026 "
-            "forecast. 2028-29 assumes the thresholds stay at the 2027-28 "
+            "Measured against the costings' baseline: the 2026-27 starter "
+            "and basic thresholds held in cash terms. 2028-29 assumes the thresholds stay at the 2027-28 "
             "level, as the statement gives no 2028-29 value."
         ),
         internal_note=(
             "Entered above the personal allowance: 17,116 - 12,570 = 4,546; "
-            "30,559 - 12,570 = 17,989. Baseline 4,103 / 17,536 (2027)."
+            "30,559 - 12,570 = 17,989. G3 re-base: custom baseline holds "
+            "2026-27's 3,967 / 16,956; current law is 4,103 / 17,536."
         ),
         issues=(1,),
         placeholder=False,
@@ -378,8 +385,8 @@ MEASURES: tuple[Measure, ...] = (
         likelihood="low",
         topic="social_security",
         basis_note=(
-            "2027-28 counts 26 weeks, from 1 October 2027; 2028-29 a full "
-            "year."
+            "2027-28 counts 188 of 366 days, from 1 October 2027; 2028-29 "
+            "a full year."
         ),
         internal_note=(
             "No variable exists: measures/young_parent_top_up.py pays it "
