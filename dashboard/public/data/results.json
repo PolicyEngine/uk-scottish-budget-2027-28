@@ -1755,7 +1755,218 @@
       "n_records": 9291
     }
   ],
-  "official_costings": [],
+  "official_costings": [
+    {
+      "measure_id": "starter_basic_thresholds",
+      "year": 2027,
+      "official_value_bn": -0.024,
+      "source": "mock costings S1",
+      "basis": "post-behavioural; accrued; fiscal year; baseline holds 2026-27 thresholds in cash"
+    },
+    {
+      "measure_id": "starter_basic_thresholds",
+      "year": 2028,
+      "official_value_bn": -0.026,
+      "source": "mock costings S1",
+      "basis": "post-behavioural; accrued; fiscal year; baseline holds 2026-27 thresholds in cash"
+    },
+    {
+      "measure_id": "upper_thresholds_frozen",
+      "year": 2027,
+      "official_value_bn": 0.0,
+      "source": "mock costings S2",
+      "basis": "in the baseline"
+    },
+    {
+      "measure_id": "upper_thresholds_frozen",
+      "year": 2028,
+      "official_value_bn": 0.0,
+      "source": "mock costings S2",
+      "basis": "in the baseline"
+    },
+    {
+      "measure_id": "advanced_rate_plus_1p",
+      "year": 2027,
+      "official_value_bn": 0.027,
+      "source": "mock costings S3",
+      "basis": "post-behavioural; accrued; fiscal year"
+    },
+    {
+      "measure_id": "advanced_rate_plus_1p",
+      "year": 2028,
+      "official_value_bn": 0.029,
+      "source": "mock costings S3",
+      "basis": "post-behavioural; accrued; fiscal year"
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2027,
+      "official_value_bn": 0.033,
+      "source": "mock costings S4",
+      "basis": "post-behavioural; accrued; fiscal year"
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2028,
+      "official_value_bn": 0.037,
+      "source": "mock costings S4",
+      "basis": "post-behavioural; accrued; fiscal year"
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2027,
+      "official_value_bn": 0.045,
+      "source": "mock costings S5",
+      "basis": "post-behavioural; cash; fiscal year"
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2028,
+      "official_value_bn": 0.047,
+      "source": "mock costings S5",
+      "basis": "post-behavioural; cash; fiscal year"
+    },
+    {
+      "measure_id": "non_domestic_rates",
+      "year": 2027,
+      "official_value_bn": -0.023,
+      "source": "mock costings S6",
+      "basis": "post-behavioural; cash; fiscal year; against CPI-linked poundage"
+    },
+    {
+      "measure_id": "non_domestic_rates",
+      "year": 2028,
+      "official_value_bn": -0.024,
+      "source": "mock costings S6",
+      "basis": "post-behavioural; cash; fiscal year; against CPI-linked poundage"
+    },
+    {
+      "measure_id": "air_departure_tax",
+      "year": 2027,
+      "official_value_bn": 0.0,
+      "source": "mock costings S7",
+      "basis": "in the baseline"
+    },
+    {
+      "measure_id": "air_departure_tax",
+      "year": 2028,
+      "official_value_bn": 0.0,
+      "source": "mock costings S7",
+      "basis": "in the baseline"
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2027,
+      "official_value_bn": -0.151,
+      "source": "mock costings S8",
+      "basis": "spending: grant to councils"
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2028,
+      "official_value_bn": null,
+      "source": "mock costings S8",
+      "basis": "spending: grant to councils; 2028-29 not yet decided"
+    },
+    {
+      "measure_id": "council_tax_bands_i_j",
+      "year": 2027,
+      "official_value_bn": 0.0,
+      "source": "mock costings S9",
+      "basis": "post-behavioural; cash; yield to councils"
+    },
+    {
+      "measure_id": "council_tax_bands_i_j",
+      "year": 2028,
+      "official_value_bn": 0.021,
+      "source": "mock costings S9",
+      "basis": "post-behavioural; cash; yield to councils"
+    },
+    {
+      "measure_id": "scottish_benefits_uprating",
+      "year": 2027,
+      "official_value_bn": 0.0,
+      "source": "mock costings S10",
+      "basis": "in the baseline: statutory uprating"
+    },
+    {
+      "measure_id": "scottish_benefits_uprating",
+      "year": 2028,
+      "official_value_bn": 0.0,
+      "source": "mock costings S10",
+      "basis": "in the baseline: statutory uprating"
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2027,
+      "official_value_bn": -0.007,
+      "source": "mock costings S11",
+      "basis": "spending; take-up as in the SCP forecast"
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2028,
+      "official_value_bn": -0.007,
+      "source": "mock costings S11",
+      "basis": "spending; take-up as in the SCP forecast"
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2027,
+      "official_value_bn": -0.005,
+      "source": "mock costings S12",
+      "basis": "spending; take-up as in the SCP forecast"
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2028,
+      "official_value_bn": -0.011,
+      "source": "mock costings S12",
+      "basis": "spending; take-up as in the SCP forecast"
+    },
+    {
+      "measure_id": "adp_changes",
+      "year": 2027,
+      "official_value_bn": 0.0,
+      "source": "mock costings S13",
+      "basis": "spending"
+    },
+    {
+      "measure_id": "adp_changes",
+      "year": 2028,
+      "official_value_bn": -0.012,
+      "source": "mock costings S13",
+      "basis": "spending"
+    },
+    {
+      "measure_id": "energy_payment_bands_a_d",
+      "year": 2027,
+      "official_value_bn": 0.0,
+      "source": "mock costings S14",
+      "basis": "spending; paid by 31 March 2027"
+    },
+    {
+      "measure_id": "energy_payment_bands_a_d",
+      "year": 2028,
+      "official_value_bn": 0.0,
+      "source": "mock costings S14",
+      "basis": "spending; paid by 31 March 2027"
+    },
+    {
+      "measure_id": "bus_fare_cap",
+      "year": 2027,
+      "official_value_bn": -0.018,
+      "source": "mock costings S15",
+      "basis": "spending"
+    },
+    {
+      "measure_id": "bus_fare_cap",
+      "year": 2028,
+      "official_value_bn": -0.019,
+      "source": "mock costings S15",
+      "basis": "spending"
+    }
+  ],
   "households": [
     {
       "id": "single_25k",
