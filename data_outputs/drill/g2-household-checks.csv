@@ -1,0 +1,8 @@
+measure_id,household,year,model_change_gbp,hand_change_gbp,hand_working,pass
+starter_basic_thresholds,single_45k,2027,8.96,8.96,"(4546-4103)x(20%-19%)=4.43 + (17989-17536)x(21%-20%)=4.53",PASS
+advanced_rate_plus_1p,single_100k,2027,-250.00,-250.00,"taxable 87430; (87430-62430)x1%=250",PASS
+scp_under_one_premium,lone_parent_under_one,2027,561.60,561.60,"(40.00-29.20)x52",PASS
+young_parent_top_up,lone_parent_under_one,2027,260.00,260.00,"10.00x26 weeks (1 Oct 2027 to 31 Mar 2028), parent 24 on SCP",PASS
+scottish_property_income_rates,custom: single 30k earnings + 10k property income,2027,-200.00,-200.00,"10000 taxable property income x 2p",PASS
+council_tax_freeze,single_25k,2027,0.00,n/a,"freeze acts on stored council_tax during data uprating; presets carry no council_tax input, so the household calculator cannot show it (national run only)",N/A
+lbtt_ads_increase,none,2027,,,"not in the household calculator (purchases modelled in data)",N/A

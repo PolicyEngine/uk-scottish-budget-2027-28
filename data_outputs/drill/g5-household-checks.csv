@@ -1,0 +1,4 @@
+measure_id,household,year,model_value_gbp,hand_value_gbp,hand_working,pass
+starter_basic_thresholds,single_45k (change vs current law),2027,0.16,0.16,"(4106-4103)x1% + (17549-17536)x1% = 0.03 + 0.13 (engine 0.1641 float32)",PASS
+scp_under_one_premium,lone_parent_under_one (SCP level),2027,1759.30,1759.30,"29.20x52 + 10.80x52x157/366, rounded once",PASS
+H1-H8 scoring rows,all,2027,data_outputs/drill/g5-engine-households.txt,hand-g5 (scoring sheet run 2),"income tax on corrected bands; H6 SCP 1759.30 + young parent 267.10 = engine 2026.41 (combined, float)",PASS 8/8 (H8 SCP reported 0 per household file; engine would award)
