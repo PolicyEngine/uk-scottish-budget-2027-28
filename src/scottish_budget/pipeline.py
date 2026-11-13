@@ -398,10 +398,6 @@ def combine(
     curve=None,
 ) -> tuple[dict, dict]:
     """results.json and its receipt from the partials and the registry."""
-    if with_households and (calculate is None or curve is None):
-        # The household rows and the curve run on the engine installed in
-        # this process, so it must be the build's too.
-        check_engine()
     partials = read_partials(out_dir)
     if not partials:
         raise CombineError(
@@ -451,6 +447,10 @@ def combine(
     engine = _engine_meta(
         {**partials, **({PACKAGE_ID: package} if package else {})}
     )
+    if with_households and (calculate is None or curve is None):
+        # The household rows and the curve run on the engine installed in
+        # this process, so it must be the build's too.
+        check_engine()
     status = "provisional" if provisional else "published"
     results = {
         "meta": {
