@@ -354,14 +354,15 @@ def household_rows(measures, calculate=None) -> list[dict]:
     """Each preset and its rest-of-UK twin, current law and with the
     measures (``household.calculate``; injectable for tests)."""
     from scottish_budget.household import calculate as engine_calculate
-    from scottish_budget.household import rest_of_uk_twin
+    from scottish_budget.household import rest_of_uk_twin, situation_for
 
     calculate = calculate or engine_calculate
     reforms = [m.reform for m in measures if m.calculator]
     rows = []
     for key, preset in presets().items():
         year = preset["year"]
-        situation = preset["situation"]
+        # A preset marked "claims": False does not claim UC or SCP.
+        situation = situation_for(preset)
         twin = rest_of_uk_twin(situation, year)
         base = calculate(situation, year)["household_net_income"]
         new = calculate(situation, year, reforms)["household_net_income"]

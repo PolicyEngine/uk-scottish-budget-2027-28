@@ -69,3 +69,10 @@ Nothing deploys from this repository yet: `deploy.yml` runs on manual dispatch o
 ## Basis
 
 State gross or net, cash or accrued, fiscal or calendar year, and static or behavioural once, on the Method tab. Most reconciliation gaps against official costings come from basis, not the model.
+
+### Gap reasons at G3
+
+- A gap over 10% against a costing that includes behaviour, or that is a grant to councils, is cause `basis`. Our figures are static and household-level; that costing is not. Do not call it take-up. On the last check, 7 of the 11 line-years over 10% were of this kind (María Juaristi, 13 November 2026).
+- Take-up or caseload is a reason only where the official costing has no behaviour in it. On that check this applied to two lines only: the Scottish Child Payment under-one premium and the young parent top-up. Record it with cause `data_calibration` and name take-up or caseload in the reason.
+- Before writing take-up or caseload, check what the build is calibrated to. Build `…-6f918b81` meets its 2025 targets for Scottish Child Payment spending, Scottish Universal Credit households with a child under one, and babies under one. Nothing targets young parents, so a young parent top-up gap can be caseload; an under-one premium gap on this build is less likely to be.
+- Household examples are not take-up evidence: hand-built households claim everything they are eligible for unless marked not claiming (`household.not_claiming`). Population runs use the stored take-up draws.

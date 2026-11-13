@@ -10,6 +10,15 @@ benefits stay. The input variable names are checked against the pinned
 release by tests/test_engine_households.py (run with the model extra).
 
 Every calculation runs on the forecast overlay, as the population runs do.
+
+Take-up: in a hand-built situation ``would_claim_uc`` and
+``would_claim_scp`` default to true, so a household gets Universal Credit
+and the Scottish Child Payment whenever it is eligible, even one the data
+say does not claim. A preset or call marked ``claims=False`` sets both
+inputs to false for every benefit unit and its members (``not_claiming``),
+which gives the
+right answer for such a household. Population runs use the stored take-up
+draws in the Microcosm file instead (María Juaristi, 13 November 2026).
 """
 
 import copy
@@ -17,6 +26,10 @@ import copy
 from scottish_budget.years import BUDGET_YEAR
 
 SCOTTISH_TAX_INPUT = "pays_scottish_income_tax"
+# Take-up inputs; both default to true in policyengine-uk. In 2.177.7
+# would_claim_uc is a benefit-unit input and would_claim_scp a person input.
+UC_CLAIM_INPUT = "would_claim_uc"
+SCP_CLAIM_INPUT = "would_claim_scp"
 
 # The full new State Pension in 2027-28: £250.70 a week (2.174.1, 2.177.7 and
 # 2.175.4; £250.71 on 2.151.0) times 52. G0 re-checks it against the pinned release
@@ -134,10 +147,47 @@ def presets(year: int = BUDGET_YEAR) -> dict[str, dict]:
             ),
         ),
     }
+    # Every preset claims what it is eligible for. A preset that does not
+    # claim sets "claims": False; situation_for() then applies not_claiming.
     return {
-        key: {"label": label, "year": year, "situation": situation}
+        key: {
+            "label": label,
+            "year": year,
+            "situation": situation,
+            "claims": True,
+        }
         for key, (label, situation) in {**single, **others}.items()
     }
+
+
+def not_claiming(
+    situation: dict, year: int = BUDGET_YEAR, benunits=None
+) -> dict:
+    """The same household with its benefit units not claiming UC or SCP.
+
+    Sets ``would_claim_uc`` to false on each named benefit unit (every one
+    by default) and ``would_claim_scp`` (a person input in 2.177.7) to
+    false on each of its members. Without this a hand-built household gets
+    both whenever it is eligible, because the inputs default to true.
+    """
+    out = copy.deepcopy(situation)
+    units = out.get("benunits") or {}
+    names = list(units) if benunits is None else list(benunits)
+    unknown = [n for n in names if n not in units]
+    if unknown:
+        raise KeyError(f"no benefit unit(s) {', '.join(unknown)}")
+    for name in names:
+        units[name][UC_CLAIM_INPUT] = {str(year): False}
+        for member in units[name].get("members", []):
+            out["people"][member][SCP_CLAIM_INPUT] = {str(year): False}
+    return out
+
+
+def situation_for(preset: dict) -> dict:
+    """A preset's situation, with its take-up flag applied."""
+    if preset.get("claims", True):
+        return preset["situation"]
+    return not_claiming(preset["situation"], preset["year"])
 
 
 def state_pension_amount(year: int = BUDGET_YEAR) -> float:
@@ -165,11 +215,15 @@ def combined_scenario(reforms=()):
     return scenario
 
 
-def calculate(situation: dict, year: int, reforms=()) -> dict[str, float]:
+def calculate(
+    situation: dict, year: int, reforms=(), claims: bool = True
+) -> dict[str, float]:
     """Net income and income tax for one situation (needs the model extra).
 
     ``reforms`` is a list of registry Reforms applied together, on the
-    forecast overlay. Check one preset by hand per coded measure at G2.
+    forecast overlay. ``claims=False`` marks a household that does not
+    claim: UC and SCP take-up are set false on every benefit unit
+    (``not_claiming``). Check one preset by hand per coded measure at G2.
     """
     from policyengine_uk import Simulation
 
@@ -177,6 +231,8 @@ def calculate(situation: dict, year: int, reforms=()) -> dict[str, float]:
 
     if not isinstance(reforms, (list, tuple)):
         reforms = (reforms,)
+    if not claims:
+        situation = not_claiming(situation, year)
     sim = Simulation(
         situation=situation,
         scenario=with_forecast(combined_scenario(reforms)),

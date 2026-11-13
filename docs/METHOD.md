@@ -44,6 +44,8 @@ Deciles are Scottish deciles of equivalised household net income: households in 
 
 Each example household has a twin with `pays_scottish_income_tax` set to False, so only the income tax schedule changes. The population comparison taxes every Scottish taxpayer on the rest-of-UK schedule in the same way.
 
+Example households claim every benefit they are eligible for: in a hand-built household `would_claim_uc` and `would_claim_scp` default to true. A household marked not claiming has both set to false (UC on its benefit unit, SCP on its members), so it gets neither. Population figures use the take-up draws stored in Microcosm instead. Gaps to official costings that include behaviour are basis gaps, not take-up (`docs/RUNBOOK.md`, Gap reasons at G3).
+
 ## Not modelled
 
 Air Departure Tax, non-domestic rates, behaviour in Land and Buildings Transaction Tax purchases, and spending other than cash payments to households. These are recorded with the official costing.
