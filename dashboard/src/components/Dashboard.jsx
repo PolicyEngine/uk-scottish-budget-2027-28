@@ -121,6 +121,7 @@ export default function Dashboard({ data }) {
                 versus={data.scotland_vs_rest_of_uk ?? []}
                 poverty={data.poverty ?? []}
                 placeholder={meta.placeholder}
+                label={meta.engine_label}
               />
               <div role="tablist" aria-label="Population impact" className="flex flex-wrap gap-2">
                 {SUBS.map((s) => (
@@ -141,7 +142,7 @@ export default function Dashboard({ data }) {
               <div role="tabpanel" id={`subpanel-${state.sub}`} aria-labelledby={`sub-${state.sub}`} className="space-y-6">
                 {state.sub === "finances" && (
                   <>
-                    <BudgetaryImpactChart measures={selected} years={meta.years} placeholder={meta.placeholder} />
+                    <BudgetaryImpactChart measures={selected} years={meta.years} placeholder={meta.placeholder} label={meta.engine_label} />
                     <OfficialComparison measures={measures} costings={data.official_costings ?? []} year={year.year} />
                   </>
                 )}
