@@ -117,13 +117,14 @@ MEASURES: tuple[Measure, ...] = (
             id="starter_basic_thresholds",
             name="Starter and basic rate thresholds raised",
             description=(
-                "Top of the starter band to £17,116 and top of the basic "
-                "band to £30,559 from April 2027."
+                "Top of the starter band to £16,676 and top of the basic "
+                "band to £30,119 from April 2027 (corrected 15:15: band "
+                "widths above the personal allowance up 3.5%)."
             ),
             parameter_changes={
-                **threshold_change(f"{SCOT_RATES}[1].threshold", _flat(4_546)),
+                **threshold_change(f"{SCOT_RATES}[1].threshold", _flat(4_106)),
                 **threshold_change(
-                    f"{SCOT_RATES}[2].threshold", _flat(17_989)
+                    f"{SCOT_RATES}[2].threshold", _flat(17_549)
                 ),
             },
             baseline_parameter_changes={
@@ -143,8 +144,8 @@ MEASURES: tuple[Measure, ...] = (
             "level, as the statement gives no 2028-29 value."
         ),
         internal_note=(
-            "Entered above the personal allowance: 17,116 - 12,570 = 4,546; "
-            "30,559 - 12,570 = 17,989. G3 re-base: custom baseline holds "
+            "Correction C1: entered above the personal allowance: 16,676 - "
+            "12,570 = 4,106; 30,119 - 12,570 = 17,549 (was 4,546 / 17,989). G3 re-base: custom baseline holds "
             "2026-27's 3,967 / 16,956; current law is 4,103 / 17,536."
         ),
         issues=(1,),
@@ -358,12 +359,13 @@ MEASURES: tuple[Measure, ...] = (
             name="Scottish Child Payment premium for children under one",
             description=(
                 "Scottish Child Payment of £40.00 a week in total for each "
-                "child under one from April 2027."
+                "child under one from 1 November 2027 (corrected 15:15)."
             ),
             parameter_changes={
                 **switch_change(f"{SCP_CONTRIB}.in_effect", _flat(True)),
                 **threshold_change(
-                    f"{SCP_CONTRIB}.under_one", _years(40.00, 40.80)
+                    f"{SCP_CONTRIB}.under_one",
+                    _years(round(29.20 + 10.80 * 157 / 366, 6), 40.80),
                 ),
             },
         ),
@@ -372,8 +374,9 @@ MEASURES: tuple[Measure, ...] = (
         likelihood="high",
         topic="social_security",
         basis_note=(
-            "Costed for a full year from April 2027; 2028-29 uses the "
-            "model's uprated amount."
+            "2027-28 counts the premium for 157 of 366 days, from "
+            "1 November 2027; 2028-29 a full year at the model's uprated "
+            "amount."
         ),
         internal_note=(
             "Existing contributed reform, off in the baseline; under_one is "
