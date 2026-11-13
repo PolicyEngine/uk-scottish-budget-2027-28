@@ -26,6 +26,7 @@ from scottish_budget import __version__
 from scottish_budget.data_build import DATA_BUILD, LABEL
 from scottish_budget.data_limits import blocking_limits
 from scottish_budget.engine import (
+    check_engine,
     git_identity,
     installed_versions,
     pinned_dataset,
@@ -313,6 +314,31 @@ def _engine_meta(partials: dict[str, dict]) -> dict:
         )
     versions_json, sha, name = pairs.pop()
     versions = json.loads(versions_json) or {}
+    # Agreeing with each other is not enough: partials are git-ignored and
+    # survive branch switches, so old runs on another engine and data pair
+    # would otherwise be published. Refuse anything but DATA_BUILD's pair.
+    expected = {
+        "dataset SHA-256": (sha, DATA_BUILD.sha256),
+        "policyengine-uk": (
+            versions.get("policyengine-uk"),
+            DATA_BUILD.engine,
+        ),
+        "policyengine-core": (
+            versions.get("policyengine-core"),
+            DATA_BUILD.core,
+        ),
+    }
+    wrong = [
+        f"{what} {got} (build wants {want})"
+        for what, (got, want) in expected.items()
+        if got != want
+    ]
+    if wrong:
+        raise CombineError(
+            f"The partials are not on build {DATA_BUILD.id} with "
+            f"policyengine-uk {DATA_BUILD.engine}: {'; '.join(wrong)}. "
+            "Delete them and re-run each measure on the pinned pair."
+        )
     provenance = next(iter(partials.values())).get("provenance") or {}
     return {
         "policyengine": versions.get("policyengine"),
@@ -372,6 +398,10 @@ def combine(
     curve=None,
 ) -> tuple[dict, dict]:
     """results.json and its receipt from the partials and the registry."""
+    if with_households and (calculate is None or curve is None):
+        # The household rows and the curve run on the engine installed in
+        # this process, so it must be the build's too.
+        check_engine()
     partials = read_partials(out_dir)
     if not partials:
         raise CombineError(

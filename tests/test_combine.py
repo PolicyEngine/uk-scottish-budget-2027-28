@@ -145,6 +145,78 @@ def test_mixed_engine_pairs_are_refused(day):
         pipeline.combine(provisional=True, out_dir=day, with_households=False)
 
 
+def _old_pair(measure_id, **changes):
+    """A partial from a 6.17.2-era run: policyengine-uk 2.174.1 on build
+    eeb6093e. The fields can be set one at a time."""
+    partial = _partial(measure_id)
+    sha = changes.get("sha", "0a9b77db" + "0" * 56)
+    partial["versions"]["policyengine-uk"] = changes.get("uk", "2.174.1")
+    partial["versions"]["policyengine-core"] = changes.get("core", "3.34.10")
+    partial["provenance"] = {
+        "runtime_dataset": changes.get("build", "microcosm-eeb6093e"),
+        "runtime_dataset_revision": changes.get("build", "microcosm-eeb6093e"),
+        "runtime_dataset_sha256": sha,
+    }
+    return partial
+
+
+def _write_all(day, make):
+    for measure_id in ("starter_basic_thresholds", "scp_increase"):
+        (day / f"{measure_id}.json").write_text(json.dumps(make(measure_id)))
+
+
+def test_partials_from_another_engine_and_data_pair_are_refused(day):
+    # They agree with each other, so only the DATA_BUILD check stops them.
+    _write_all(day, _old_pair)
+    with pytest.raises(pipeline.CombineError, match="not on build") as err:
+        pipeline.combine(provisional=True, out_dir=day, with_households=False)
+    message = str(err.value)
+    assert "2.174.1" in message and "0a9b77db" in message
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"sha": SHA, "build": BUILD},  # right file, old engine
+        {"uk": "2.177.7"},  # right engine, old file
+        {"sha": SHA, "build": BUILD, "uk": "2.177.7", "core": "3.34.0"},
+    ],
+)
+def test_any_one_field_off_the_build_is_refused(day, changes):
+    _write_all(day, lambda i: _old_pair(i, **changes))
+    with pytest.raises(pipeline.CombineError, match="not on build"):
+        pipeline.combine(provisional=True, out_dir=day, with_households=False)
+
+
+def test_partials_on_the_pinned_pair_are_accepted(day):
+    results, _ = pipeline.combine(
+        provisional=True, out_dir=day, with_households=False
+    )
+    assert results["meta"]["dataset_sha256"] == SHA
+    assert results["meta"]["policyengine_uk"] == "2.177.7"
+    assert results["meta"]["policyengine_core"] == "3.34.10"
+
+
+def test_household_rows_need_the_build_engine(day, monkeypatch):
+    from scottish_budget import engine
+
+    monkeypatch.setattr(engine, "installed_version", lambda name: "2.174.1")
+    with pytest.raises(engine.EngineMismatch):
+        pipeline.combine(provisional=True, out_dir=day)
+
+
+def test_injected_household_functions_skip_the_engine_check(day, monkeypatch):
+    from scottish_budget import engine
+
+    monkeypatch.setattr(engine, "installed_version", lambda name: "2.174.1")
+    pipeline.combine(
+        provisional=True,
+        out_dir=day,
+        calculate=fake_calculate,
+        curve=lambda y, r: [],
+    )
+
+
 def test_computable_measure_without_a_partial_is_refused(day):
     (day / "scp_increase.json").unlink()
     with pytest.raises(pipeline.CombineError, match="no partial"):
