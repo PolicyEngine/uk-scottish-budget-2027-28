@@ -4,7 +4,7 @@ A timed rehearsal of Scottish Budget day (3 December 2026) on a mock statement. 
 
 This file holds the plan only, and is the only copy of the clock and the packet hashes; the drill issue (#11) links here. It says nothing about the mock measures. The statement, documents, correction notice and answer key are held outside this repository by the drill owner and are released at the times below.
 
-The drill runs on a local run branch cut from the head of `bump-policyengine-6.17.2` (PR #15, which is stacked on the template branch `template-dashboard`, PR #10, and moves the engine to policyengine 6.17.2), so it has the pipeline, the page, CI and the new pin. Before G0 the integrator cuts it, merges `drill-plan` into it for this file and the drill CSVs, and records the start SHA and the bump-branch SHA it was cut from. Drills never merge, so the unmerged bump branch is allowed as the base.
+The drill runs on a local run branch cut from the head of `engine-2.177.7-microcosm-9e18f010` (PR #19, stacked on `bump-policyengine-6.17.2`, PR #15, which is stacked on the template branch `template-dashboard`, PR #10). PR #19 pins policyengine-uk 2.177.7 directly and builds the microsimulation without policyengine.py, so the run branch has the pipeline, the page, CI and the new pin. Before G0 the integrator cuts it, merges `drill-plan` into it for this file and the drill CSVs, and records the start SHA and the engine-branch SHA it was cut from. Drills never merge, so the unmerged engine branch is allowed as the base. (Changed 13 November: the drill no longer runs on PR #15's policyengine 6.17.2 pair.)
 
 ## Clock
 
@@ -22,13 +22,13 @@ The drill runs on a local run branch cut from the head of `bump-policyengine-6.1
 
 ### Engine and data pair
 
-The drill runs on the pair locked on the run branch: policyengine 6.17.2, policyengine-uk 2.174.1, policyengine-core 3.33.3, Microcosm `microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e` (SHA-256 `0a9b77db1c0dee2693cb2d47bad68da34cb662916eee4829942bcd45de581f25`, the build 6.17.2 certifies), on the OBR October 2026 forecast overlay (2.174.1 already ships most of that forecast; see PR #15). This holds whatever is released before 13 November. Figures from any pair not recorded at G0 are not scored.
+The drill runs on the pair locked on the run branch: policyengine-uk 2.177.7, policyengine-core 3.34.10 (no policyengine.py), Microcosm build `uk-frs-calibration-attempt-20261110T204756Z-9e18f010` (SHA-256 `adb6204d0af5e08a42cccec81250ce116518687f964e31c654a17d658b3416e8`, the build made on 2.177.7), on the OBR October 2026 forecast overlay (see PR #19). No policyengine.py release covers this pair, so every figure carries the label "build uk-frs-calibration-attempt-20261110T204756Z-9e18f010, policyengine-uk 2.177.7, not in a policyengine.py release". This label replaces "unvalidated under this engine"; wherever the answer key names that label, this one counts. Figures from any pair not recorded at G0 are not scored.
 
 ### Gates
 
 Every heavy command below (a `generate`, a production build) runs under the lock with at least 14 GB free, as in `docs/RUNBOOK.md` ("Heavy runs"), one measure per process.
 
-- **G0, freeze record (by 13:30).** `uv run --extra model scottish-budget freeze`, pasted into the clock table as a PR comment: start SHA, clean tree, policyengine, policyengine-uk and core versions, bundle dataset name and SHA-256. Every figure carries the certified pair above, or the label "unvalidated under this engine".
+- **G0, freeze record (by 13:30).** `uv run --extra model scottish-budget freeze`, pasted into the clock table as a PR comment: start SHA, clean tree, policyengine-uk and core versions, `pinned_dataset` (build id) and `engine_matches_build: true`; add `--dataset PATH` on a named file so the record carries its SHA-256, which must be the build's. Every figure carries the label "build uk-frs-calibration-attempt-20261110T204756Z-9e18f010, policyengine-uk 2.177.7, not in a policyengine.py release".
 - **G1, coverage ledger (14:00–14:10).** One line per statement item in `data_inputs/drill/coverage-ledger.csv`, each with a route and a cause class (below). Items already in the baseline are flagged here, not coded. Kept measures get their values and `placeholder=False` in `reforms.py`; registry entries the statement does not contain are deleted.
 - **G2, provisional numbers (by 14:30).** For each coded measure: `uv run --extra model scottish-budget generate --reforms <id>`; then `generate --package provisional` and `scottish-budget combine --provisional`. Measures are not signed off at G2 (`publish` stays False); the file says "provisional". One hand-checked household per coded measure, starting from `data_inputs/household_fixtures/`.
 - **G3, re-base and reconcile (14:40–15:10).** Re-base to the baseline the costings use, fill `data_inputs/drill/reconciliation.csv` and run `uv run scottish-budget reconcile --official data_inputs/drill/reconciliation.csv` until it exits 0: every gap over 10% has a written reason and a cause class. Then set `publish=True` on each reconciled measure. Update ledger causes after G3.
@@ -116,17 +116,19 @@ Also log:
 
 ## Packet hashes (SHA-256)
 
+Updated 13 November for the engine change: the drill owner amended three owner and key files (`00-owner-notes.md`, `04-answer-key.md`, `04-answer-key-ledger.csv`); the earlier versions are archived by the owner. The other nine hashes are unchanged.
+
 | File | Release | SHA-256 |
 |---|---|---|
-| `00-owner-notes.md` | drill owner only | `5d4002a72ae27abe451a1d959ec464e2d973674f8fb0d82b3d4b5def9ffb9845` |
+| `00-owner-notes.md` | drill owner only | `05246c6000262a5524bd835c570bcf1ebfa7a462c4409c0eb4cd2623cb64ae4d` |
 | `01-statement.md` | 14:00 | `a0ed4bb0890dbc8ec03da4e469971255797465a5377db08e73c4181f6fc08c23` |
 | `02-documents.md` | 14:40 | `5f11cdfccf9b0009c75865cd1459b329c326c9591e415cca8443f71a95c281ae` |
 | `02-costings.csv` | 14:40 | `949ee0de8221e3664b5875a9539714f5f8321dcb842641b3fca856e007fdcd1d` |
 | `02-households.csv` | 14:40 | `cf3681da743f5437885592e2ae4c1b2608a77a5cf8e99a4efae226768d27cf76` |
 | `02-scoring-sheet.csv` | 14:40 | `e50340aed1246075088a0622376f2b875bc17f1d920c4ab3f3b855d676f16093` |
 | `03-correction-notice.md` | 15:15 | `867bacfbc828f745d702d1cbbedf6d178348859b97eddacc342fca0deebd2b4a` |
-| `04-answer-key.md` | 16:00 | `1bc73f97b5a11c70c9bd26e36757416b544615c0aa5f633bd6d41dceff527647` |
+| `04-answer-key.md` | 16:00 | `cf9e20f07b11b65983603360ef009a358603863deaba3024309aad0837e37e2a` |
 | `04-answer-key-households.csv` | 16:00 | `9e96679ddfd2a5f0b2aa6a18e3b3ef6538353d3429c3a61637179b8399e0b224` |
-| `04-answer-key-ledger.csv` | 16:00 | `9adb22fa76943300e26a3dea4c9920eb63053251e60989b5656452b7d2869970` |
+| `04-answer-key-ledger.csv` | 16:00 | `9112e1212639ba7d6f6ed6ea537180137d592a801bca2b45493f66673bf2e9d9` |
 | `generate_household_key.py` | 16:00 | `01871a969b2e75e38a9e99ab046b196c0db7e3e1877c39888ac9f5c1bea84c80` |
 | `generate_national_key.py` | 16:00 | `c684890d3ddc6d6c510e301db6c97f863ec9d61e7e146033dbe07554cada9718` |
