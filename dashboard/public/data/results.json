@@ -1,14 +1,15 @@
 {
   "meta": {
-    "status": "pre-release template",
-    "placeholder": true,
-    "notice": "Pre-release template: placeholder figures. Not a costing of the Scottish Budget 2027-28.",
+    "status": "provisional",
+    "placeholder": false,
+    "notice": "Provisional figures, not signed off.",
     "generated_by": "scottish_budget 0.1.0",
     "policyengine": null,
     "policyengine_uk": "2.177.7",
+    "policyengine_core": "3.34.10",
     "dataset": "uk-frs-calibration-attempt-20261112T133744Z-6f918b81",
+    "dataset_sha256": "e268e3af7932784ad4471f008097a5acc6c3c5bc15c4c54fbb5a489b2a0ac9ae",
     "engine_label": "build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release",
-    "dataset_sha256": null,
     "forecast": {
       "vintage": "OBR EFO October 2026",
       "source_url": "https://obr.uk/efo/economic-and-fiscal-outlook-october-2026/"
@@ -35,7 +36,7 @@
     {
       "id": "starter_basic_thresholds",
       "name": "Starter and basic rate thresholds raised",
-      "description": "Top of the starter band to £17,116 and top of the basic band to £30,559, both held in 2028-29.",
+      "description": "Top of the starter band to £17,116 and top of the basic band to £30,559 from April 2027.",
       "route": "dashboard-param",
       "route_label": "Modelled",
       "cause": "parameter",
@@ -46,29 +47,29 @@
       "issues": [
         1
       ],
-      "status": "placeholder",
+      "status": "provisional",
       "reason": null,
-      "basis_note": "Measured against thresholds uprated by CPI on the October 2026 forecast.",
+      "basis_note": "Measured against thresholds uprated by CPI on the October 2026 forecast. 2028-29 assumes the thresholds stay at the 2027-28 level, as the statement gives no 2028-29 value.",
       "first_year": null,
-      "placeholder": true,
+      "placeholder": false,
       "publish": false,
       "budgetary_impact": [
         {
           "year": 2027,
           "label": "2027-28",
-          "value_bn": -0.23
+          "value_bn": -0.019
         },
         {
           "year": 2028,
           "label": "2028-29",
-          "value_bn": -0.21
+          "value_bn": -0.011
         }
       ]
     },
     {
       "id": "upper_thresholds_frozen",
-      "name": "Higher, advanced and top thresholds frozen",
-      "description": "The higher, advanced and top rate thresholds stay at £43,662, £75,000 and £125,140 to 2028-29.",
+      "name": "Higher, advanced and top thresholds held",
+      "description": "The higher, advanced and top rate thresholds stay at £43,662, £75,000 and £125,140 (rates start at £43,663, £75,001 and £125,141) in 2027-28 and 2028-29.",
       "route": "ledger",
       "route_label": "Recorded, not modelled",
       "cause": "baseline_mismatch",
@@ -81,45 +82,14 @@
       "reason": null,
       "basis_note": "Already current law, so it costs nothing against the baseline.",
       "first_year": null,
-      "placeholder": true,
+      "placeholder": false,
       "publish": false,
       "budgetary_impact": null
     },
     {
-      "id": "new_band_before_higher",
-      "name": "New band before the higher rate",
-      "description": "A new band between the intermediate and higher rates.",
-      "route": "dashboard-structural",
-      "route_label": "Modelled",
-      "cause": "formula",
-      "topic": "income_tax",
-      "likelihood": "low",
-      "in_baseline": false,
-      "calculator": true,
-      "issues": [],
-      "status": "placeholder",
-      "reason": null,
-      "basis_note": null,
-      "first_year": null,
-      "placeholder": true,
-      "publish": false,
-      "budgetary_impact": [
-        {
-          "year": 2027,
-          "label": "2027-28",
-          "value_bn": 0.13
-        },
-        {
-          "year": 2028,
-          "label": "2028-29",
-          "value_bn": 0.19
-        }
-      ]
-    },
-    {
-      "id": "intermediate_rate_plus_1p",
-      "name": "Intermediate rate up 1p",
-      "description": "Intermediate rate from 21% to 22%.",
+      "id": "advanced_rate_plus_1p",
+      "name": "Advanced rate up 1p",
+      "description": "Advanced rate from 45% to 46% from April 2027.",
       "route": "dashboard-param",
       "route_label": "Modelled",
       "cause": "parameter",
@@ -130,29 +100,29 @@
       "issues": [
         7
       ],
-      "status": "placeholder",
+      "status": "provisional",
       "reason": null,
-      "basis_note": "Static. Official costings include behaviour, so expect this figure to be larger.",
+      "basis_note": "Static: no behavioural response. Costings that include behaviour will be smaller.",
       "first_year": null,
-      "placeholder": true,
+      "placeholder": false,
       "publish": false,
       "budgetary_impact": [
         {
           "year": 2027,
           "label": "2027-28",
-          "value_bn": 0.07
+          "value_bn": 0.059
         },
         {
           "year": 2028,
           "label": "2028-29",
-          "value_bn": 0.21
+          "value_bn": 0.064
         }
       ]
     },
     {
       "id": "scottish_property_income_rates",
       "name": "Scottish property income rates",
-      "description": "Rates on property income set 2p above the main Scottish rates from 2027-28.",
+      "description": "Property income of Scottish taxpayers taxed at each Scottish rate plus 2p from April 2027.",
       "route": "dashboard-structural",
       "route_label": "Modelled",
       "cause": "formula",
@@ -163,124 +133,100 @@
       "issues": [
         2
       ],
-      "status": "placeholder",
+      "status": "provisional",
       "reason": null,
       "basis_note": null,
       "first_year": null,
-      "placeholder": true,
+      "placeholder": false,
       "publish": false,
       "budgetary_impact": [
         {
           "year": 2027,
           "label": "2027-28",
-          "value_bn": 0.06
+          "value_bn": 0.047
         },
         {
           "year": 2028,
           "label": "2028-29",
-          "value_bn": 0.24
+          "value_bn": 0.048
         }
       ]
     },
     {
-      "id": "scp_increase",
-      "name": "Scottish Child Payment raised",
-      "description": "Scottish Child Payment of £30.00 a week in 2027-28, uprated in 2028-29.",
+      "id": "lbtt_ads_increase",
+      "name": "Additional Dwelling Supplement raised",
+      "description": "Additional Dwelling Supplement on second homes and buy-to-let purchases from 8% to 10%, from 4 December 2026.",
       "route": "dashboard-param",
       "route_label": "Modelled",
       "cause": "parameter",
-      "topic": "social_security",
+      "topic": "property_tax",
+      "likelihood": "low",
+      "in_baseline": false,
+      "calculator": false,
+      "issues": [],
+      "status": "provisional",
+      "reason": null,
+      "basis_note": "Static: the number of purchases does not change. Purchases are modelled, not observed. The part of 2026-27 from 4 December 2026 is not costed here.",
+      "first_year": null,
+      "placeholder": false,
+      "publish": false,
+      "budgetary_impact": [
+        {
+          "year": 2027,
+          "label": "2027-28",
+          "value_bn": 0.045
+        },
+        {
+          "year": 2028,
+          "label": "2028-29",
+          "value_bn": 0.046
+        }
+      ]
+    },
+    {
+      "id": "non_domestic_rates",
+      "name": "Non-domestic rates held",
+      "description": "Basic, intermediate and higher property rates held at 48.1p, 53.5p and 54.8p.",
+      "route": "ledger",
+      "route_label": "Recorded, not modelled",
+      "cause": "coverage",
+      "topic": "other",
       "likelihood": "medium",
       "in_baseline": false,
-      "calculator": true,
+      "calculator": false,
       "issues": [],
-      "status": "placeholder",
+      "status": "ledger",
       "reason": null,
-      "basis_note": "Measured against CPI uprating to £29.20 a week, which is already current law.",
+      "basis_note": "A business tax, outside the model; the official costing is recorded.",
       "first_year": null,
-      "placeholder": true,
+      "placeholder": false,
       "publish": false,
-      "budgetary_impact": [
-        {
-          "year": 2027,
-          "label": "2027-28",
-          "value_bn": -0.22
-        },
-        {
-          "year": 2028,
-          "label": "2028-29",
-          "value_bn": -0.18
-        }
-      ]
+      "budgetary_impact": null
     },
     {
-      "id": "scp_under_one_premium",
-      "name": "Scottish Child Payment premium for children under one",
-      "description": "£40 a week for each child under one from 2027-28, uprated in 2028-29.",
-      "route": "dashboard-param",
-      "route_label": "Modelled",
-      "cause": "timing_fiscal_calendar",
-      "topic": "social_security",
-      "likelihood": "high",
-      "in_baseline": false,
-      "calculator": true,
-      "issues": [],
-      "status": "placeholder",
-      "reason": null,
-      "basis_note": "Costed for a full year from April 2027.",
-      "first_year": null,
-      "placeholder": true,
-      "publish": false,
-      "budgetary_impact": [
-        {
-          "year": 2027,
-          "label": "2027-28",
-          "value_bn": -0.11
-        },
-        {
-          "year": 2028,
-          "label": "2028-29",
-          "value_bn": -0.13
-        }
-      ]
-    },
-    {
-      "id": "energy_payment_bands_a_d",
-      "name": "£100 payment for homes in council tax Bands A to D",
-      "description": "A one-off £100 for each Scottish household in Bands A to D.",
-      "route": "dashboard-structural",
-      "route_label": "Modelled",
+      "id": "air_departure_tax",
+      "name": "Air Departure Tax rates",
+      "description": "Air Departure Tax rates for 2027-28 match the UK's Air Passenger Duty.",
+      "route": "ledger",
+      "route_label": "Recorded, not modelled",
       "cause": "coverage",
-      "topic": "council_tax",
-      "likelihood": "high",
+      "topic": "other",
+      "likelihood": "medium",
       "in_baseline": false,
-      "calculator": true,
-      "issues": [
-        3
-      ],
-      "status": "placeholder",
+      "calculator": false,
+      "issues": [],
+      "status": "ledger",
       "reason": null,
-      "basis_note": "Counted in 2027-28; the tax year is to be confirmed.",
+      "basis_note": "Not a household tax in the model; the official costing is recorded.",
       "first_year": null,
-      "placeholder": true,
+      "placeholder": false,
       "publish": false,
-      "budgetary_impact": [
-        {
-          "year": 2027,
-          "label": "2027-28",
-          "value_bn": -0.09
-        },
-        {
-          "year": 2028,
-          "label": "2028-29",
-          "value_bn": -0.3
-        }
-      ]
+      "budgetary_impact": null
     },
     {
       "id": "council_tax_freeze",
       "name": "Council tax freeze",
-      "description": "Council tax bills held flat in cash terms in 2027-28.",
+      "description": "Council tax bills held at 2026-27 levels in 2027-28.",
       "route": "dashboard-structural",
       "route_label": "Modelled",
       "cause": "data_calibration",
@@ -291,29 +237,29 @@
       "issues": [
         4
       ],
-      "status": "placeholder",
+      "status": "provisional",
       "reason": null,
-      "basis_note": "Council tax is a cost to councils; any Scottish Government funding to councils for the freeze is not modelled.",
+      "basis_note": "Council tax is a cost to councils; the Scottish Government's funding to councils for the freeze is not modelled. Bills grow as forecast from the frozen level in 2028-29.",
       "first_year": null,
-      "placeholder": true,
+      "placeholder": false,
       "publish": false,
       "budgetary_impact": [
         {
           "year": 2027,
           "label": "2027-28",
-          "value_bn": -0.18
+          "value_bn": -0.132
         },
         {
           "year": 2028,
           "label": "2028-29",
-          "value_bn": -0.17
+          "value_bn": -0.137
         }
       ]
     },
     {
       "id": "council_tax_bands_i_j",
       "name": "Council tax Bands I and J",
-      "description": "New bands for homes worth £1m to £2m and over £2m, from April 2028.",
+      "description": "New bands from April 2028: Band I for homes over £1m at 3.00 times Band D, Band J over £2m at 3.50 times.",
       "route": "not-computable",
       "route_label": "Not computable",
       "cause": "coverage",
@@ -328,48 +274,98 @@
       "reason": "Bands I and J apply from 2028-29. Scottish home values in the data are not revalued from sale prices, no Scottish home in the data is worth over £2m and the model has no Band J, so the new bands cannot be costed.",
       "basis_note": null,
       "first_year": 2028,
-      "placeholder": true,
+      "placeholder": false,
       "publish": false,
       "budgetary_impact": null
     },
     {
-      "id": "carer_supplement_increase",
-      "name": "Scottish Carer Supplement raised",
-      "description": "Carer Supplement of £12.50 in 2027-28, uprated in 2028-29.",
-      "route": "dashboard-param",
-      "route_label": "Modelled",
+      "id": "scottish_benefits_uprating",
+      "name": "Scottish benefits uprated by 3.5%",
+      "description": "Scottish benefits up 3.5% from April 2027: Scottish Child Payment £29.20, Carer Support Payment £89.50 and Scottish Carer Supplement £12.10 a week.",
+      "route": "ledger",
+      "route_label": "Recorded, not modelled",
       "cause": "baseline_mismatch",
       "topic": "social_security",
-      "likelihood": "medium",
+      "likelihood": "high",
+      "in_baseline": true,
+      "calculator": false,
+      "issues": [],
+      "status": "ledger",
+      "reason": null,
+      "basis_note": "Already current law, so it costs nothing against the baseline.",
+      "first_year": null,
+      "placeholder": false,
+      "publish": false,
+      "budgetary_impact": null
+    },
+    {
+      "id": "scp_under_one_premium",
+      "name": "Scottish Child Payment premium for children under one",
+      "description": "Scottish Child Payment of £40.00 a week in total for each child under one from April 2027.",
+      "route": "dashboard-param",
+      "route_label": "Modelled",
+      "cause": "parameter",
+      "topic": "social_security",
+      "likelihood": "high",
       "in_baseline": false,
       "calculator": true,
-      "issues": [
-        1,
-        6
-      ],
-      "status": "placeholder",
+      "issues": [],
+      "status": "provisional",
       "reason": null,
-      "basis_note": "The current-law supplement depends on the model release; the Methodology tab names it.",
+      "basis_note": "Costed for a full year from April 2027; 2028-29 uses the model's uprated amount.",
       "first_year": null,
-      "placeholder": true,
+      "placeholder": false,
       "publish": false,
       "budgetary_impact": [
         {
           "year": 2027,
           "label": "2027-28",
-          "value_bn": -0.06
+          "value_bn": -0.009
         },
         {
           "year": 2028,
           "label": "2028-29",
-          "value_bn": -0.19
+          "value_bn": -0.008
+        }
+      ]
+    },
+    {
+      "id": "young_parent_top_up",
+      "name": "Young parent payment",
+      "description": "£10.00 a week per family from 1 October 2027 for families receiving Scottish Child Payment with a parent under 25.",
+      "route": "dashboard-structural",
+      "route_label": "Modelled",
+      "cause": "formula",
+      "topic": "social_security",
+      "likelihood": "low",
+      "in_baseline": false,
+      "calculator": true,
+      "issues": [
+        6
+      ],
+      "status": "provisional",
+      "reason": null,
+      "basis_note": "2027-28 counts 26 weeks, from 1 October 2027; 2028-29 a full year.",
+      "first_year": null,
+      "placeholder": false,
+      "publish": false,
+      "budgetary_impact": [
+        {
+          "year": 2027,
+          "label": "2027-28",
+          "value_bn": -0.003
+        },
+        {
+          "year": 2028,
+          "label": "2028-29",
+          "value_bn": -0.006
         }
       ]
     },
     {
       "id": "adp_changes",
-      "name": "Adult Disability Payment changes",
-      "description": "Changes to Adult Disability Payment eligibility.",
+      "name": "Adult Disability Payment mobility descriptors",
+      "description": "Changes to the mobility component descriptors from April 2028.",
       "route": "not-computable",
       "route_label": "Not computable",
       "cause": "coverage",
@@ -383,112 +379,37 @@
       "status": "not-computable",
       "reason": "Adult Disability Payment is carried as PIP; a change to ADP rules cannot be applied to the data.",
       "basis_note": null,
-      "first_year": null,
-      "placeholder": true,
+      "first_year": 2028,
+      "placeholder": false,
       "publish": false,
       "budgetary_impact": null
     },
     {
-      "id": "young_parent_top_up",
-      "name": "Top-up for young parents on Universal Credit",
-      "description": "A weekly top-up for Universal Credit families with a parent under 25.",
-      "route": "dashboard-structural",
-      "route_label": "Modelled",
-      "cause": "formula",
-      "topic": "social_security",
-      "likelihood": "low",
-      "in_baseline": false,
-      "calculator": true,
-      "issues": [
-        6
-      ],
-      "status": "placeholder",
-      "reason": null,
-      "basis_note": null,
-      "first_year": null,
-      "placeholder": true,
-      "publish": false,
-      "budgetary_impact": [
-        {
-          "year": 2027,
-          "label": "2027-28",
-          "value_bn": -0.06
-        },
-        {
-          "year": 2028,
-          "label": "2028-29",
-          "value_bn": -0.25
-        }
-      ]
-    },
-    {
-      "id": "benefit_cap_mitigation",
-      "name": "Benefit cap mitigation",
-      "description": "Payments that make up the benefit cap reduction for capped families.",
-      "route": "dashboard-structural",
-      "route_label": "Modelled",
-      "cause": "formula",
-      "topic": "social_security",
-      "likelihood": "low",
-      "in_baseline": false,
-      "calculator": true,
-      "issues": [
-        6
-      ],
-      "status": "placeholder",
-      "reason": null,
-      "basis_note": "Full take-up assumed.",
-      "first_year": null,
-      "placeholder": true,
-      "publish": false,
-      "budgetary_impact": [
-        {
-          "year": 2027,
-          "label": "2027-28",
-          "value_bn": -0.15
-        },
-        {
-          "year": 2028,
-          "label": "2028-29",
-          "value_bn": -0.19
-        }
-      ]
-    },
-    {
-      "id": "lbtt_ads_increase",
-      "name": "Additional Dwelling Supplement raised",
-      "description": "Additional Dwelling Supplement on second homes and buy-to-let purchases from 8% to 10%.",
-      "route": "dashboard-param",
-      "route_label": "Modelled",
-      "cause": "data_calibration",
-      "topic": "property_tax",
-      "likelihood": "low",
+      "id": "energy_payment_bands_a_d",
+      "name": "£100 payment for homes in council tax Bands A to D",
+      "description": "A one-off £100 towards energy bills for each household in Bands A to D, paid by 31 March 2027.",
+      "route": "ledger",
+      "route_label": "Recorded, not modelled",
+      "cause": "timing_fiscal_calendar",
+      "topic": "council_tax",
+      "likelihood": "high",
       "in_baseline": false,
       "calculator": false,
-      "issues": [],
-      "status": "placeholder",
+      "issues": [
+        3
+      ],
+      "status": "ledger",
       "reason": null,
-      "basis_note": "Static: the number of purchases does not change. Purchases are modelled, not observed.",
+      "basis_note": "Paid by 31 March 2027, so it falls in 2026-27, before the years scored here (2027-28 and 2028-29); the official costing is recorded.",
       "first_year": null,
-      "placeholder": true,
+      "placeholder": false,
       "publish": false,
-      "budgetary_impact": [
-        {
-          "year": 2027,
-          "label": "2027-28",
-          "value_bn": 0.27
-        },
-        {
-          "year": 2028,
-          "label": "2028-29",
-          "value_bn": 0.15
-        }
-      ]
+      "budgetary_impact": null
     },
     {
-      "id": "air_departure_tax",
-      "name": "Air Departure Tax rates",
-      "description": "Rates of Air Departure Tax on flights from Scotland.",
+      "id": "bus_fare_cap",
+      "name": "£2 bus fare cap across Scotland",
+      "description": "The £2 single bus fare cap extended across Scotland from 1 June 2027.",
       "route": "ledger",
       "route_label": "Recorded, not modelled",
       "cause": "coverage",
@@ -499,29 +420,9 @@
       "issues": [],
       "status": "ledger",
       "reason": null,
-      "basis_note": "Not a household tax in the model; the official costing is recorded.",
+      "basis_note": "Spending, outside the model; the official costing is recorded.",
       "first_year": null,
-      "placeholder": true,
-      "publish": false,
-      "budgetary_impact": null
-    },
-    {
-      "id": "non_domestic_rates",
-      "name": "Non-domestic rates poundage and reliefs",
-      "description": "Business rates poundage and reliefs.",
-      "route": "ledger",
-      "route_label": "Recorded, not modelled",
-      "cause": "coverage",
-      "topic": "other",
-      "likelihood": "medium",
-      "in_baseline": false,
-      "calculator": false,
-      "issues": [],
-      "status": "ledger",
-      "reason": null,
-      "basis_note": "A business tax, outside the model; the official costing is recorded.",
-      "first_year": null,
-      "placeholder": true,
+      "placeholder": false,
       "publish": false,
       "budgetary_impact": null
     }
@@ -531,2013 +432,2469 @@
       "measure_id": "starter_basic_thresholds",
       "year": 2027,
       "decile": 1,
-      "avg_change_gbp": 38.75,
-      "pct_change": 0.097,
-      "n_records": 700
+      "avg_change_gbp": 1.07,
+      "pct_change": 0.006,
+      "n_records": 1125
     },
     {
       "measure_id": "starter_basic_thresholds",
       "year": 2027,
       "decile": 2,
-      "avg_change_gbp": 42.75,
-      "pct_change": 0.107,
-      "n_records": 700
+      "avg_change_gbp": 2.65,
+      "pct_change": 0.008,
+      "n_records": 664
     },
     {
       "measure_id": "starter_basic_thresholds",
       "year": 2027,
       "decile": 3,
-      "avg_change_gbp": 4.0,
-      "pct_change": 0.01,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2027,
-      "decile": 4,
-      "avg_change_gbp": 6.5,
-      "pct_change": 0.016,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2027,
-      "decile": 5,
-      "avg_change_gbp": 12.75,
-      "pct_change": 0.032,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2027,
-      "decile": 6,
-      "avg_change_gbp": 42.0,
-      "pct_change": 0.105,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2027,
-      "decile": 7,
-      "avg_change_gbp": 34.5,
-      "pct_change": 0.086,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2027,
-      "decile": 8,
-      "avg_change_gbp": 35.75,
-      "pct_change": 0.089,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2027,
-      "decile": 9,
-      "avg_change_gbp": 1.75,
-      "pct_change": 0.004,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2027,
-      "decile": 10,
-      "avg_change_gbp": 17.5,
-      "pct_change": 0.044,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2028,
-      "decile": 1,
-      "avg_change_gbp": 13.0,
-      "pct_change": 0.033,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2028,
-      "decile": 2,
-      "avg_change_gbp": 15.75,
-      "pct_change": 0.039,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2028,
-      "decile": 3,
-      "avg_change_gbp": 5.5,
-      "pct_change": 0.014,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2028,
-      "decile": 4,
-      "avg_change_gbp": 3.5,
+      "avg_change_gbp": 3.45,
       "pct_change": 0.009,
-      "n_records": 700
+      "n_records": 621
     },
     {
       "measure_id": "starter_basic_thresholds",
-      "year": 2028,
-      "decile": 5,
-      "avg_change_gbp": 31.0,
-      "pct_change": 0.077,
-      "n_records": 700
+      "year": 2027,
+      "decile": 4,
+      "avg_change_gbp": 6.02,
+      "pct_change": 0.013,
+      "n_records": 461
     },
     {
       "measure_id": "starter_basic_thresholds",
-      "year": 2028,
-      "decile": 6,
-      "avg_change_gbp": 31.0,
-      "pct_change": 0.077,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2028,
-      "decile": 7,
-      "avg_change_gbp": 34.25,
-      "pct_change": 0.086,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2028,
-      "decile": 8,
-      "avg_change_gbp": 7.25,
-      "pct_change": 0.018,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2028,
-      "decile": 9,
-      "avg_change_gbp": 10.0,
-      "pct_change": 0.025,
-      "n_records": 700
-    },
-    {
-      "measure_id": "starter_basic_thresholds",
-      "year": 2028,
-      "decile": 10,
-      "avg_change_gbp": 33.25,
-      "pct_change": 0.083,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2027,
-      "decile": 1,
-      "avg_change_gbp": -16.75,
-      "pct_change": -0.042,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2027,
-      "decile": 2,
-      "avg_change_gbp": -13.5,
-      "pct_change": -0.034,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2027,
-      "decile": 3,
-      "avg_change_gbp": -46.75,
-      "pct_change": -0.117,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2027,
-      "decile": 4,
-      "avg_change_gbp": -21.75,
-      "pct_change": -0.054,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2027,
-      "decile": 5,
-      "avg_change_gbp": -12.75,
-      "pct_change": -0.032,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2027,
-      "decile": 6,
-      "avg_change_gbp": -38.25,
-      "pct_change": -0.096,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2027,
-      "decile": 7,
-      "avg_change_gbp": -43.5,
-      "pct_change": -0.109,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2027,
-      "decile": 8,
-      "avg_change_gbp": -22.25,
-      "pct_change": -0.056,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2027,
-      "decile": 9,
-      "avg_change_gbp": -22.5,
-      "pct_change": -0.056,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2027,
-      "decile": 10,
-      "avg_change_gbp": -11.25,
-      "pct_change": -0.028,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2028,
-      "decile": 1,
-      "avg_change_gbp": -3.0,
-      "pct_change": -0.007,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2028,
-      "decile": 2,
-      "avg_change_gbp": -25.5,
-      "pct_change": -0.064,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2028,
-      "decile": 3,
-      "avg_change_gbp": -6.5,
-      "pct_change": -0.016,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2028,
-      "decile": 4,
-      "avg_change_gbp": -45.25,
-      "pct_change": -0.113,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2028,
-      "decile": 5,
-      "avg_change_gbp": -15.75,
-      "pct_change": -0.039,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2028,
-      "decile": 6,
-      "avg_change_gbp": -19.75,
-      "pct_change": -0.049,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2028,
-      "decile": 7,
-      "avg_change_gbp": -45.0,
-      "pct_change": -0.113,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2028,
-      "decile": 8,
-      "avg_change_gbp": -31.75,
-      "pct_change": -0.079,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2028,
-      "decile": 9,
-      "avg_change_gbp": -25.5,
-      "pct_change": -0.064,
-      "n_records": 700
-    },
-    {
-      "measure_id": "new_band_before_higher",
-      "year": 2028,
-      "decile": 10,
-      "avg_change_gbp": -38.5,
-      "pct_change": -0.096,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2027,
-      "decile": 1,
-      "avg_change_gbp": -36.25,
-      "pct_change": -0.091,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2027,
-      "decile": 2,
-      "avg_change_gbp": -47.25,
-      "pct_change": -0.118,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2027,
-      "decile": 3,
-      "avg_change_gbp": -34.25,
-      "pct_change": -0.086,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2027,
-      "decile": 4,
-      "avg_change_gbp": -12.75,
-      "pct_change": -0.032,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2027,
-      "decile": 5,
-      "avg_change_gbp": -13.25,
-      "pct_change": -0.033,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2027,
-      "decile": 6,
-      "avg_change_gbp": -4.25,
-      "pct_change": -0.011,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2027,
-      "decile": 7,
-      "avg_change_gbp": -31.25,
-      "pct_change": -0.078,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2027,
-      "decile": 8,
-      "avg_change_gbp": -34.0,
-      "pct_change": -0.085,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2027,
-      "decile": 9,
-      "avg_change_gbp": -28.0,
-      "pct_change": -0.07,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2027,
-      "decile": 10,
-      "avg_change_gbp": -10.0,
-      "pct_change": -0.025,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2028,
-      "decile": 1,
-      "avg_change_gbp": -38.25,
-      "pct_change": -0.096,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2028,
-      "decile": 2,
-      "avg_change_gbp": -7.0,
-      "pct_change": -0.018,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2028,
-      "decile": 3,
-      "avg_change_gbp": -7.0,
-      "pct_change": -0.018,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2028,
-      "decile": 4,
-      "avg_change_gbp": -4.0,
-      "pct_change": -0.01,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2028,
-      "decile": 5,
-      "avg_change_gbp": -1.5,
-      "pct_change": -0.004,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2028,
-      "decile": 6,
-      "avg_change_gbp": -13.25,
-      "pct_change": -0.033,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2028,
-      "decile": 7,
-      "avg_change_gbp": -26.25,
-      "pct_change": -0.066,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2028,
-      "decile": 8,
-      "avg_change_gbp": -47.75,
-      "pct_change": -0.119,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2028,
-      "decile": 9,
-      "avg_change_gbp": -7.75,
-      "pct_change": -0.019,
-      "n_records": 700
-    },
-    {
-      "measure_id": "intermediate_rate_plus_1p",
-      "year": 2028,
-      "decile": 10,
-      "avg_change_gbp": -13.5,
-      "pct_change": -0.034,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2027,
-      "decile": 1,
-      "avg_change_gbp": -36.25,
-      "pct_change": -0.091,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2027,
-      "decile": 2,
-      "avg_change_gbp": -23.25,
-      "pct_change": -0.058,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2027,
-      "decile": 3,
-      "avg_change_gbp": -43.75,
-      "pct_change": -0.109,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2027,
-      "decile": 4,
-      "avg_change_gbp": -29.0,
-      "pct_change": -0.072,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2027,
-      "decile": 5,
-      "avg_change_gbp": -48.25,
-      "pct_change": -0.121,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2027,
-      "decile": 6,
-      "avg_change_gbp": -4.25,
-      "pct_change": -0.011,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2027,
-      "decile": 7,
-      "avg_change_gbp": -48.75,
-      "pct_change": -0.122,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2027,
-      "decile": 8,
-      "avg_change_gbp": -2.75,
-      "pct_change": -0.007,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2027,
-      "decile": 9,
-      "avg_change_gbp": -45.5,
-      "pct_change": -0.114,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2027,
-      "decile": 10,
-      "avg_change_gbp": -6.75,
-      "pct_change": -0.017,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2028,
-      "decile": 1,
-      "avg_change_gbp": -27.25,
-      "pct_change": -0.068,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2028,
-      "decile": 2,
-      "avg_change_gbp": -5.5,
-      "pct_change": -0.014,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2028,
-      "decile": 3,
-      "avg_change_gbp": -14.75,
-      "pct_change": -0.037,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2028,
-      "decile": 4,
-      "avg_change_gbp": -15.25,
-      "pct_change": -0.038,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2028,
-      "decile": 5,
-      "avg_change_gbp": -43.75,
-      "pct_change": -0.109,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2028,
-      "decile": 6,
-      "avg_change_gbp": -41.0,
-      "pct_change": -0.102,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2028,
-      "decile": 7,
-      "avg_change_gbp": -31.75,
-      "pct_change": -0.079,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2028,
-      "decile": 8,
-      "avg_change_gbp": -6.5,
-      "pct_change": -0.016,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2028,
-      "decile": 9,
-      "avg_change_gbp": -31.75,
-      "pct_change": -0.079,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scottish_property_income_rates",
-      "year": 2028,
-      "decile": 10,
-      "avg_change_gbp": null,
-      "pct_change": null,
-      "n_records": 6,
-      "withheld": "fewer than 10 survey households"
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2027,
-      "decile": 1,
-      "avg_change_gbp": 8.25,
-      "pct_change": 0.021,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2027,
-      "decile": 2,
-      "avg_change_gbp": 42.25,
-      "pct_change": 0.106,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2027,
-      "decile": 3,
-      "avg_change_gbp": 28.5,
-      "pct_change": 0.071,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2027,
-      "decile": 4,
-      "avg_change_gbp": 14.0,
-      "pct_change": 0.035,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2027,
-      "decile": 5,
-      "avg_change_gbp": 40.0,
-      "pct_change": 0.1,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2027,
-      "decile": 6,
-      "avg_change_gbp": 2.0,
-      "pct_change": 0.005,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2027,
-      "decile": 7,
-      "avg_change_gbp": 4.25,
-      "pct_change": 0.011,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2027,
-      "decile": 8,
-      "avg_change_gbp": 15.75,
-      "pct_change": 0.039,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2027,
-      "decile": 9,
-      "avg_change_gbp": 11.75,
-      "pct_change": 0.029,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2027,
-      "decile": 10,
-      "avg_change_gbp": 3.0,
-      "pct_change": 0.007,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2028,
-      "decile": 1,
-      "avg_change_gbp": 17.0,
-      "pct_change": 0.043,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2028,
-      "decile": 2,
-      "avg_change_gbp": 19.75,
-      "pct_change": 0.049,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2028,
-      "decile": 3,
-      "avg_change_gbp": 42.5,
-      "pct_change": 0.106,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2028,
-      "decile": 4,
-      "avg_change_gbp": 7.75,
-      "pct_change": 0.019,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2028,
-      "decile": 5,
-      "avg_change_gbp": 35.75,
-      "pct_change": 0.089,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2028,
-      "decile": 6,
-      "avg_change_gbp": 7.75,
-      "pct_change": 0.019,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2028,
-      "decile": 7,
-      "avg_change_gbp": 48.25,
-      "pct_change": 0.121,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2028,
-      "decile": 8,
-      "avg_change_gbp": 30.25,
-      "pct_change": 0.076,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2028,
-      "decile": 9,
-      "avg_change_gbp": 13.0,
-      "pct_change": 0.033,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_increase",
-      "year": 2028,
-      "decile": 10,
-      "avg_change_gbp": 40.5,
-      "pct_change": 0.101,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2027,
-      "decile": 1,
-      "avg_change_gbp": 46.75,
-      "pct_change": 0.117,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2027,
-      "decile": 2,
-      "avg_change_gbp": 39.0,
-      "pct_change": 0.098,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2027,
-      "decile": 3,
-      "avg_change_gbp": 10.0,
-      "pct_change": 0.025,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2027,
-      "decile": 4,
-      "avg_change_gbp": 17.25,
-      "pct_change": 0.043,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2027,
-      "decile": 5,
-      "avg_change_gbp": 44.0,
-      "pct_change": 0.11,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2027,
-      "decile": 6,
-      "avg_change_gbp": 16.75,
-      "pct_change": 0.042,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2027,
-      "decile": 7,
-      "avg_change_gbp": 22.5,
-      "pct_change": 0.056,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2027,
-      "decile": 8,
-      "avg_change_gbp": 46.0,
-      "pct_change": 0.115,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2027,
-      "decile": 9,
-      "avg_change_gbp": 20.5,
-      "pct_change": 0.051,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2027,
-      "decile": 10,
-      "avg_change_gbp": 47.0,
-      "pct_change": 0.117,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2028,
-      "decile": 1,
-      "avg_change_gbp": 47.25,
-      "pct_change": 0.118,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2028,
-      "decile": 2,
-      "avg_change_gbp": 50.0,
-      "pct_change": 0.125,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2028,
-      "decile": 3,
-      "avg_change_gbp": 22.0,
-      "pct_change": 0.055,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2028,
-      "decile": 4,
-      "avg_change_gbp": 44.0,
-      "pct_change": 0.11,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2028,
-      "decile": 5,
-      "avg_change_gbp": 13.25,
-      "pct_change": 0.033,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2028,
-      "decile": 6,
-      "avg_change_gbp": 21.0,
-      "pct_change": 0.052,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2028,
-      "decile": 7,
-      "avg_change_gbp": 42.0,
-      "pct_change": 0.105,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2028,
-      "decile": 8,
-      "avg_change_gbp": 9.5,
-      "pct_change": 0.024,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2028,
-      "decile": 9,
-      "avg_change_gbp": 31.0,
-      "pct_change": 0.077,
-      "n_records": 700
-    },
-    {
-      "measure_id": "scp_under_one_premium",
-      "year": 2028,
-      "decile": 10,
-      "avg_change_gbp": 23.25,
-      "pct_change": 0.058,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2027,
-      "decile": 1,
-      "avg_change_gbp": 18.75,
-      "pct_change": 0.047,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2027,
-      "decile": 2,
-      "avg_change_gbp": 21.5,
-      "pct_change": 0.054,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2027,
-      "decile": 3,
-      "avg_change_gbp": 6.5,
-      "pct_change": 0.016,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2027,
-      "decile": 4,
-      "avg_change_gbp": 24.25,
-      "pct_change": 0.061,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2027,
-      "decile": 5,
-      "avg_change_gbp": 38.5,
-      "pct_change": 0.096,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2027,
-      "decile": 6,
-      "avg_change_gbp": 22.5,
-      "pct_change": 0.056,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2027,
-      "decile": 7,
-      "avg_change_gbp": 28.5,
-      "pct_change": 0.071,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2027,
-      "decile": 8,
-      "avg_change_gbp": 40.75,
-      "pct_change": 0.102,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2027,
-      "decile": 9,
-      "avg_change_gbp": 5.5,
-      "pct_change": 0.014,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2027,
-      "decile": 10,
-      "avg_change_gbp": 18.5,
-      "pct_change": 0.046,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2028,
-      "decile": 1,
-      "avg_change_gbp": 4.0,
-      "pct_change": 0.01,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2028,
-      "decile": 2,
-      "avg_change_gbp": 13.0,
-      "pct_change": 0.033,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2028,
-      "decile": 3,
-      "avg_change_gbp": 20.5,
-      "pct_change": 0.051,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2028,
-      "decile": 4,
-      "avg_change_gbp": 45.5,
-      "pct_change": 0.114,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2028,
-      "decile": 5,
-      "avg_change_gbp": 13.25,
-      "pct_change": 0.033,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2028,
-      "decile": 6,
-      "avg_change_gbp": 17.25,
-      "pct_change": 0.043,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2028,
-      "decile": 7,
-      "avg_change_gbp": 20.25,
-      "pct_change": 0.051,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2028,
-      "decile": 8,
-      "avg_change_gbp": 32.75,
-      "pct_change": 0.082,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2028,
-      "decile": 9,
-      "avg_change_gbp": 16.25,
-      "pct_change": 0.041,
-      "n_records": 700
-    },
-    {
-      "measure_id": "energy_payment_bands_a_d",
-      "year": 2028,
-      "decile": 10,
-      "avg_change_gbp": null,
-      "pct_change": null,
-      "n_records": 6,
-      "withheld": "fewer than 10 survey households"
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2027,
-      "decile": 1,
-      "avg_change_gbp": 44.75,
-      "pct_change": 0.112,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2027,
-      "decile": 2,
-      "avg_change_gbp": 25.25,
-      "pct_change": 0.063,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2027,
-      "decile": 3,
-      "avg_change_gbp": 2.75,
-      "pct_change": 0.007,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2027,
-      "decile": 4,
-      "avg_change_gbp": 16.5,
-      "pct_change": 0.041,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
       "year": 2027,
       "decile": 5,
       "avg_change_gbp": 7.5,
-      "pct_change": 0.019,
-      "n_records": 700
+      "pct_change": 0.015,
+      "n_records": 579
     },
     {
-      "measure_id": "council_tax_freeze",
+      "measure_id": "starter_basic_thresholds",
       "year": 2027,
       "decile": 6,
-      "avg_change_gbp": 40.75,
-      "pct_change": 0.102,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2027,
-      "decile": 7,
-      "avg_change_gbp": 35.75,
-      "pct_change": 0.089,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2027,
-      "decile": 8,
-      "avg_change_gbp": 10.25,
-      "pct_change": 0.026,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2027,
-      "decile": 9,
-      "avg_change_gbp": 2.5,
-      "pct_change": 0.006,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2027,
-      "decile": 10,
-      "avg_change_gbp": 23.0,
-      "pct_change": 0.058,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2028,
-      "decile": 1,
-      "avg_change_gbp": 30.25,
-      "pct_change": 0.076,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2028,
-      "decile": 2,
-      "avg_change_gbp": 42.25,
-      "pct_change": 0.106,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2028,
-      "decile": 3,
-      "avg_change_gbp": 47.0,
-      "pct_change": 0.117,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2028,
-      "decile": 4,
-      "avg_change_gbp": 13.0,
-      "pct_change": 0.033,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2028,
-      "decile": 5,
-      "avg_change_gbp": 29.25,
-      "pct_change": 0.073,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2028,
-      "decile": 6,
-      "avg_change_gbp": 41.25,
-      "pct_change": 0.103,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2028,
-      "decile": 7,
-      "avg_change_gbp": 5.0,
-      "pct_change": 0.013,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2028,
-      "decile": 8,
-      "avg_change_gbp": 36.5,
-      "pct_change": 0.091,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2028,
-      "decile": 9,
-      "avg_change_gbp": 48.0,
-      "pct_change": 0.12,
-      "n_records": 700
-    },
-    {
-      "measure_id": "council_tax_freeze",
-      "year": 2028,
-      "decile": 10,
-      "avg_change_gbp": 47.25,
-      "pct_change": 0.118,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2027,
-      "decile": 1,
-      "avg_change_gbp": 22.25,
-      "pct_change": 0.056,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2027,
-      "decile": 2,
-      "avg_change_gbp": 16.0,
-      "pct_change": 0.04,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2027,
-      "decile": 3,
-      "avg_change_gbp": 35.25,
-      "pct_change": 0.088,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2027,
-      "decile": 4,
-      "avg_change_gbp": 26.5,
-      "pct_change": 0.066,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2027,
-      "decile": 5,
-      "avg_change_gbp": 25.75,
-      "pct_change": 0.064,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2027,
-      "decile": 6,
-      "avg_change_gbp": 34.75,
-      "pct_change": 0.087,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2027,
-      "decile": 7,
-      "avg_change_gbp": 3.25,
-      "pct_change": 0.008,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2027,
-      "decile": 8,
-      "avg_change_gbp": 38.5,
-      "pct_change": 0.096,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2027,
-      "decile": 9,
-      "avg_change_gbp": 48.25,
-      "pct_change": 0.121,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2027,
-      "decile": 10,
-      "avg_change_gbp": null,
-      "pct_change": null,
-      "n_records": 6,
-      "withheld": "fewer than 10 survey households"
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2028,
-      "decile": 1,
-      "avg_change_gbp": 12.0,
-      "pct_change": 0.03,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2028,
-      "decile": 2,
-      "avg_change_gbp": 10.0,
-      "pct_change": 0.025,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2028,
-      "decile": 3,
-      "avg_change_gbp": 39.75,
-      "pct_change": 0.099,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2028,
-      "decile": 4,
-      "avg_change_gbp": 9.75,
-      "pct_change": 0.024,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2028,
-      "decile": 5,
-      "avg_change_gbp": 20.5,
-      "pct_change": 0.051,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2028,
-      "decile": 6,
-      "avg_change_gbp": 29.25,
-      "pct_change": 0.073,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2028,
-      "decile": 7,
-      "avg_change_gbp": 1.25,
-      "pct_change": 0.003,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2028,
-      "decile": 8,
-      "avg_change_gbp": 2.25,
-      "pct_change": 0.006,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2028,
-      "decile": 9,
-      "avg_change_gbp": 19.75,
-      "pct_change": 0.049,
-      "n_records": 700
-    },
-    {
-      "measure_id": "carer_supplement_increase",
-      "year": 2028,
-      "decile": 10,
-      "avg_change_gbp": 35.5,
-      "pct_change": 0.089,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2027,
-      "decile": 1,
-      "avg_change_gbp": 25.0,
-      "pct_change": 0.062,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2027,
-      "decile": 2,
-      "avg_change_gbp": 37.25,
-      "pct_change": 0.093,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2027,
-      "decile": 3,
-      "avg_change_gbp": 10.25,
-      "pct_change": 0.026,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2027,
-      "decile": 4,
-      "avg_change_gbp": 16.25,
-      "pct_change": 0.041,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2027,
-      "decile": 5,
-      "avg_change_gbp": 26.75,
-      "pct_change": 0.067,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2027,
-      "decile": 6,
-      "avg_change_gbp": 16.25,
-      "pct_change": 0.041,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2027,
-      "decile": 7,
-      "avg_change_gbp": 37.5,
-      "pct_change": 0.094,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2027,
-      "decile": 8,
-      "avg_change_gbp": 48.25,
-      "pct_change": 0.121,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2027,
-      "decile": 9,
-      "avg_change_gbp": 33.75,
-      "pct_change": 0.084,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2027,
-      "decile": 10,
-      "avg_change_gbp": 49.25,
-      "pct_change": 0.123,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2028,
-      "decile": 1,
-      "avg_change_gbp": 9.75,
-      "pct_change": 0.024,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2028,
-      "decile": 2,
-      "avg_change_gbp": 6.75,
+      "avg_change_gbp": 9.76,
       "pct_change": 0.017,
-      "n_records": 700
+      "n_records": 578
     },
     {
-      "measure_id": "young_parent_top_up",
-      "year": 2028,
-      "decile": 3,
-      "avg_change_gbp": 45.5,
-      "pct_change": 0.114,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2028,
-      "decile": 4,
-      "avg_change_gbp": 12.75,
-      "pct_change": 0.032,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2028,
-      "decile": 5,
-      "avg_change_gbp": 35.75,
-      "pct_change": 0.089,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2028,
-      "decile": 6,
-      "avg_change_gbp": 23.75,
-      "pct_change": 0.059,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2028,
-      "decile": 7,
-      "avg_change_gbp": 13.75,
-      "pct_change": 0.034,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2028,
-      "decile": 8,
-      "avg_change_gbp": 9.75,
-      "pct_change": 0.024,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2028,
-      "decile": 9,
-      "avg_change_gbp": 19.25,
-      "pct_change": 0.048,
-      "n_records": 700
-    },
-    {
-      "measure_id": "young_parent_top_up",
-      "year": 2028,
-      "decile": 10,
-      "avg_change_gbp": 18.25,
-      "pct_change": 0.046,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2027,
-      "decile": 1,
-      "avg_change_gbp": 47.75,
-      "pct_change": 0.119,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2027,
-      "decile": 2,
-      "avg_change_gbp": 19.0,
-      "pct_change": 0.048,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2027,
-      "decile": 3,
-      "avg_change_gbp": 32.75,
-      "pct_change": 0.082,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2027,
-      "decile": 4,
-      "avg_change_gbp": 26.25,
-      "pct_change": 0.066,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2027,
-      "decile": 5,
-      "avg_change_gbp": 10.75,
-      "pct_change": 0.027,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2027,
-      "decile": 6,
-      "avg_change_gbp": 46.25,
-      "pct_change": 0.116,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
+      "measure_id": "starter_basic_thresholds",
       "year": 2027,
       "decile": 7,
-      "avg_change_gbp": 42.0,
-      "pct_change": 0.105,
-      "n_records": 700
+      "avg_change_gbp": 10.69,
+      "pct_change": 0.018,
+      "n_records": 542
     },
     {
-      "measure_id": "benefit_cap_mitigation",
+      "measure_id": "starter_basic_thresholds",
       "year": 2027,
       "decile": 8,
-      "avg_change_gbp": 10.5,
-      "pct_change": 0.026,
-      "n_records": 700
+      "avg_change_gbp": 13.86,
+      "pct_change": 0.018,
+      "n_records": 370
     },
     {
-      "measure_id": "benefit_cap_mitigation",
+      "measure_id": "starter_basic_thresholds",
       "year": 2027,
       "decile": 9,
-      "avg_change_gbp": 38.25,
-      "pct_change": 0.096,
-      "n_records": 700
+      "avg_change_gbp": 13.73,
+      "pct_change": 0.018,
+      "n_records": 633
     },
     {
-      "measure_id": "benefit_cap_mitigation",
+      "measure_id": "starter_basic_thresholds",
       "year": 2027,
       "decile": 10,
-      "avg_change_gbp": 25.75,
-      "pct_change": 0.064,
-      "n_records": 700
+      "avg_change_gbp": 12.49,
+      "pct_change": 0.01,
+      "n_records": 1620
     },
     {
-      "measure_id": "benefit_cap_mitigation",
+      "measure_id": "starter_basic_thresholds",
       "year": 2028,
       "decile": 1,
-      "avg_change_gbp": 32.75,
-      "pct_change": 0.082,
-      "n_records": 700
+      "avg_change_gbp": 0.77,
+      "pct_change": 0.004,
+      "n_records": 1109
     },
     {
-      "measure_id": "benefit_cap_mitigation",
+      "measure_id": "starter_basic_thresholds",
       "year": 2028,
       "decile": 2,
-      "avg_change_gbp": 17.25,
-      "pct_change": 0.043,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2028,
-      "decile": 3,
-      "avg_change_gbp": 26.5,
-      "pct_change": 0.066,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2028,
-      "decile": 4,
-      "avg_change_gbp": 43.0,
-      "pct_change": 0.107,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2028,
-      "decile": 5,
-      "avg_change_gbp": 33.25,
-      "pct_change": 0.083,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2028,
-      "decile": 6,
-      "avg_change_gbp": 24.75,
-      "pct_change": 0.062,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2028,
-      "decile": 7,
-      "avg_change_gbp": 28.25,
-      "pct_change": 0.071,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2028,
-      "decile": 8,
-      "avg_change_gbp": 11.5,
-      "pct_change": 0.029,
-      "n_records": 700
-    },
-    {
-      "measure_id": "benefit_cap_mitigation",
-      "year": 2028,
-      "decile": 9,
-      "avg_change_gbp": 2.25,
+      "avg_change_gbp": 1.96,
       "pct_change": 0.006,
-      "n_records": 700
+      "n_records": 662
     },
     {
-      "measure_id": "benefit_cap_mitigation",
+      "measure_id": "starter_basic_thresholds",
+      "year": 2028,
+      "decile": 3,
+      "avg_change_gbp": 2.48,
+      "pct_change": 0.007,
+      "n_records": 633
+    },
+    {
+      "measure_id": "starter_basic_thresholds",
+      "year": 2028,
+      "decile": 4,
+      "avg_change_gbp": 3.89,
+      "pct_change": 0.008,
+      "n_records": 457
+    },
+    {
+      "measure_id": "starter_basic_thresholds",
+      "year": 2028,
+      "decile": 5,
+      "avg_change_gbp": 4.63,
+      "pct_change": 0.009,
+      "n_records": 599
+    },
+    {
+      "measure_id": "starter_basic_thresholds",
+      "year": 2028,
+      "decile": 6,
+      "avg_change_gbp": 5.6,
+      "pct_change": 0.01,
+      "n_records": 575
+    },
+    {
+      "measure_id": "starter_basic_thresholds",
+      "year": 2028,
+      "decile": 7,
+      "avg_change_gbp": 6.12,
+      "pct_change": 0.01,
+      "n_records": 550
+    },
+    {
+      "measure_id": "starter_basic_thresholds",
+      "year": 2028,
+      "decile": 8,
+      "avg_change_gbp": 7.42,
+      "pct_change": 0.01,
+      "n_records": 360
+    },
+    {
+      "measure_id": "starter_basic_thresholds",
+      "year": 2028,
+      "decile": 9,
+      "avg_change_gbp": 7.25,
+      "pct_change": 0.009,
+      "n_records": 616
+    },
+    {
+      "measure_id": "starter_basic_thresholds",
       "year": 2028,
       "decile": 10,
-      "avg_change_gbp": null,
-      "pct_change": null,
-      "n_records": 6,
-      "withheld": "fewer than 10 survey households"
+      "avg_change_gbp": 6.6,
+      "pct_change": 0.005,
+      "n_records": 1632
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2027,
       "decile": 1,
-      "avg_change_gbp": -46.75,
-      "pct_change": -0.117,
-      "n_records": 700
+      "avg_change_gbp": -1.55,
+      "pct_change": -0.008,
+      "n_records": 1125
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2027,
       "decile": 2,
-      "avg_change_gbp": -38.75,
-      "pct_change": -0.097,
-      "n_records": 700
+      "avg_change_gbp": -0.0,
+      "pct_change": -0.0,
+      "n_records": 664
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2027,
       "decile": 3,
-      "avg_change_gbp": -15.5,
-      "pct_change": -0.039,
-      "n_records": 700
+      "avg_change_gbp": -0.38,
+      "pct_change": -0.001,
+      "n_records": 621
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2027,
       "decile": 4,
-      "avg_change_gbp": -25.25,
-      "pct_change": -0.063,
-      "n_records": 700
+      "avg_change_gbp": -0.03,
+      "pct_change": -0.0,
+      "n_records": 461
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2027,
       "decile": 5,
-      "avg_change_gbp": -36.5,
-      "pct_change": -0.091,
-      "n_records": 700
+      "avg_change_gbp": -0.65,
+      "pct_change": -0.001,
+      "n_records": 579
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2027,
       "decile": 6,
-      "avg_change_gbp": -38.75,
-      "pct_change": -0.097,
-      "n_records": 700
+      "avg_change_gbp": -1.49,
+      "pct_change": -0.003,
+      "n_records": 578
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2027,
       "decile": 7,
-      "avg_change_gbp": -36.0,
-      "pct_change": -0.09,
-      "n_records": 700
+      "avg_change_gbp": -9.68,
+      "pct_change": -0.016,
+      "n_records": 542
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2027,
       "decile": 8,
-      "avg_change_gbp": -40.0,
-      "pct_change": -0.1,
-      "n_records": 700
+      "avg_change_gbp": -20.27,
+      "pct_change": -0.026,
+      "n_records": 370
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2027,
       "decile": 9,
-      "avg_change_gbp": -42.25,
-      "pct_change": -0.106,
-      "n_records": 700
+      "avg_change_gbp": -30.96,
+      "pct_change": -0.04,
+      "n_records": 633
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2027,
       "decile": 10,
-      "avg_change_gbp": -34.25,
-      "pct_change": -0.086,
-      "n_records": 700
+      "avg_change_gbp": -172.9,
+      "pct_change": -0.142,
+      "n_records": 1620
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2028,
       "decile": 1,
-      "avg_change_gbp": -8.75,
-      "pct_change": -0.022,
-      "n_records": 700
+      "avg_change_gbp": -1.6,
+      "pct_change": -0.008,
+      "n_records": 1109
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2028,
       "decile": 2,
-      "avg_change_gbp": -12.75,
-      "pct_change": -0.032,
-      "n_records": 700
+      "avg_change_gbp": -0.01,
+      "pct_change": -0.0,
+      "n_records": 662
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2028,
       "decile": 3,
-      "avg_change_gbp": -33.5,
-      "pct_change": -0.084,
-      "n_records": 700
+      "avg_change_gbp": -0.42,
+      "pct_change": -0.001,
+      "n_records": 633
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2028,
       "decile": 4,
-      "avg_change_gbp": -7.5,
-      "pct_change": -0.019,
-      "n_records": 700
+      "avg_change_gbp": -0.05,
+      "pct_change": -0.0,
+      "n_records": 457
     },
     {
-      "measure_id": "lbtt_ads_increase",
+      "measure_id": "advanced_rate_plus_1p",
       "year": 2028,
       "decile": 5,
-      "avg_change_gbp": -17.75,
+      "avg_change_gbp": -0.9,
+      "pct_change": -0.002,
+      "n_records": 599
+    },
+    {
+      "measure_id": "advanced_rate_plus_1p",
+      "year": 2028,
+      "decile": 6,
+      "avg_change_gbp": -1.69,
+      "pct_change": -0.003,
+      "n_records": 575
+    },
+    {
+      "measure_id": "advanced_rate_plus_1p",
+      "year": 2028,
+      "decile": 7,
+      "avg_change_gbp": -11.4,
+      "pct_change": -0.018,
+      "n_records": 550
+    },
+    {
+      "measure_id": "advanced_rate_plus_1p",
+      "year": 2028,
+      "decile": 8,
+      "avg_change_gbp": -19.89,
+      "pct_change": -0.026,
+      "n_records": 360
+    },
+    {
+      "measure_id": "advanced_rate_plus_1p",
+      "year": 2028,
+      "decile": 9,
+      "avg_change_gbp": -34.77,
       "pct_change": -0.044,
-      "n_records": 700
+      "n_records": 616
+    },
+    {
+      "measure_id": "advanced_rate_plus_1p",
+      "year": 2028,
+      "decile": 10,
+      "avg_change_gbp": -186.31,
+      "pct_change": -0.151,
+      "n_records": 1632
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2027,
+      "decile": 1,
+      "avg_change_gbp": -9.74,
+      "pct_change": -0.05,
+      "n_records": 1125
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2027,
+      "decile": 2,
+      "avg_change_gbp": -1.77,
+      "pct_change": -0.006,
+      "n_records": 664
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2027,
+      "decile": 3,
+      "avg_change_gbp": -9.72,
+      "pct_change": -0.026,
+      "n_records": 621
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2027,
+      "decile": 4,
+      "avg_change_gbp": -8.51,
+      "pct_change": -0.018,
+      "n_records": 461
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2027,
+      "decile": 5,
+      "avg_change_gbp": -32.41,
+      "pct_change": -0.067,
+      "n_records": 579
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2027,
+      "decile": 6,
+      "avg_change_gbp": -15.06,
+      "pct_change": -0.027,
+      "n_records": 578
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2027,
+      "decile": 7,
+      "avg_change_gbp": -12.02,
+      "pct_change": -0.02,
+      "n_records": 542
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2027,
+      "decile": 8,
+      "avg_change_gbp": -30.26,
+      "pct_change": -0.039,
+      "n_records": 370
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2027,
+      "decile": 9,
+      "avg_change_gbp": -10.28,
+      "pct_change": -0.013,
+      "n_records": 633
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2027,
+      "decile": 10,
+      "avg_change_gbp": -57.82,
+      "pct_change": -0.048,
+      "n_records": 1620
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2028,
+      "decile": 1,
+      "avg_change_gbp": -10.24,
+      "pct_change": -0.053,
+      "n_records": 1109
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2028,
+      "decile": 2,
+      "avg_change_gbp": -1.64,
+      "pct_change": -0.005,
+      "n_records": 662
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2028,
+      "decile": 3,
+      "avg_change_gbp": -9.9,
+      "pct_change": -0.026,
+      "n_records": 633
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2028,
+      "decile": 4,
+      "avg_change_gbp": -40.33,
+      "pct_change": -0.088,
+      "n_records": 457
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2028,
+      "decile": 5,
+      "avg_change_gbp": -2.62,
+      "pct_change": -0.005,
+      "n_records": 599
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2028,
+      "decile": 6,
+      "avg_change_gbp": -15.69,
+      "pct_change": -0.028,
+      "n_records": 575
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2028,
+      "decile": 7,
+      "avg_change_gbp": -14.32,
+      "pct_change": -0.023,
+      "n_records": 550
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2028,
+      "decile": 8,
+      "avg_change_gbp": -21.58,
+      "pct_change": -0.028,
+      "n_records": 360
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2028,
+      "decile": 9,
+      "avg_change_gbp": -16.06,
+      "pct_change": -0.02,
+      "n_records": 616
+    },
+    {
+      "measure_id": "scottish_property_income_rates",
+      "year": 2028,
+      "decile": 10,
+      "avg_change_gbp": -60.79,
+      "pct_change": -0.049,
+      "n_records": 1632
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2027,
+      "decile": 1,
+      "avg_change_gbp": -18.83,
+      "pct_change": -0.097,
+      "n_records": 1125
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2027,
+      "decile": 2,
+      "avg_change_gbp": -2.31,
+      "pct_change": -0.007,
+      "n_records": 664
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2027,
+      "decile": 3,
+      "avg_change_gbp": -0.6,
+      "pct_change": -0.002,
+      "n_records": 621
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2027,
+      "decile": 4,
+      "avg_change_gbp": -57.61,
+      "pct_change": -0.124,
+      "n_records": 461
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2027,
+      "decile": 5,
+      "avg_change_gbp": -59.36,
+      "pct_change": -0.122,
+      "n_records": 579
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2027,
+      "decile": 6,
+      "avg_change_gbp": -0.26,
+      "pct_change": -0.0,
+      "n_records": 578
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2027,
+      "decile": 7,
+      "avg_change_gbp": 0.0,
+      "pct_change": 0.0,
+      "n_records": 542
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2027,
+      "decile": 8,
+      "avg_change_gbp": -3.58,
+      "pct_change": -0.005,
+      "n_records": 370
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2027,
+      "decile": 9,
+      "avg_change_gbp": -18.38,
+      "pct_change": -0.024,
+      "n_records": 633
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2027,
+      "decile": 10,
+      "avg_change_gbp": -14.42,
+      "pct_change": -0.012,
+      "n_records": 1620
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2028,
+      "decile": 1,
+      "avg_change_gbp": -19.19,
+      "pct_change": -0.099,
+      "n_records": 1109
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2028,
+      "decile": 2,
+      "avg_change_gbp": -2.41,
+      "pct_change": -0.008,
+      "n_records": 662
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2028,
+      "decile": 3,
+      "avg_change_gbp": -0.63,
+      "pct_change": -0.002,
+      "n_records": 633
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2028,
+      "decile": 4,
+      "avg_change_gbp": -57.02,
+      "pct_change": -0.124,
+      "n_records": 457
+    },
+    {
+      "measure_id": "lbtt_ads_increase",
+      "year": 2028,
+      "decile": 5,
+      "avg_change_gbp": -63.13,
+      "pct_change": -0.125,
+      "n_records": 599
     },
     {
       "measure_id": "lbtt_ads_increase",
       "year": 2028,
       "decile": 6,
-      "avg_change_gbp": -48.25,
-      "pct_change": -0.121,
-      "n_records": 700
+      "avg_change_gbp": -0.27,
+      "pct_change": -0.0,
+      "n_records": 575
     },
     {
       "measure_id": "lbtt_ads_increase",
       "year": 2028,
       "decile": 7,
-      "avg_change_gbp": -38.75,
-      "pct_change": -0.097,
-      "n_records": 700
+      "avg_change_gbp": -3.15,
+      "pct_change": -0.005,
+      "n_records": 550
     },
     {
       "measure_id": "lbtt_ads_increase",
       "year": 2028,
       "decile": 8,
-      "avg_change_gbp": -12.0,
-      "pct_change": -0.03,
-      "n_records": 700
+      "avg_change_gbp": 0.0,
+      "pct_change": 0.0,
+      "n_records": 360
     },
     {
       "measure_id": "lbtt_ads_increase",
       "year": 2028,
       "decile": 9,
-      "avg_change_gbp": -2.5,
-      "pct_change": -0.006,
-      "n_records": 700
+      "avg_change_gbp": -18.78,
+      "pct_change": -0.024,
+      "n_records": 616
     },
     {
       "measure_id": "lbtt_ads_increase",
       "year": 2028,
       "decile": 10,
-      "avg_change_gbp": -5.5,
-      "pct_change": -0.014,
-      "n_records": 700
+      "avg_change_gbp": -14.82,
+      "pct_change": -0.012,
+      "n_records": 1632
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2027,
+      "decile": 1,
+      "avg_change_gbp": 34.65,
+      "pct_change": 0.179,
+      "n_records": 1125
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2027,
+      "decile": 2,
+      "avg_change_gbp": 42.6,
+      "pct_change": 0.135,
+      "n_records": 664
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2027,
+      "decile": 3,
+      "avg_change_gbp": 46.84,
+      "pct_change": 0.126,
+      "n_records": 621
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2027,
+      "decile": 4,
+      "avg_change_gbp": 44.72,
+      "pct_change": 0.097,
+      "n_records": 461
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2027,
+      "decile": 5,
+      "avg_change_gbp": 47.49,
+      "pct_change": 0.097,
+      "n_records": 579
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2027,
+      "decile": 6,
+      "avg_change_gbp": 53.28,
+      "pct_change": 0.095,
+      "n_records": 578
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2027,
+      "decile": 7,
+      "avg_change_gbp": 56.29,
+      "pct_change": 0.093,
+      "n_records": 542
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2027,
+      "decile": 8,
+      "avg_change_gbp": 63.36,
+      "pct_change": 0.082,
+      "n_records": 370
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2027,
+      "decile": 9,
+      "avg_change_gbp": 63.55,
+      "pct_change": 0.081,
+      "n_records": 633
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2027,
+      "decile": 10,
+      "avg_change_gbp": 69.78,
+      "pct_change": 0.057,
+      "n_records": 1620
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2028,
+      "decile": 1,
+      "avg_change_gbp": 36.53,
+      "pct_change": 0.188,
+      "n_records": 1109
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2028,
+      "decile": 2,
+      "avg_change_gbp": 43.62,
+      "pct_change": 0.136,
+      "n_records": 662
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2028,
+      "decile": 3,
+      "avg_change_gbp": 49.19,
+      "pct_change": 0.129,
+      "n_records": 633
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2028,
+      "decile": 4,
+      "avg_change_gbp": 47.07,
+      "pct_change": 0.102,
+      "n_records": 457
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2028,
+      "decile": 5,
+      "avg_change_gbp": 47.87,
+      "pct_change": 0.094,
+      "n_records": 599
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2028,
+      "decile": 6,
+      "avg_change_gbp": 55.61,
+      "pct_change": 0.099,
+      "n_records": 575
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2028,
+      "decile": 7,
+      "avg_change_gbp": 59.54,
+      "pct_change": 0.095,
+      "n_records": 550
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2028,
+      "decile": 8,
+      "avg_change_gbp": 63.68,
+      "pct_change": 0.082,
+      "n_records": 360
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2028,
+      "decile": 9,
+      "avg_change_gbp": 65.58,
+      "pct_change": 0.083,
+      "n_records": 616
+    },
+    {
+      "measure_id": "council_tax_freeze",
+      "year": 2028,
+      "decile": 10,
+      "avg_change_gbp": 72.42,
+      "pct_change": 0.059,
+      "n_records": 1632
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2027,
+      "decile": 1,
+      "avg_change_gbp": 3.32,
+      "pct_change": 0.017,
+      "n_records": 1125
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2027,
+      "decile": 2,
+      "avg_change_gbp": 2.75,
+      "pct_change": 0.009,
+      "n_records": 664
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2027,
+      "decile": 3,
+      "avg_change_gbp": 11.34,
+      "pct_change": 0.03,
+      "n_records": 621
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2027,
+      "decile": 4,
+      "avg_change_gbp": 2.16,
+      "pct_change": 0.005,
+      "n_records": 461
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2027,
+      "decile": 5,
+      "avg_change_gbp": 0.0,
+      "pct_change": 0.0,
+      "n_records": 579
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2027,
+      "decile": 6,
+      "avg_change_gbp": 0.0,
+      "pct_change": 0.0,
+      "n_records": 578
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2027,
+      "decile": 7,
+      "avg_change_gbp": 1.6,
+      "pct_change": 0.003,
+      "n_records": 542
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2027,
+      "decile": 8,
+      "avg_change_gbp": 3.59,
+      "pct_change": 0.005,
+      "n_records": 370
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2027,
+      "decile": 9,
+      "avg_change_gbp": 3.53,
+      "pct_change": 0.005,
+      "n_records": 633
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2027,
+      "decile": 10,
+      "avg_change_gbp": 4.29,
+      "pct_change": 0.004,
+      "n_records": 1620
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2028,
+      "decile": 1,
+      "avg_change_gbp": 3.23,
+      "pct_change": 0.017,
+      "n_records": 1109
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2028,
+      "decile": 2,
+      "avg_change_gbp": 2.73,
+      "pct_change": 0.009,
+      "n_records": 662
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2028,
+      "decile": 3,
+      "avg_change_gbp": 11.24,
+      "pct_change": 0.029,
+      "n_records": 633
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2028,
+      "decile": 4,
+      "avg_change_gbp": 2.04,
+      "pct_change": 0.004,
+      "n_records": 457
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2028,
+      "decile": 5,
+      "avg_change_gbp": 0.0,
+      "pct_change": 0.0,
+      "n_records": 599
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2028,
+      "decile": 6,
+      "avg_change_gbp": 0.0,
+      "pct_change": 0.0,
+      "n_records": 575
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2028,
+      "decile": 7,
+      "avg_change_gbp": 1.61,
+      "pct_change": 0.003,
+      "n_records": 550
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2028,
+      "decile": 8,
+      "avg_change_gbp": 3.46,
+      "pct_change": 0.004,
+      "n_records": 360
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2028,
+      "decile": 9,
+      "avg_change_gbp": 3.44,
+      "pct_change": 0.004,
+      "n_records": 616
+    },
+    {
+      "measure_id": "scp_under_one_premium",
+      "year": 2028,
+      "decile": 10,
+      "avg_change_gbp": 4.21,
+      "pct_change": 0.003,
+      "n_records": 1632
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2027,
+      "decile": 1,
+      "avg_change_gbp": 0.0,
+      "pct_change": 0.0,
+      "n_records": 1125
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2027,
+      "decile": 2,
+      "avg_change_gbp": 1.36,
+      "pct_change": 0.004,
+      "n_records": 664
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2027,
+      "decile": 3,
+      "avg_change_gbp": 2.06,
+      "pct_change": 0.006,
+      "n_records": 621
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2027,
+      "decile": 4,
+      "avg_change_gbp": 0.0,
+      "pct_change": 0.0,
+      "n_records": 461
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2027,
+      "decile": 5,
+      "avg_change_gbp": 1.24,
+      "pct_change": 0.003,
+      "n_records": 579
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2027,
+      "decile": 6,
+      "avg_change_gbp": 1.27,
+      "pct_change": 0.002,
+      "n_records": 578
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2027,
+      "decile": 7,
+      "avg_change_gbp": 1.05,
+      "pct_change": 0.002,
+      "n_records": 542
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2027,
+      "decile": 8,
+      "avg_change_gbp": 3.57,
+      "pct_change": 0.005,
+      "n_records": 370
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2027,
+      "decile": 9,
+      "avg_change_gbp": 1.0,
+      "pct_change": 0.001,
+      "n_records": 633
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2027,
+      "decile": 10,
+      "avg_change_gbp": 0.0,
+      "pct_change": 0.0,
+      "n_records": 1620
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2028,
+      "decile": 1,
+      "avg_change_gbp": 0.0,
+      "pct_change": 0.0,
+      "n_records": 1109
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2028,
+      "decile": 2,
+      "avg_change_gbp": 2.76,
+      "pct_change": 0.009,
+      "n_records": 662
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2028,
+      "decile": 3,
+      "avg_change_gbp": 4.15,
+      "pct_change": 0.011,
+      "n_records": 633
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2028,
+      "decile": 4,
+      "avg_change_gbp": 0.0,
+      "pct_change": 0.0,
+      "n_records": 457
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2028,
+      "decile": 5,
+      "avg_change_gbp": 2.56,
+      "pct_change": 0.005,
+      "n_records": 599
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2028,
+      "decile": 6,
+      "avg_change_gbp": 2.51,
+      "pct_change": 0.004,
+      "n_records": 575
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2028,
+      "decile": 7,
+      "avg_change_gbp": 2.15,
+      "pct_change": 0.003,
+      "n_records": 550
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2028,
+      "decile": 8,
+      "avg_change_gbp": 6.99,
+      "pct_change": 0.009,
+      "n_records": 360
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2028,
+      "decile": 9,
+      "avg_change_gbp": 1.98,
+      "pct_change": 0.003,
+      "n_records": 616
+    },
+    {
+      "measure_id": "young_parent_top_up",
+      "year": 2028,
+      "decile": 10,
+      "avg_change_gbp": 0.0,
+      "pct_change": 0.0,
+      "n_records": 1632
     }
   ],
-  "winners_losers": [],
-  "poverty": [],
-  "council_tax_bands": [],
-  "scotland_vs_rest_of_uk": [],
+  "winners_losers": [
+    {
+      "measure_id": "package",
+      "year": 2027,
+      "gain_share": 0.8252,
+      "lose_share": 0.1152,
+      "n_records": 7193
+    },
+    {
+      "measure_id": "package",
+      "year": 2028,
+      "gain_share": 0.8166,
+      "lose_share": 0.1219,
+      "n_records": 7193
+    }
+  ],
+  "poverty": [
+    {
+      "measure_id": "package",
+      "year": 2027,
+      "group": "children",
+      "basis": "bhc",
+      "baseline_rate": 0.1485,
+      "reform_rate": 0.1485,
+      "change_count": 0,
+      "n_records": 2673
+    },
+    {
+      "measure_id": "package",
+      "year": 2027,
+      "group": "children",
+      "basis": "ahc",
+      "baseline_rate": 0.182,
+      "reform_rate": 0.182,
+      "change_count": 0,
+      "n_records": 2673
+    },
+    {
+      "measure_id": "package",
+      "year": 2028,
+      "group": "children",
+      "basis": "bhc",
+      "baseline_rate": 0.1485,
+      "reform_rate": 0.1485,
+      "change_count": 0,
+      "n_records": 2673
+    },
+    {
+      "measure_id": "package",
+      "year": 2028,
+      "group": "children",
+      "basis": "ahc",
+      "baseline_rate": 0.182,
+      "reform_rate": 0.1808,
+      "change_count": -1241,
+      "n_records": 2673
+    }
+  ],
+  "council_tax_bands": [
+    {
+      "measure_id": "package",
+      "year": 2027,
+      "band": "A",
+      "avg_change_gbp": 27.85,
+      "n_records": 949
+    },
+    {
+      "measure_id": "package",
+      "year": 2027,
+      "band": "B",
+      "avg_change_gbp": 35.07,
+      "n_records": 1241
+    },
+    {
+      "measure_id": "package",
+      "year": 2027,
+      "band": "C",
+      "avg_change_gbp": -9.71,
+      "n_records": 852
+    },
+    {
+      "measure_id": "package",
+      "year": 2027,
+      "band": "D",
+      "avg_change_gbp": 7.96,
+      "n_records": 1012
+    },
+    {
+      "measure_id": "package",
+      "year": 2027,
+      "band": "E",
+      "avg_change_gbp": 15.64,
+      "n_records": 1068
+    },
+    {
+      "measure_id": "package",
+      "year": 2027,
+      "band": "F",
+      "avg_change_gbp": -37.14,
+      "n_records": 1006
+    },
+    {
+      "measure_id": "package",
+      "year": 2027,
+      "band": "G",
+      "avg_change_gbp": -128.37,
+      "n_records": 958
+    },
+    {
+      "measure_id": "package",
+      "year": 2027,
+      "band": "H",
+      "avg_change_gbp": 35.48,
+      "n_records": 107
+    },
+    {
+      "measure_id": "package",
+      "year": 2028,
+      "band": "A",
+      "avg_change_gbp": 27.16,
+      "n_records": 949
+    },
+    {
+      "measure_id": "package",
+      "year": 2028,
+      "band": "B",
+      "avg_change_gbp": 33.88,
+      "n_records": 1241
+    },
+    {
+      "measure_id": "package",
+      "year": 2028,
+      "band": "C",
+      "avg_change_gbp": -14.67,
+      "n_records": 852
+    },
+    {
+      "measure_id": "package",
+      "year": 2028,
+      "band": "D",
+      "avg_change_gbp": 6.39,
+      "n_records": 1012
+    },
+    {
+      "measure_id": "package",
+      "year": 2028,
+      "band": "E",
+      "avg_change_gbp": 13.27,
+      "n_records": 1068
+    },
+    {
+      "measure_id": "package",
+      "year": 2028,
+      "band": "F",
+      "avg_change_gbp": -47.31,
+      "n_records": 1006
+    },
+    {
+      "measure_id": "package",
+      "year": 2028,
+      "band": "G",
+      "avg_change_gbp": -139.69,
+      "n_records": 958
+    },
+    {
+      "measure_id": "package",
+      "year": 2028,
+      "band": "H",
+      "avg_change_gbp": 26.36,
+      "n_records": 107
+    }
+  ],
+  "scotland_vs_rest_of_uk": [
+    {
+      "year": 2027,
+      "scenario": "current_law",
+      "share_paying_less": 0.5906,
+      "share_paying_more": 0.3928,
+      "taxpayers": 3302880,
+      "n_records": 9270
+    },
+    {
+      "year": 2027,
+      "scenario": "with_measures",
+      "share_paying_less": 0.5987,
+      "share_paying_more": 0.383,
+      "taxpayers": 3302880,
+      "n_records": 9270
+    },
+    {
+      "year": 2028,
+      "scenario": "current_law",
+      "share_paying_less": 0.5789,
+      "share_paying_more": 0.404,
+      "taxpayers": 3303476,
+      "n_records": 9291
+    },
+    {
+      "year": 2028,
+      "scenario": "with_measures",
+      "share_paying_less": 0.5835,
+      "share_paying_more": 0.3999,
+      "taxpayers": 3303476,
+      "n_records": 9291
+    }
+  ],
   "official_costings": [],
   "households": [
     {
       "id": "single_25k",
       "label": "Single adult earning £25,000",
       "year": 2027,
-      "baseline_net_income": null,
-      "reform_net_income": null,
-      "change": null,
-      "rest_of_uk_net_income": null,
-      "scotland_minus_rest_of_uk": null
+      "baseline_net_income": 21380.62,
+      "reform_net_income": 21385.06,
+      "change": 4.43,
+      "rest_of_uk_net_income": 21339.6,
+      "scotland_minus_rest_of_uk": 45.46
     },
     {
       "id": "single_45k",
       "label": "Single adult earning £45,000",
       "year": 2027,
-      "baseline_net_income": null,
-      "reform_net_income": null,
-      "change": null,
-      "rest_of_uk_net_income": null,
-      "scotland_minus_rest_of_uk": null
+      "baseline_net_income": 35350.7,
+      "reform_net_income": 35359.66,
+      "change": 8.96,
+      "rest_of_uk_net_income": 35739.6,
+      "scotland_minus_rest_of_uk": -379.93
     },
     {
       "id": "single_60k",
       "label": "Single adult earning £60,000",
       "year": 2027,
-      "baseline_net_income": null,
-      "reform_net_income": null,
-      "change": null,
-      "rest_of_uk_net_income": null,
-      "scotland_minus_rest_of_uk": null
+      "baseline_net_income": 43434.5,
+      "reform_net_income": 43443.47,
+      "change": 8.96,
+      "rest_of_uk_net_income": 45177.4,
+      "scotland_minus_rest_of_uk": -1733.93
     },
     {
       "id": "single_100k",
       "label": "Single adult earning £100,000",
       "year": 2027,
-      "baseline_net_income": null,
-      "reform_net_income": null,
-      "change": null,
-      "rest_of_uk_net_income": null,
-      "scotland_minus_rest_of_uk": null
+      "baseline_net_income": 65084.5,
+      "reform_net_income": 64843.47,
+      "change": -241.04,
+      "rest_of_uk_net_income": 68377.4,
+      "scotland_minus_rest_of_uk": -3533.93
     },
     {
       "id": "couple_two_children_uc",
       "label": "Couple with two children on Universal Credit, one earner on £18,000",
       "year": 2027,
-      "baseline_net_income": null,
-      "reform_net_income": null,
-      "change": null,
-      "rest_of_uk_net_income": null,
-      "scotland_minus_rest_of_uk": null
+      "baseline_net_income": 39438.91,
+      "reform_net_income": 39440.91,
+      "change": 1.99,
+      "rest_of_uk_net_income": 39420.45,
+      "scotland_minus_rest_of_uk": 20.46
     },
     {
       "id": "lone_parent_under_one",
       "label": "Lone parent aged 24 with a child under one, earning £10,000",
       "year": 2027,
-      "baseline_net_income": null,
-      "reform_net_income": null,
-      "change": null,
-      "rest_of_uk_net_income": null,
-      "scotland_minus_rest_of_uk": null
+      "baseline_net_income": 24824.03,
+      "reform_net_income": 25645.63,
+      "change": 821.6,
+      "rest_of_uk_net_income": 25645.63,
+      "scotland_minus_rest_of_uk": 0.0
     },
     {
       "id": "pensioner_full_state_pension",
       "label": "Single pensioner on the full new State Pension",
       "year": 2027,
-      "baseline_net_income": null,
-      "reform_net_income": null,
-      "change": null,
-      "rest_of_uk_net_income": null,
-      "scotland_minus_rest_of_uk": null
+      "baseline_net_income": 13074.55,
+      "reform_net_income": 13074.55,
+      "change": 0.0,
+      "rest_of_uk_net_income": 13074.55,
+      "scotland_minus_rest_of_uk": 0.0
     },
     {
       "id": "carer_part_time",
       "label": "Carer on Carer Support Payment, earning £8,000",
       "year": 2027,
-      "baseline_net_income": null,
-      "reform_net_income": null,
-      "change": null,
-      "rest_of_uk_net_income": null,
-      "scotland_minus_rest_of_uk": null
+      "baseline_net_income": 17268.75,
+      "reform_net_income": 17268.75,
+      "change": 0.0,
+      "rest_of_uk_net_income": 17266.78,
+      "scotland_minus_rest_of_uk": 1.98
     }
   ],
-  "income_tax_curve": []
+  "income_tax_curve": [
+    {
+      "year": 2027,
+      "gross": 0,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 1000,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 2000,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 3000,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 4000,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 5000,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 6000,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 7000,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 8000,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 9000,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 10000,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 11000,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 12000,
+      "scotland_current_law": 0.0,
+      "scotland_with_measures": 0.0,
+      "rest_of_uk": 0.0
+    },
+    {
+      "year": 2027,
+      "gross": 13000,
+      "scotland_current_law": 81.7,
+      "scotland_with_measures": 81.7,
+      "rest_of_uk": 86.0
+    },
+    {
+      "year": 2027,
+      "gross": 14000,
+      "scotland_current_law": 271.7,
+      "scotland_with_measures": 271.7,
+      "rest_of_uk": 286.0
+    },
+    {
+      "year": 2027,
+      "gross": 15000,
+      "scotland_current_law": 461.7,
+      "scotland_with_measures": 461.7,
+      "rest_of_uk": 486.0
+    },
+    {
+      "year": 2027,
+      "gross": 16000,
+      "scotland_current_law": 651.7,
+      "scotland_with_measures": 651.7,
+      "rest_of_uk": 686.0
+    },
+    {
+      "year": 2027,
+      "gross": 17000,
+      "scotland_current_law": 844.97,
+      "scotland_with_measures": 841.7,
+      "rest_of_uk": 886.0
+    },
+    {
+      "year": 2027,
+      "gross": 18000,
+      "scotland_current_law": 1044.97,
+      "scotland_with_measures": 1040.54,
+      "rest_of_uk": 1086.0
+    },
+    {
+      "year": 2027,
+      "gross": 19000,
+      "scotland_current_law": 1244.97,
+      "scotland_with_measures": 1240.54,
+      "rest_of_uk": 1286.0
+    },
+    {
+      "year": 2027,
+      "gross": 20000,
+      "scotland_current_law": 1444.97,
+      "scotland_with_measures": 1440.54,
+      "rest_of_uk": 1486.0
+    },
+    {
+      "year": 2027,
+      "gross": 21000,
+      "scotland_current_law": 1644.97,
+      "scotland_with_measures": 1640.54,
+      "rest_of_uk": 1686.0
+    },
+    {
+      "year": 2027,
+      "gross": 22000,
+      "scotland_current_law": 1844.97,
+      "scotland_with_measures": 1840.54,
+      "rest_of_uk": 1886.0
+    },
+    {
+      "year": 2027,
+      "gross": 23000,
+      "scotland_current_law": 2044.97,
+      "scotland_with_measures": 2040.54,
+      "rest_of_uk": 2086.0
+    },
+    {
+      "year": 2027,
+      "gross": 24000,
+      "scotland_current_law": 2244.97,
+      "scotland_with_measures": 2240.54,
+      "rest_of_uk": 2286.0
+    },
+    {
+      "year": 2027,
+      "gross": 25000,
+      "scotland_current_law": 2444.97,
+      "scotland_with_measures": 2440.54,
+      "rest_of_uk": 2486.0
+    },
+    {
+      "year": 2027,
+      "gross": 26000,
+      "scotland_current_law": 2644.97,
+      "scotland_with_measures": 2640.54,
+      "rest_of_uk": 2686.0
+    },
+    {
+      "year": 2027,
+      "gross": 27000,
+      "scotland_current_law": 2844.97,
+      "scotland_with_measures": 2840.54,
+      "rest_of_uk": 2886.0
+    },
+    {
+      "year": 2027,
+      "gross": 28000,
+      "scotland_current_law": 3044.97,
+      "scotland_with_measures": 3040.54,
+      "rest_of_uk": 3086.0
+    },
+    {
+      "year": 2027,
+      "gross": 29000,
+      "scotland_current_law": 3244.97,
+      "scotland_with_measures": 3240.54,
+      "rest_of_uk": 3286.0
+    },
+    {
+      "year": 2027,
+      "gross": 30000,
+      "scotland_current_law": 3444.97,
+      "scotland_with_measures": 3440.54,
+      "rest_of_uk": 3486.0
+    },
+    {
+      "year": 2027,
+      "gross": 31000,
+      "scotland_current_law": 3653.91,
+      "scotland_with_measures": 3644.95,
+      "rest_of_uk": 3686.0
+    },
+    {
+      "year": 2027,
+      "gross": 32000,
+      "scotland_current_law": 3863.91,
+      "scotland_with_measures": 3854.95,
+      "rest_of_uk": 3886.0
+    },
+    {
+      "year": 2027,
+      "gross": 33000,
+      "scotland_current_law": 4073.91,
+      "scotland_with_measures": 4064.95,
+      "rest_of_uk": 4086.0
+    },
+    {
+      "year": 2027,
+      "gross": 34000,
+      "scotland_current_law": 4283.91,
+      "scotland_with_measures": 4274.95,
+      "rest_of_uk": 4286.0
+    },
+    {
+      "year": 2027,
+      "gross": 35000,
+      "scotland_current_law": 4493.91,
+      "scotland_with_measures": 4484.95,
+      "rest_of_uk": 4486.0
+    },
+    {
+      "year": 2027,
+      "gross": 36000,
+      "scotland_current_law": 4703.91,
+      "scotland_with_measures": 4694.95,
+      "rest_of_uk": 4686.0
+    },
+    {
+      "year": 2027,
+      "gross": 37000,
+      "scotland_current_law": 4913.91,
+      "scotland_with_measures": 4904.95,
+      "rest_of_uk": 4886.0
+    },
+    {
+      "year": 2027,
+      "gross": 38000,
+      "scotland_current_law": 5123.91,
+      "scotland_with_measures": 5114.95,
+      "rest_of_uk": 5086.0
+    },
+    {
+      "year": 2027,
+      "gross": 39000,
+      "scotland_current_law": 5333.91,
+      "scotland_with_measures": 5324.95,
+      "rest_of_uk": 5286.0
+    },
+    {
+      "year": 2027,
+      "gross": 40000,
+      "scotland_current_law": 5543.91,
+      "scotland_with_measures": 5534.95,
+      "rest_of_uk": 5486.0
+    },
+    {
+      "year": 2027,
+      "gross": 41000,
+      "scotland_current_law": 5753.91,
+      "scotland_with_measures": 5744.95,
+      "rest_of_uk": 5686.0
+    },
+    {
+      "year": 2027,
+      "gross": 42000,
+      "scotland_current_law": 5963.91,
+      "scotland_with_measures": 5954.95,
+      "rest_of_uk": 5886.0
+    },
+    {
+      "year": 2027,
+      "gross": 43000,
+      "scotland_current_law": 6173.91,
+      "scotland_with_measures": 6164.95,
+      "rest_of_uk": 6086.0
+    },
+    {
+      "year": 2027,
+      "gross": 44000,
+      "scotland_current_law": 6454.89,
+      "scotland_with_measures": 6445.93,
+      "rest_of_uk": 6286.0
+    },
+    {
+      "year": 2027,
+      "gross": 45000,
+      "scotland_current_law": 6874.89,
+      "scotland_with_measures": 6865.93,
+      "rest_of_uk": 6486.0
+    },
+    {
+      "year": 2027,
+      "gross": 46000,
+      "scotland_current_law": 7294.89,
+      "scotland_with_measures": 7285.93,
+      "rest_of_uk": 6686.0
+    },
+    {
+      "year": 2027,
+      "gross": 47000,
+      "scotland_current_law": 7714.89,
+      "scotland_with_measures": 7705.93,
+      "rest_of_uk": 6886.0
+    },
+    {
+      "year": 2027,
+      "gross": 48000,
+      "scotland_current_law": 8134.89,
+      "scotland_with_measures": 8125.93,
+      "rest_of_uk": 7086.0
+    },
+    {
+      "year": 2027,
+      "gross": 49000,
+      "scotland_current_law": 8554.89,
+      "scotland_with_measures": 8545.93,
+      "rest_of_uk": 7286.0
+    },
+    {
+      "year": 2027,
+      "gross": 50000,
+      "scotland_current_law": 8974.89,
+      "scotland_with_measures": 8965.93,
+      "rest_of_uk": 7486.0
+    },
+    {
+      "year": 2027,
+      "gross": 51000,
+      "scotland_current_law": 9394.89,
+      "scotland_with_measures": 9385.93,
+      "rest_of_uk": 7832.0
+    },
+    {
+      "year": 2027,
+      "gross": 52000,
+      "scotland_current_law": 9814.89,
+      "scotland_with_measures": 9805.93,
+      "rest_of_uk": 8232.0
+    },
+    {
+      "year": 2027,
+      "gross": 53000,
+      "scotland_current_law": 10234.89,
+      "scotland_with_measures": 10225.93,
+      "rest_of_uk": 8632.0
+    },
+    {
+      "year": 2027,
+      "gross": 54000,
+      "scotland_current_law": 10654.89,
+      "scotland_with_measures": 10645.93,
+      "rest_of_uk": 9032.0
+    },
+    {
+      "year": 2027,
+      "gross": 55000,
+      "scotland_current_law": 11074.89,
+      "scotland_with_measures": 11065.93,
+      "rest_of_uk": 9432.0
+    },
+    {
+      "year": 2027,
+      "gross": 56000,
+      "scotland_current_law": 11494.89,
+      "scotland_with_measures": 11485.93,
+      "rest_of_uk": 9832.0
+    },
+    {
+      "year": 2027,
+      "gross": 57000,
+      "scotland_current_law": 11914.89,
+      "scotland_with_measures": 11905.93,
+      "rest_of_uk": 10232.0
+    },
+    {
+      "year": 2027,
+      "gross": 58000,
+      "scotland_current_law": 12334.89,
+      "scotland_with_measures": 12325.93,
+      "rest_of_uk": 10632.0
+    },
+    {
+      "year": 2027,
+      "gross": 59000,
+      "scotland_current_law": 12754.89,
+      "scotland_with_measures": 12745.93,
+      "rest_of_uk": 11032.0
+    },
+    {
+      "year": 2027,
+      "gross": 60000,
+      "scotland_current_law": 13174.89,
+      "scotland_with_measures": 13165.93,
+      "rest_of_uk": 11432.0
+    },
+    {
+      "year": 2027,
+      "gross": 61000,
+      "scotland_current_law": 13594.89,
+      "scotland_with_measures": 13585.93,
+      "rest_of_uk": 11832.0
+    },
+    {
+      "year": 2027,
+      "gross": 62000,
+      "scotland_current_law": 14014.89,
+      "scotland_with_measures": 14005.93,
+      "rest_of_uk": 12232.0
+    },
+    {
+      "year": 2027,
+      "gross": 63000,
+      "scotland_current_law": 14434.89,
+      "scotland_with_measures": 14425.93,
+      "rest_of_uk": 12632.0
+    },
+    {
+      "year": 2027,
+      "gross": 64000,
+      "scotland_current_law": 14854.89,
+      "scotland_with_measures": 14845.93,
+      "rest_of_uk": 13032.0
+    },
+    {
+      "year": 2027,
+      "gross": 65000,
+      "scotland_current_law": 15274.89,
+      "scotland_with_measures": 15265.93,
+      "rest_of_uk": 13432.0
+    },
+    {
+      "year": 2027,
+      "gross": 66000,
+      "scotland_current_law": 15694.89,
+      "scotland_with_measures": 15685.93,
+      "rest_of_uk": 13832.0
+    },
+    {
+      "year": 2027,
+      "gross": 67000,
+      "scotland_current_law": 16114.89,
+      "scotland_with_measures": 16105.93,
+      "rest_of_uk": 14232.0
+    },
+    {
+      "year": 2027,
+      "gross": 68000,
+      "scotland_current_law": 16534.89,
+      "scotland_with_measures": 16525.93,
+      "rest_of_uk": 14632.0
+    },
+    {
+      "year": 2027,
+      "gross": 69000,
+      "scotland_current_law": 16954.89,
+      "scotland_with_measures": 16945.93,
+      "rest_of_uk": 15032.0
+    },
+    {
+      "year": 2027,
+      "gross": 70000,
+      "scotland_current_law": 17374.89,
+      "scotland_with_measures": 17365.93,
+      "rest_of_uk": 15432.0
+    },
+    {
+      "year": 2027,
+      "gross": 71000,
+      "scotland_current_law": 17794.89,
+      "scotland_with_measures": 17785.93,
+      "rest_of_uk": 15832.0
+    },
+    {
+      "year": 2027,
+      "gross": 72000,
+      "scotland_current_law": 18214.89,
+      "scotland_with_measures": 18205.93,
+      "rest_of_uk": 16232.0
+    },
+    {
+      "year": 2027,
+      "gross": 73000,
+      "scotland_current_law": 18634.89,
+      "scotland_with_measures": 18625.93,
+      "rest_of_uk": 16632.0
+    },
+    {
+      "year": 2027,
+      "gross": 74000,
+      "scotland_current_law": 19054.89,
+      "scotland_with_measures": 19045.93,
+      "rest_of_uk": 17032.0
+    },
+    {
+      "year": 2027,
+      "gross": 75000,
+      "scotland_current_law": 19474.89,
+      "scotland_with_measures": 19465.93,
+      "rest_of_uk": 17432.0
+    },
+    {
+      "year": 2027,
+      "gross": 76000,
+      "scotland_current_law": 19924.89,
+      "scotland_with_measures": 19925.93,
+      "rest_of_uk": 17832.0
+    },
+    {
+      "year": 2027,
+      "gross": 77000,
+      "scotland_current_law": 20374.89,
+      "scotland_with_measures": 20385.93,
+      "rest_of_uk": 18232.0
+    },
+    {
+      "year": 2027,
+      "gross": 78000,
+      "scotland_current_law": 20824.89,
+      "scotland_with_measures": 20845.93,
+      "rest_of_uk": 18632.0
+    },
+    {
+      "year": 2027,
+      "gross": 79000,
+      "scotland_current_law": 21274.89,
+      "scotland_with_measures": 21305.93,
+      "rest_of_uk": 19032.0
+    },
+    {
+      "year": 2027,
+      "gross": 80000,
+      "scotland_current_law": 21724.89,
+      "scotland_with_measures": 21765.93,
+      "rest_of_uk": 19432.0
+    },
+    {
+      "year": 2027,
+      "gross": 81000,
+      "scotland_current_law": 22174.89,
+      "scotland_with_measures": 22225.93,
+      "rest_of_uk": 19832.0
+    },
+    {
+      "year": 2027,
+      "gross": 82000,
+      "scotland_current_law": 22624.89,
+      "scotland_with_measures": 22685.93,
+      "rest_of_uk": 20232.0
+    },
+    {
+      "year": 2027,
+      "gross": 83000,
+      "scotland_current_law": 23074.89,
+      "scotland_with_measures": 23145.93,
+      "rest_of_uk": 20632.0
+    },
+    {
+      "year": 2027,
+      "gross": 84000,
+      "scotland_current_law": 23524.89,
+      "scotland_with_measures": 23605.93,
+      "rest_of_uk": 21032.0
+    },
+    {
+      "year": 2027,
+      "gross": 85000,
+      "scotland_current_law": 23974.89,
+      "scotland_with_measures": 24065.93,
+      "rest_of_uk": 21432.0
+    },
+    {
+      "year": 2027,
+      "gross": 86000,
+      "scotland_current_law": 24424.89,
+      "scotland_with_measures": 24525.93,
+      "rest_of_uk": 21832.0
+    },
+    {
+      "year": 2027,
+      "gross": 87000,
+      "scotland_current_law": 24874.89,
+      "scotland_with_measures": 24985.93,
+      "rest_of_uk": 22232.0
+    },
+    {
+      "year": 2027,
+      "gross": 88000,
+      "scotland_current_law": 25324.89,
+      "scotland_with_measures": 25445.93,
+      "rest_of_uk": 22632.0
+    },
+    {
+      "year": 2027,
+      "gross": 89000,
+      "scotland_current_law": 25774.89,
+      "scotland_with_measures": 25905.93,
+      "rest_of_uk": 23032.0
+    },
+    {
+      "year": 2027,
+      "gross": 90000,
+      "scotland_current_law": 26224.89,
+      "scotland_with_measures": 26365.93,
+      "rest_of_uk": 23432.0
+    },
+    {
+      "year": 2027,
+      "gross": 91000,
+      "scotland_current_law": 26674.89,
+      "scotland_with_measures": 26825.93,
+      "rest_of_uk": 23832.0
+    },
+    {
+      "year": 2027,
+      "gross": 92000,
+      "scotland_current_law": 27124.89,
+      "scotland_with_measures": 27285.93,
+      "rest_of_uk": 24232.0
+    },
+    {
+      "year": 2027,
+      "gross": 93000,
+      "scotland_current_law": 27574.89,
+      "scotland_with_measures": 27745.93,
+      "rest_of_uk": 24632.0
+    },
+    {
+      "year": 2027,
+      "gross": 94000,
+      "scotland_current_law": 28024.89,
+      "scotland_with_measures": 28205.93,
+      "rest_of_uk": 25032.0
+    },
+    {
+      "year": 2027,
+      "gross": 95000,
+      "scotland_current_law": 28474.89,
+      "scotland_with_measures": 28665.93,
+      "rest_of_uk": 25432.0
+    },
+    {
+      "year": 2027,
+      "gross": 96000,
+      "scotland_current_law": 28924.89,
+      "scotland_with_measures": 29125.93,
+      "rest_of_uk": 25832.0
+    },
+    {
+      "year": 2027,
+      "gross": 97000,
+      "scotland_current_law": 29374.89,
+      "scotland_with_measures": 29585.93,
+      "rest_of_uk": 26232.0
+    },
+    {
+      "year": 2027,
+      "gross": 98000,
+      "scotland_current_law": 29824.89,
+      "scotland_with_measures": 30045.93,
+      "rest_of_uk": 26632.0
+    },
+    {
+      "year": 2027,
+      "gross": 99000,
+      "scotland_current_law": 30274.89,
+      "scotland_with_measures": 30505.93,
+      "rest_of_uk": 27032.0
+    },
+    {
+      "year": 2027,
+      "gross": 100000,
+      "scotland_current_law": 30724.89,
+      "scotland_with_measures": 30965.93,
+      "rest_of_uk": 27432.0
+    },
+    {
+      "year": 2027,
+      "gross": 101000,
+      "scotland_current_law": 31399.89,
+      "scotland_with_measures": 31655.93,
+      "rest_of_uk": 28032.0
+    },
+    {
+      "year": 2027,
+      "gross": 102000,
+      "scotland_current_law": 32074.89,
+      "scotland_with_measures": 32345.93,
+      "rest_of_uk": 28632.0
+    },
+    {
+      "year": 2027,
+      "gross": 103000,
+      "scotland_current_law": 32749.89,
+      "scotland_with_measures": 33035.93,
+      "rest_of_uk": 29232.0
+    },
+    {
+      "year": 2027,
+      "gross": 104000,
+      "scotland_current_law": 33424.89,
+      "scotland_with_measures": 33725.93,
+      "rest_of_uk": 29832.0
+    },
+    {
+      "year": 2027,
+      "gross": 105000,
+      "scotland_current_law": 34099.89,
+      "scotland_with_measures": 34415.93,
+      "rest_of_uk": 30432.0
+    },
+    {
+      "year": 2027,
+      "gross": 106000,
+      "scotland_current_law": 34774.89,
+      "scotland_with_measures": 35105.93,
+      "rest_of_uk": 31032.0
+    },
+    {
+      "year": 2027,
+      "gross": 107000,
+      "scotland_current_law": 35449.89,
+      "scotland_with_measures": 35795.93,
+      "rest_of_uk": 31632.0
+    },
+    {
+      "year": 2027,
+      "gross": 108000,
+      "scotland_current_law": 36124.89,
+      "scotland_with_measures": 36485.93,
+      "rest_of_uk": 32232.0
+    },
+    {
+      "year": 2027,
+      "gross": 109000,
+      "scotland_current_law": 36799.89,
+      "scotland_with_measures": 37175.93,
+      "rest_of_uk": 32832.0
+    },
+    {
+      "year": 2027,
+      "gross": 110000,
+      "scotland_current_law": 37474.89,
+      "scotland_with_measures": 37865.93,
+      "rest_of_uk": 33432.0
+    },
+    {
+      "year": 2027,
+      "gross": 111000,
+      "scotland_current_law": 38149.89,
+      "scotland_with_measures": 38555.93,
+      "rest_of_uk": 34032.0
+    },
+    {
+      "year": 2027,
+      "gross": 112000,
+      "scotland_current_law": 38824.89,
+      "scotland_with_measures": 39245.93,
+      "rest_of_uk": 34632.0
+    },
+    {
+      "year": 2027,
+      "gross": 113000,
+      "scotland_current_law": 39499.89,
+      "scotland_with_measures": 39935.93,
+      "rest_of_uk": 35232.0
+    },
+    {
+      "year": 2027,
+      "gross": 114000,
+      "scotland_current_law": 40174.89,
+      "scotland_with_measures": 40625.93,
+      "rest_of_uk": 35832.0
+    },
+    {
+      "year": 2027,
+      "gross": 115000,
+      "scotland_current_law": 40849.89,
+      "scotland_with_measures": 41315.93,
+      "rest_of_uk": 36432.0
+    },
+    {
+      "year": 2027,
+      "gross": 116000,
+      "scotland_current_law": 41524.89,
+      "scotland_with_measures": 42005.93,
+      "rest_of_uk": 37032.0
+    },
+    {
+      "year": 2027,
+      "gross": 117000,
+      "scotland_current_law": 42199.89,
+      "scotland_with_measures": 42695.93,
+      "rest_of_uk": 37632.0
+    },
+    {
+      "year": 2027,
+      "gross": 118000,
+      "scotland_current_law": 42874.89,
+      "scotland_with_measures": 43385.93,
+      "rest_of_uk": 38232.0
+    },
+    {
+      "year": 2027,
+      "gross": 119000,
+      "scotland_current_law": 43549.89,
+      "scotland_with_measures": 44075.93,
+      "rest_of_uk": 38832.0
+    },
+    {
+      "year": 2027,
+      "gross": 120000,
+      "scotland_current_law": 44224.89,
+      "scotland_with_measures": 44765.93,
+      "rest_of_uk": 39432.0
+    },
+    {
+      "year": 2027,
+      "gross": 121000,
+      "scotland_current_law": 44899.89,
+      "scotland_with_measures": 45455.93,
+      "rest_of_uk": 40032.0
+    },
+    {
+      "year": 2027,
+      "gross": 122000,
+      "scotland_current_law": 45574.89,
+      "scotland_with_measures": 46145.93,
+      "rest_of_uk": 40632.0
+    },
+    {
+      "year": 2027,
+      "gross": 123000,
+      "scotland_current_law": 46249.89,
+      "scotland_with_measures": 46835.93,
+      "rest_of_uk": 41232.0
+    },
+    {
+      "year": 2027,
+      "gross": 124000,
+      "scotland_current_law": 46924.89,
+      "scotland_with_measures": 47525.93,
+      "rest_of_uk": 41832.0
+    },
+    {
+      "year": 2027,
+      "gross": 125000,
+      "scotland_current_law": 47599.89,
+      "scotland_with_measures": 48215.93,
+      "rest_of_uk": 42432.0
+    },
+    {
+      "year": 2027,
+      "gross": 126000,
+      "scotland_current_law": 48107.2,
+      "scotland_with_measures": 48725.33,
+      "rest_of_uk": 42903.0
+    },
+    {
+      "year": 2027,
+      "gross": 127000,
+      "scotland_current_law": 48587.2,
+      "scotland_with_measures": 49205.33,
+      "rest_of_uk": 43353.0
+    },
+    {
+      "year": 2027,
+      "gross": 128000,
+      "scotland_current_law": 49067.2,
+      "scotland_with_measures": 49685.33,
+      "rest_of_uk": 43803.0
+    },
+    {
+      "year": 2027,
+      "gross": 129000,
+      "scotland_current_law": 49547.2,
+      "scotland_with_measures": 50165.33,
+      "rest_of_uk": 44253.0
+    },
+    {
+      "year": 2027,
+      "gross": 130000,
+      "scotland_current_law": 50027.2,
+      "scotland_with_measures": 50645.33,
+      "rest_of_uk": 44703.0
+    },
+    {
+      "year": 2027,
+      "gross": 131000,
+      "scotland_current_law": 50507.2,
+      "scotland_with_measures": 51125.33,
+      "rest_of_uk": 45153.0
+    },
+    {
+      "year": 2027,
+      "gross": 132000,
+      "scotland_current_law": 50987.2,
+      "scotland_with_measures": 51605.33,
+      "rest_of_uk": 45603.0
+    },
+    {
+      "year": 2027,
+      "gross": 133000,
+      "scotland_current_law": 51467.2,
+      "scotland_with_measures": 52085.33,
+      "rest_of_uk": 46053.0
+    },
+    {
+      "year": 2027,
+      "gross": 134000,
+      "scotland_current_law": 51947.2,
+      "scotland_with_measures": 52565.33,
+      "rest_of_uk": 46503.0
+    },
+    {
+      "year": 2027,
+      "gross": 135000,
+      "scotland_current_law": 52427.2,
+      "scotland_with_measures": 53045.33,
+      "rest_of_uk": 46953.0
+    },
+    {
+      "year": 2027,
+      "gross": 136000,
+      "scotland_current_law": 52907.2,
+      "scotland_with_measures": 53525.33,
+      "rest_of_uk": 47403.0
+    },
+    {
+      "year": 2027,
+      "gross": 137000,
+      "scotland_current_law": 53387.2,
+      "scotland_with_measures": 54005.33,
+      "rest_of_uk": 47853.0
+    },
+    {
+      "year": 2027,
+      "gross": 138000,
+      "scotland_current_law": 53867.2,
+      "scotland_with_measures": 54485.33,
+      "rest_of_uk": 48303.0
+    },
+    {
+      "year": 2027,
+      "gross": 139000,
+      "scotland_current_law": 54347.2,
+      "scotland_with_measures": 54965.33,
+      "rest_of_uk": 48753.0
+    },
+    {
+      "year": 2027,
+      "gross": 140000,
+      "scotland_current_law": 54827.2,
+      "scotland_with_measures": 55445.33,
+      "rest_of_uk": 49203.0
+    },
+    {
+      "year": 2027,
+      "gross": 141000,
+      "scotland_current_law": 55307.2,
+      "scotland_with_measures": 55925.33,
+      "rest_of_uk": 49653.0
+    },
+    {
+      "year": 2027,
+      "gross": 142000,
+      "scotland_current_law": 55787.2,
+      "scotland_with_measures": 56405.33,
+      "rest_of_uk": 50103.0
+    },
+    {
+      "year": 2027,
+      "gross": 143000,
+      "scotland_current_law": 56267.2,
+      "scotland_with_measures": 56885.33,
+      "rest_of_uk": 50553.0
+    },
+    {
+      "year": 2027,
+      "gross": 144000,
+      "scotland_current_law": 56747.2,
+      "scotland_with_measures": 57365.33,
+      "rest_of_uk": 51003.0
+    },
+    {
+      "year": 2027,
+      "gross": 145000,
+      "scotland_current_law": 57227.2,
+      "scotland_with_measures": 57845.33,
+      "rest_of_uk": 51453.0
+    },
+    {
+      "year": 2027,
+      "gross": 146000,
+      "scotland_current_law": 57707.2,
+      "scotland_with_measures": 58325.33,
+      "rest_of_uk": 51903.0
+    },
+    {
+      "year": 2027,
+      "gross": 147000,
+      "scotland_current_law": 58187.2,
+      "scotland_with_measures": 58805.33,
+      "rest_of_uk": 52353.0
+    },
+    {
+      "year": 2027,
+      "gross": 148000,
+      "scotland_current_law": 58667.2,
+      "scotland_with_measures": 59285.33,
+      "rest_of_uk": 52803.0
+    },
+    {
+      "year": 2027,
+      "gross": 149000,
+      "scotland_current_law": 59147.2,
+      "scotland_with_measures": 59765.33,
+      "rest_of_uk": 53253.0
+    },
+    {
+      "year": 2027,
+      "gross": 150000,
+      "scotland_current_law": 59627.2,
+      "scotland_with_measures": 60245.33,
+      "rest_of_uk": 53703.0
+    }
+  ]
 }
