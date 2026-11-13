@@ -18,6 +18,6 @@ Times, SHAs, versions, build id and pass/fail only. No packet content.
 | Correction received | 15:15:08 | 15:15:08 | - | - | sha256 PASS; code commit d9603f4 |
 | G5 (due 15:35) | 15:15 | 15:24 (combine), posted 15:27 | 8 min (2 reruns 15:16:01-15:20:35, final package to 15:24:00, peak 18.1 GB) | 3 min | 5ad5374 (results 2a32e4c4); scoring run 2 |
 | G4 (due 15:40) | 15:24 | 15:26 | 1 min (build + start + smoke under the lock) | 1 min | 5ad5374: smoke PASS, MOCK banner PASS, robots noindex,nofollow,nocache PASS, X-Robots-Tag noindex,nofollow PASS; server stopped, lock released |
-| Stop | | | | | |
+| Stop | 15:26 | 15:27 | - | 1 min | 46be826 (stop commit; FREEZE.txt sha256 c8dd142b8426783dffb7eeb384ac874261fbd6bf3d5408fec26e1a6e3fb68ed2) |
 
 Releases: 01-statement 14:00:06, sha256 PASS. 02-documents, 02-costings, 02-households, 02-scoring-sheet 14:40:13, sha256 4/4 PASS. 03-correction-notice 15:15:08, sha256 PASS. Non-scoring recombines after G3: a6ba6c5 (results e21ce778), 228a4ef (results d29f4471), same figures as run 1.
