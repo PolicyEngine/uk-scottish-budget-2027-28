@@ -49,8 +49,8 @@ def test_docs_state_the_pinned_pair():
 
 def test_label_and_pinned_dataset():
     assert LABEL == (
-        "build uk-frs-calibration-attempt-20261110T204756Z-9e18f010, "
-        "policyengine-uk 2.177.7, not in a policyengine.py release"
+        f"build {DATA_BUILD.id}, policyengine-uk {DATA_BUILD.engine}, "
+        "not in a policyengine.py release"
     )
     pinned = pinned_dataset()
     assert pinned["repo_id"] == "policyengine/populace-uk-private"
