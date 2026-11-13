@@ -1,0 +1,31 @@
+measure_id,year,official_value_bn,official_source,basis,reason,cause
+starter_basic_thresholds,2027,-0.024,mock costings S1,"post-behavioural; accrued; fiscal year; baseline holds 2026-27 thresholds in cash","Ours is static on the same re-based baseline (2026-27 thresholds held in cash); the costing includes behaviour.",basis
+starter_basic_thresholds,2028,-0.026,mock costings S1,"post-behavioural; accrued; fiscal year; baseline holds 2026-27 thresholds in cash","Ours is static and assumes the 2027-28 thresholds are held in 2028-29 (the statement gives no 2028-29 value); the costing includes behaviour.",basis
+upper_thresholds_frozen,2027,0,mock costings S2,in the baseline,Trap row: already current law; not costed.,baseline_mismatch
+upper_thresholds_frozen,2028,0,mock costings S2,in the baseline,Trap row: already current law; not costed.,baseline_mismatch
+advanced_rate_plus_1p,2027,0.027,mock costings S3,"post-behavioural; accrued; fiscal year","Ours is static, as declared; the costing includes the behavioural response of advanced-rate taxpayers (taxable income elasticity), which roughly halves a static yield at this income level.",basis
+advanced_rate_plus_1p,2028,0.029,mock costings S3,"post-behavioural; accrued; fiscal year","Ours is static, as declared; the costing includes the behavioural response of advanced-rate taxpayers (taxable income elasticity), which roughly halves a static yield at this income level.",basis
+scottish_property_income_rates,2027,0.033,mock costings S4,"post-behavioural; accrued; fiscal year","Ours is static, as declared; the costing includes behaviour (incorporation, timing of property income). Scottish property income also rests on few survey records.",basis
+scottish_property_income_rates,2028,0.037,mock costings S4,"post-behavioural; accrued; fiscal year","Ours is static, as declared; the costing includes behaviour (incorporation, timing of property income). Scottish property income also rests on few survey records.",basis
+lbtt_ads_increase,2027,0.045,mock costings S5,"post-behavioural; cash; fiscal year",Within 10%.,
+lbtt_ads_increase,2028,0.047,mock costings S5,"post-behavioural; cash; fiscal year",Within 10%.,
+non_domestic_rates,2027,-0.023,mock costings S6,"post-behavioural; cash; fiscal year; against CPI-linked poundage",Business tax outside the model; official costing recorded.,coverage
+non_domestic_rates,2028,-0.024,mock costings S6,"post-behavioural; cash; fiscal year; against CPI-linked poundage",Business tax outside the model; official costing recorded.,coverage
+air_departure_tax,2027,0,mock costings S7,in the baseline,Not a household tax in the model; official costing recorded (nil).,coverage
+air_departure_tax,2028,0,mock costings S7,in the baseline,Not a household tax in the model; official costing recorded (nil).,coverage
+council_tax_freeze,2027,-0.151,mock costings S8,spending: grant to councils,"Different measures of the same freeze: ours is the static fall in Scottish household council tax bills (gross, before council tax reduction effects on the grant); the costing is the grant paid to councils.",basis
+council_tax_freeze,2028,,mock costings S8,spending: grant to councils; 2028-29 not yet decided,No official figure for 2028-29; ours carries the 2027-28 freeze forward in the bill level.,timing_fiscal_calendar
+council_tax_bands_i_j,2027,0,mock costings S9,"post-behavioural; cash; yield to councils",Applies from 2028-29.,coverage
+council_tax_bands_i_j,2028,0.021,mock costings S9,"post-behavioural; cash; yield to councils",Not computable: no homes valued over £1m or £2m (Bands I and J) in the data; published with the reason.,coverage
+scottish_benefits_uprating,2027,0,mock costings S10,in the baseline: statutory uprating,Trap row: already current law; not costed.,baseline_mismatch
+scottish_benefits_uprating,2028,0,mock costings S10,in the baseline: statutory uprating,Trap row: already current law; not costed.,baseline_mismatch
+scp_under_one_premium,2027,-0.007,mock costings S11,spending; take-up as in the SCP forecast,"Ours uses the model's modelled take-up and its count of Scottish children under one on qualifying benefits; the costing uses the SCP forecast's take-up and caseload.",data_calibration
+scp_under_one_premium,2028,-0.007,mock costings S11,spending; take-up as in the SCP forecast,"Ours uses the model's modelled take-up and its count of Scottish children under one on qualifying benefits; the costing uses the SCP forecast's take-up and caseload.",data_calibration
+young_parent_top_up,2027,-0.005,mock costings S12,spending; take-up as in the SCP forecast,"Same part year (188/366) as the costing. Parents under 25 receiving SCP are thin in the survey and the model's SCP take-up differs from the SCP forecast, so the caseload is lower.",data_calibration
+young_parent_top_up,2028,-0.011,mock costings S12,spending; take-up as in the SCP forecast,"Parents under 25 receiving SCP are thin in the survey and the model's SCP take-up differs from the SCP forecast, so the caseload is lower.",data_calibration
+adp_changes,2027,0,mock costings S13,spending,Applies from 2028-29.,coverage
+adp_changes,2028,-0.012,mock costings S13,spending,Not computable: ADP is carried as PIP and the mobility descriptors are not in the data; published with the reason.,coverage
+energy_payment_bands_a_d,2027,0,mock costings S14,spending; paid by 31 March 2027,"Nothing in 2027-28: the payment falls in 2026-27 (costing -189m). Model estimate for 2026-27, outside the scored years: -185m (1.85m households).",timing_fiscal_calendar
+energy_payment_bands_a_d,2028,0,mock costings S14,spending; paid by 31 March 2027,Nothing in 2028-29.,timing_fiscal_calendar
+bus_fare_cap,2027,-0.018,mock costings S15,spending,Spending outside the model; official costing recorded.,coverage
+bus_fare_cap,2028,-0.019,mock costings S15,spending,Spending outside the model; official costing recorded.,coverage
