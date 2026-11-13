@@ -14,7 +14,7 @@ Times, SHAs, versions, build id and pass/fail only. No packet content.
 | G1 | 14:00 | 14:02 | 0 min | 2 min | 2ca5309 |
 | G2 | 14:02 | 14:24 | 19 min (7 measures + package, peak 17.8 GB, lock held 14:02:53-14:21:51) | 5 min | 6265874 (results 47ae634a) |
 | Documents received | 14:40:13 | 14:40:13 | - | - | sha256 4/4 PASS |
-| G3 | | | | | |
+| G3 | 14:40 | 14:52 | 8 min (2 reruns 14:41-14:46, final package 14:46-14:49, peak 17.9 GB) | 4 min | 2c6cded (results fdf0242f); scoring run 1 |
 | Correction received | | | | | |
 | G5 (due 15:35) | | | | | |
 | G4 (due 15:40) | | | | | |
