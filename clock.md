@@ -13,11 +13,11 @@ Times, SHAs, versions, build id and pass/fail only. No packet content.
 | G0 | 13:02 | 13:03 (posted) | 1 min | 1 min | e29990f |
 | G1 | 14:00 | 14:02 | 0 min | 2 min | 2ca5309 |
 | G2 | 14:02 | 14:24 | 19 min (7 measures + package, peak 17.8 GB, lock held 14:02:53-14:21:51) | 5 min | 6265874 (results 47ae634a) |
-| Documents received | | | | | |
+| Documents received | 14:40:13 | 14:40:13 | - | - | sha256 4/4 PASS |
 | G3 | | | | | |
 | Correction received | | | | | |
 | G5 (due 15:35) | | | | | |
 | G4 (due 15:40) | | | | | |
 | Stop | | | | | |
 
-Releases: 01-statement 14:00:06, sha256 PASS.
+Releases: 01-statement 14:00:06, sha256 PASS. 02-documents, 02-costings, 02-households, 02-scoring-sheet 14:40:13, sha256 4/4 PASS.
