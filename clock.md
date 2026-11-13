@@ -10,7 +10,7 @@ Times, SHAs, versions, build id and pass/fail only. No packet content.
 
 | Step | Start | End | Machine time | People time | SHA |
 |---|---|---|---|---|---|
-| G0 | 13:02 | 13:10 | 1 min | 7 min | e29990f |
+| G0 | 13:02 | 13:03 (posted) | 1 min | 1 min | e29990f |
 | G1 | | | | | |
 | G2 | | | | | |
 | Documents received | | | | | |
