@@ -23,11 +23,12 @@ import json
 from pathlib import Path
 
 from scottish_budget import __version__
+from scottish_budget.data_build import DATA_BUILD, LABEL
 from scottish_budget.data_limits import blocking_limits
 from scottish_budget.engine import (
-    bundle_dataset,
     git_identity,
     installed_versions,
+    pinned_dataset,
 )
 from scottish_budget.forecast import forecast_record
 from scottish_budget.household import presets
@@ -43,14 +44,16 @@ from scottish_budget.years import BASIS, POLICY_YEARS, fiscal_year_label
 ROOT = Path(__file__).resolve().parents[2]
 PARTIAL_DIR = ROOT / "data_outputs" / "partials"
 
-# The certified pair in the lock file, for the placeholder file only. A
-# model run records what is installed (``installed_versions``) and what the
-# simulation loaded (the partials' provenance). tests/test_provenance.py
-# checks these against uv.lock.
+# The pinned pair (``data_build.DATA_BUILD``), for the placeholder file
+# only. A model run records what is installed (``installed_versions``) and
+# what the simulation loaded (the partials' provenance).
+# tests/test_provenance.py checks these against uv.lock. No policyengine.py
+# release covers the pair, so ``policyengine`` is None.
 LOCKED_ENGINE = {
-    "policyengine": "6.17.2",
-    "policyengine_uk": "2.174.1",
-    "dataset": "microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+    "policyengine": None,
+    "policyengine_uk": DATA_BUILD.engine,
+    "dataset": DATA_BUILD.id,
+    "engine_label": LABEL,
 }
 
 ROUTE_LABELS = {
@@ -317,6 +320,7 @@ def _engine_meta(partials: dict[str, dict]) -> dict:
         "policyengine_core": versions.get("policyengine-core"),
         "dataset": provenance.get("runtime_dataset_revision") or name,
         "dataset_sha256": sha,
+        "engine_label": provenance.get("label"),
     }
 
 
@@ -454,7 +458,7 @@ def combine(
         **git_identity(),
         "generated_at": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         "versions": installed_versions(),
-        "bundle_dataset": bundle_dataset(),
+        "pinned_dataset": pinned_dataset(),
         "dataset": engine["dataset"],
         "dataset_sha256": engine["dataset_sha256"],
         "measures_scored": [m.id for m in scored],

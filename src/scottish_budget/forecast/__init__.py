@@ -2,7 +2,7 @@
 
 Copied from the Autumn Budget 2026 dashboard (``uk_budget_data.forecast``).
 policyengine-uk 2.151.0 shipped the OBR's March 2026 forecast; 2.174.1
-ships October 2026 for the main series, so most overlay values now equal the
+(and 2.177.7, which this repo runs) ships October 2026 for the main series, so most overlay values now equal the
 engine's (docs/METHOD.md). This repo scores on the OBR's October 2026 forecast (``obr_october_2026.json``,
 the same file the Autumn Budget dashboard uses): its growth rates go into
 every simulation, the baseline and the reform alike, through

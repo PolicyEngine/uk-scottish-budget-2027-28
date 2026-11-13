@@ -69,7 +69,7 @@ jobs:
           save-cache: false
       - name: Install with the model extra (lockfile must be current)
         run: uv sync --locked --extra dev --extra model
-      - name: Check access to the bundle's certified data and its SHA-256
+      - name: Check access to the pinned Microcosm build and its SHA-256
         run: uv run python -m scottish_budget.certified_data
 
   dashboard:

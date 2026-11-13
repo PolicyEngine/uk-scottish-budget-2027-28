@@ -23,9 +23,12 @@ The figures will come from PolicyEngine UK, a static microsimulation model of th
 
 | Component | Version |
 |---|---|
-| policyengine (Python) | 6.17.2 (certified bundle; `uv.lock`) |
-| policyengine-uk | 2.174.1 (pinned by the bundle) |
-| Microcosm | `microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e` |
+| policyengine-uk | 2.177.7 (`uv.lock`; the version the build below was made on) |
+| policyengine-core | 3.34.10 (likewise) |
+| Microcosm | build `uk-frs-calibration-attempt-20261110T204756Z-9e18f010` (SHA-256 `adb6204d0af5…`) |
+| policyengine.py | not used: no release covers this pair |
+
+Every figure is labelled "build uk-frs-calibration-attempt-20261110T204756Z-9e18f010, policyengine-uk 2.177.7, not in a policyengine.py release".
 | Forecast | OBR October 2026, applied to every simulation |
 
 `docs/METHOD.md` explains the pin and what it lacks; a run records what it actually loaded in `receipt.json`.

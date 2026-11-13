@@ -9,7 +9,11 @@ from scottish_budget import pipeline, reforms
 from scottish_budget.publication import validate_results
 from scottish_budget.years import POLICY_YEARS
 
-SHA = "0a9b77db1c0dee2693cb2d47bad68da34cb662916eee4829942bcd45de581f25"
+SHA = "adb6204d0af5e08a42cccec81250ce116518687f964e31c654a17d658b3416e8"
+BUILD = "uk-frs-calibration-attempt-20261110T204756Z-9e18f010"
+LABEL = (
+    f"build {BUILD}, policyengine-uk 2.177.7, not in a policyengine.py release"
+)
 
 
 def _partial(measure_id):
@@ -43,14 +47,15 @@ def _partial(measure_id):
         ],
         "poverty": [],
         "versions": {
-            "policyengine": "6.17.2",
-            "policyengine-uk": "2.174.1",
-            "policyengine-core": "3.33.3",
+            "policyengine": None,
+            "policyengine-uk": "2.177.7",
+            "policyengine-core": "3.34.10",
         },
         "provenance": {
-            "runtime_dataset": "microcosm_uk_2024_25",
-            "runtime_dataset_revision": "microcosm-eeb6093e",
+            "runtime_dataset": BUILD,
+            "runtime_dataset_revision": BUILD,
             "runtime_dataset_sha256": SHA,
+            "label": LABEL,
         },
     }
 
@@ -104,6 +109,8 @@ def test_provisional_file_passes_validation(day):
     assert results["meta"]["status"] == "provisional"
     assert results["meta"]["placeholder"] is False
     assert results["meta"]["dataset_sha256"] == SHA
+    assert results["meta"]["dataset"] == BUILD
+    assert results["meta"]["engine_label"] == LABEL
     statuses = {m["id"]: m["status"] for m in results["measures"]}
     # Provisional mode never marks a measure published, signed off or not.
     assert statuses["starter_basic_thresholds"] == "provisional"
