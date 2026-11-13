@@ -9,8 +9,8 @@ from scottish_budget import pipeline, reforms
 from scottish_budget.publication import validate_results
 from scottish_budget.years import POLICY_YEARS
 
-SHA = "adb6204d0af5e08a42cccec81250ce116518687f964e31c654a17d658b3416e8"
-BUILD = "uk-frs-calibration-attempt-20261110T204756Z-9e18f010"
+SHA = "e268e3af7932784ad4471f008097a5acc6c3c5bc15c4c54fbb5a489b2a0ac9ae"
+BUILD = "uk-frs-calibration-attempt-20261112T133744Z-6f918b81"
 LABEL = (
     f"build {BUILD}, policyengine-uk 2.177.7, not in a policyengine.py release"
 )

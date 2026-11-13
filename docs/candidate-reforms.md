@@ -1,6 +1,6 @@
 # Candidate reforms
 
-Ranked by likelihood. Routes were written for policyengine-uk 2.151.0 (the bundle then; the repo now runs 2.177.7 with Microcosm build 9e18f010) unless stated; every modifier named here also runs on 2.175.4 and 2.177.7 (`pytest -m engine`). Every entry in `reforms.py` is a placeholder until the Budget is published.
+Ranked by likelihood. Routes were written for policyengine-uk 2.151.0 (the bundle then; the repo now runs 2.177.7 with Microcosm build 6f918b81) unless stated; every modifier named here also runs on 2.175.4 and 2.177.7 (`pytest -m engine`). Every entry in `reforms.py` is a placeholder until the Budget is published.
 
 | # | Measure | Likelihood | Plausible range | Route | Data or model need |
 |---|---|---|---|---|---|

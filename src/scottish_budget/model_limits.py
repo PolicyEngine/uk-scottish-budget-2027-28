@@ -12,7 +12,7 @@ matter (issue #1):
   household energy payment, 24/44/49 property rates). policyengine.py
   6.17.2 pins 2.174.1 with Microcosm eeb6093e (this repo's pair until 13
   November 2026). This repo now runs 2.177.7 with Microcosm build
-  uk-frs-calibration-attempt-20261110T204756Z-9e18f010, the version that
+  uk-frs-calibration-attempt-20261112T133744Z-6f918b81, the version that
   build was made on (``data_build.DATA_BUILD``); no policyengine.py
   release covers that pair.
 

@@ -27,7 +27,7 @@ One measure took 2 min 16 s and peaked at 11.3 GB resident (6 November, 6.14.0 o
 
 | Gate | When | What | Command |
 |---|---|---|---|
-| G0 | by T−60 | Freeze record in the PR: start SHA, policyengine, policyengine-uk and core versions, dataset name and SHA-256 (must be the pinned build's), `engine_matches_build: true`, and the label "build uk-frs-calibration-attempt-20261110T204756Z-9e18f010, policyengine-uk 2.177.7, not in a policyengine.py release" | `uv run --extra model scottish-budget freeze` |
+| G0 | by T−60 | Freeze record in the PR: start SHA, policyengine, policyengine-uk and core versions, dataset name and SHA-256 (must be the pinned build's), `engine_matches_build: true`, and the label "build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release" | `uv run --extra model scottish-budget freeze` |
 | G1 | T+0 to T+10 | Coverage ledger: every statement line gets a route and a cause class (`docs/candidate-reforms.md` lists the expected lines). Trap rows (already in the baseline) are recorded, not costed. Set each kept measure's values and `placeholder=False`; delete entries the statement does not have | |
 | G2 | T+30 | Provisional numbers, and one hand-checked example household per coded measure (`data_inputs/household_fixtures/`) | `generate --reforms ID` per measure, `generate --package provisional`, `combine --provisional` |
 | G3 | documents + 30 min | Re-base and reconcile against the Scottish Fiscal Commission's costings in `data_inputs/official/sfc_costings_2027_28.csv`. Each gap over 10% gets a written reason and a cause class. Then set `publish=True` for each reconciled measure | `scottish-budget reconcile --official data_inputs/official/sfc_costings_2027_28.csv` |
