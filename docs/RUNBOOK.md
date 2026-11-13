@@ -11,13 +11,13 @@ One integrator pushes. Everyone else posts defects as PR comments within 5 minut
 
 ## Heavy runs
 
-Anything that loads Microcosm (`generate --reforms`, `generate --package`) or runs a Next.js production build takes the lock and waits for free memory first. One measure per process; the next waits for the lock.
+Anything that loads Microcosm (`generate --reforms`, `generate --package`) or runs a Next.js production build takes the machine-wide lock and waits for 22 GB of free+inactive memory first. The lock is a file holding "<pid> <label>", created with noclobber (`set -C`) and removed only by the process that wrote it; never delete a lock you do not own. One measure per process; the next waits for the lock.
 
 ```
-until mkdir /tmp/pe-heavy.lock 2>/dev/null; do sleep 15; done
-trap 'rmdir /tmp/pe-heavy.lock' EXIT
-free_gb() { vm_stat | awk '/Pages free/ {f=$3} /Pages inactive/ {i=$3} END {print int((f+i)*16384/1e9)}'; }
-until [ "$(free_gb)" -ge 14 ]; do sleep 30; done
+until ( set -C; echo "$$ scottish-budget-manual" > /tmp/pe-heavy.lock ) 2>/dev/null; do sleep 15; done
+trap '[ "$(cut -d" " -f1 /tmp/pe-heavy.lock 2>/dev/null)" = "$$" ] && rm -f /tmp/pe-heavy.lock' EXIT
+free_gb() { vm_stat | awk '/page size of/ {p=$8} /Pages free/ {f=$3} /Pages inactive/ {i=$3} END {print int((f+i)*p/1e9)}'; }
+until [ "$(free_gb)" -ge 22 ]; do sleep 30; done
 uv run --extra model scottish-budget generate --reforms <measure id>
 ```
 

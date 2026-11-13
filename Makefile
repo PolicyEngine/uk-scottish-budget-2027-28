@@ -1,9 +1,14 @@
-# Shortcuts. Heavy targets (measures, package, build) take the lock and
-# wait for 14 GB of free memory first (docs/RUNBOOK.md).
+# Shortcuts. Heavy targets (measures, package, build) take the machine-wide
+# lock, a FILE holding "<pid> <label>" created with noclobber and removed only
+# by its owner, then wait for 22 GB free+inactive memory (docs/RUNBOOK.md).
+# HEAVY_LOCK and MIN_FREE_GB are variables only so the macro can be tested
+# against a scratch path; never change them for a real run.
 
-LOCK = until mkdir /tmp/pe-heavy.lock 2>/dev/null; do sleep 15; done; \
-	trap 'rmdir /tmp/pe-heavy.lock' EXIT; \
-	until [ "$$(vm_stat | awk '/Pages free/ {f=$$3} /Pages inactive/ {i=$$3} END {print int((f+i)*16384/1e9)}')" -ge 14 ]; do sleep 30; done;
+HEAVY_LOCK ?= /tmp/pe-heavy.lock
+MIN_FREE_GB ?= 22
+LOCK = until ( set -C; echo "$$$$ scottish-budget-$@" > $(HEAVY_LOCK) ) 2>/dev/null; do sleep 15; done; \
+	trap '[ "$$(cut -d" " -f1 $(HEAVY_LOCK) 2>/dev/null)" = "$$$$" ] && rm -f $(HEAVY_LOCK)' EXIT; \
+	until [ "$$(vm_stat | awk '/page size of/ {p=$$8} /Pages free/ {f=$$3} /Pages inactive/ {i=$$3} END {print int((f+i)*p/1e9)}')" -ge $(MIN_FREE_GB) ]; do sleep 30; done;
 
 .PHONY: help install test engine-test lint format placeholder fixtures measures package combine build smoke
 
