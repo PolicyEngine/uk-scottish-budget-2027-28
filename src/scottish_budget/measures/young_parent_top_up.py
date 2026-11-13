@@ -15,8 +15,13 @@ the day.
 from scottish_budget.formula_tools import call_formula, replace_formula
 
 
-def young_parent_top_up(sim, weekly_amount=10.0, max_age=25, start_year=2027):
-    """``weekly_amount`` a week to eligible young parents' benefit units."""
+def young_parent_top_up(
+    sim, weekly_amount=10.0, max_age=25, start_year=2027, first_year_weeks=26
+):
+    """``weekly_amount`` a week to each Scottish benefit unit that receives
+    Scottish Child Payment and has an adult under ``max_age``, paid to the
+    benefit unit head. The first year counts ``first_year_weeks`` weeks
+    (1 October 2027 to 31 March 2028), later years 52."""
     if weekly_amount < 0:
         raise ValueError("weekly_amount is not negative")
     native = sim.tax_benefit_system.get_variable("scottish_child_payment")
@@ -28,18 +33,18 @@ def young_parent_top_up(sim, weekly_amount=10.0, max_age=25, start_year=2027):
         current = call_formula(native, person, period, parameters)
         if period.start.year < start_year:
             return current
+        weeks = first_year_weeks if period.start.year == start_year else 52
         benunit = person.benunit
         young_adult = person("is_adult", period) & (
             person("age", period) < max_age
         )
         eligible = (
             person("is_benunit_head", period)
-            & (benunit("universal_credit", period) > 0)
-            & (benunit.sum(person("is_child", period)) > 0)
+            & (benunit.sum(current) > 0)
             & benunit.any(young_adult)
             & (person.household("country", period) == country_enum.SCOTLAND)
         )
-        return current + eligible * weekly_amount * 52
+        return current + eligible * weekly_amount * weeks
 
     replace_formula(sim, "scottish_child_payment", formula)
     return sim

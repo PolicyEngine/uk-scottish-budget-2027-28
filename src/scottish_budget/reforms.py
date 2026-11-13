@@ -24,14 +24,8 @@ from scottish_budget.measure_templates import (
     switch_change,
     threshold_change,
 )
-from scottish_budget.measures.benefit_cap_mitigation import (
-    benefit_cap_mitigation,
-)
 from scottish_budget.measures.council_tax_freeze import (
     council_tax_growth_change,
-)
-from scottish_budget.measures.energy_payment_scotland import (
-    energy_payment_scotland,
 )
 from scottish_budget.measures.scottish_property_rates import (
     scottish_property_rates,
@@ -124,7 +118,7 @@ MEASURES: tuple[Measure, ...] = (
             name="Starter and basic rate thresholds raised",
             description=(
                 "Top of the starter band to £17,116 and top of the basic "
-                "band to £30,559, both held in 2028-29."
+                "band to £30,559 from April 2027."
             ),
             parameter_changes={
                 **threshold_change(f"{SCOT_RATES}[1].threshold", _flat(4_546)),
@@ -139,24 +133,24 @@ MEASURES: tuple[Measure, ...] = (
         topic="income_tax",
         basis_note=(
             "Measured against thresholds uprated by CPI on the October 2026 "
-            "forecast."
+            "forecast. 2028-29 assumes the thresholds stay at the 2027-28 "
+            "level, as the statement gives no 2028-29 value."
         ),
         internal_note=(
-            "Thresholds are entered above the personal allowance. Baseline "
-            "4,046 / 17,295 on 2.151.0 with the March forecast; 4,103 / "
-            "17,536 with the October forecast overlay or on 2.165.1+ "
-            "(forecast vintage, not a model change)."
+            "Entered above the personal allowance: 17,116 - 12,570 = 4,546; "
+            "30,559 - 12,570 = 17,989. Baseline 4,103 / 17,536 (2027)."
         ),
         issues=(1,),
-        placeholder_sign=-1,
+        placeholder=False,
     ),
     Measure(
         reform=Reform(
             id="upper_thresholds_frozen",
-            name="Higher, advanced and top thresholds frozen",
+            name="Higher, advanced and top thresholds held",
             description=(
                 "The higher, advanced and top rate thresholds stay at "
-                "£43,662, £75,000 and £125,140 to 2028-29."
+                "£43,662, £75,000 and £125,140 (rates start at £43,663, "
+                "£75,001 and £125,141) in 2027-28 and 2028-29."
             ),
         ),
         route="ledger",
@@ -169,33 +163,15 @@ MEASURES: tuple[Measure, ...] = (
         internal_note="Trap row: record in the ledger, do not cost.",
         in_baseline=True,
         calculator=False,
+        placeholder=False,
     ),
     Measure(
         reform=Reform(
-            id="new_band_before_higher",
-            name="New band before the higher rate",
-            description=(
-                "A new band between the intermediate and higher rates."
-            ),
-        ),
-        route="dashboard-structural",
-        cause="formula",
-        likelihood="low",
-        topic="income_tax",
-        basis_note="",
-        internal_note=(
-            "Bracket insert into the Scottish scale: parameter changes "
-            "cannot add a bracket, so it needs a modifier in measures/."
-        ),
-        placeholder_sign=1,
-    ),
-    Measure(
-        reform=Reform(
-            id="intermediate_rate_plus_1p",
-            name="Intermediate rate up 1p",
-            description="Intermediate rate from 21% to 22%.",
+            id="advanced_rate_plus_1p",
+            name="Advanced rate up 1p",
+            description="Advanced rate from 45% to 46% from April 2027.",
             parameter_changes=rate_change(
-                f"{SCOT_RATES}[2].rate", _flat(0.22)
+                f"{SCOT_RATES}[4].rate", _flat(0.46)
             ),
         ),
         route="dashboard-param",
@@ -203,19 +179,19 @@ MEASURES: tuple[Measure, ...] = (
         likelihood="low",
         topic="income_tax",
         basis_note=(
-            "Static. Official costings include behaviour, so expect this "
-            "figure to be larger."
+            "Static: no behavioural response. Costings that include "
+            "behaviour will be smaller."
         ),
         issues=(7,),
-        placeholder_sign=1,
+        placeholder=False,
     ),
     Measure(
         reform=Reform(
             id="scottish_property_income_rates",
             name="Scottish property income rates",
             description=(
-                "Rates on property income set 2p above the main Scottish "
-                "rates from 2027-28."
+                "Property income of Scottish taxpayers taxed at each "
+                "Scottish rate plus 2p from April 2027."
             ),
             simulation_modifier=scottish_property_rates,
         ),
@@ -225,93 +201,74 @@ MEASURES: tuple[Measure, ...] = (
         topic="income_tax",
         basis_note="",
         internal_note=(
-            "No Scottish property rate parameter on any release (issue #2): "
-            "measures/scottish_property_rates.py adds a uniform add-on to "
-            "property_income_tax for Scottish taxpayers."
+            "No Scottish property rate parameter (issue #2): "
+            "measures/scottish_property_rates.py adds 2p on taxable "
+            "property income after allowances for Scottish taxpayers."
         ),
         issues=(2,),
         data_limits=("thin_scottish_property_income",),
-        placeholder_sign=1,
+        placeholder=False,
     ),
     Measure(
         reform=Reform(
-            id="scp_increase",
-            name="Scottish Child Payment raised",
+            id="lbtt_ads_increase",
+            name="Additional Dwelling Supplement raised",
             description=(
-                "Scottish Child Payment of £30.00 a week in 2027-28, "
-                "uprated in 2028-29."
+                "Additional Dwelling Supplement on second homes and buy-to-"
+                "let purchases from 8% to 10%, from 4 December 2026."
             ),
-            parameter_changes=threshold_change(
-                f"{SCP}.amount", _years(30.00, 31.05)
+            parameter_changes=rate_change(
+                f"{LBTT}.additional_residence_surcharge", _flat(0.10)
             ),
         ),
         route="dashboard-param",
         cause="parameter",
-        likelihood="medium",
-        topic="social_security",
+        likelihood="low",
+        topic="property_tax",
         basis_note=(
-            "Measured against CPI uprating to £29.20 a week, which is "
-            "already current law."
+            "Static: the number of purchases does not change. Purchases "
+            "are modelled, not observed. The part of 2026-27 from "
+            "4 December 2026 is not costed here."
         ),
-        internal_note="Weekly amount; rounded to 5p.",
-        placeholder_sign=-1,
+        calculator=False,
+        placeholder=False,
     ),
     Measure(
         reform=Reform(
-            id="scp_under_one_premium",
-            name="Scottish Child Payment premium for children under one",
+            id="non_domestic_rates",
+            name="Non-domestic rates held",
             description=(
-                "£40 a week for each child under one from 2027-28, uprated "
-                "in 2028-29."
+                "Basic, intermediate and higher property rates held at "
+                "48.1p, 53.5p and 54.8p."
             ),
-            parameter_changes={
-                **switch_change(f"{SCP_CONTRIB}.in_effect", _flat(True)),
-                **threshold_change(
-                    f"{SCP_CONTRIB}.under_one", _years(40.00, 41.35)
-                ),
-            },
         ),
-        route="dashboard-param",
-        cause="timing_fiscal_calendar",
-        likelihood="high",
-        topic="social_security",
-        basis_note="Costed for a full year from April 2027.",
-        internal_note=(
-            "Existing contributed reform, off in the baseline; its "
-            "parameter starts on 2027-04-01. Check the statement's start "
-            "date before costing a full year."
-        ),
-        placeholder_sign=-1,
-    ),
-    Measure(
-        reform=Reform(
-            id="energy_payment_bands_a_d",
-            name="£100 payment for homes in council tax Bands A to D",
-            description=(
-                "A one-off £100 for each Scottish household in Bands A to D."
-            ),
-            simulation_modifier=energy_payment_scotland,
-        ),
-        route="dashboard-structural",
+        route="ledger",
         cause="coverage",
-        likelihood="high",
-        topic="council_tax",
-        basis_note="Counted in 2027-28; the tax year is to be confirmed.",
-        internal_note=(
-            "measures/energy_payment_scotland.py pays it through "
-            "ebr_council_tax_rebate, which works on 2.151.0 and later. The "
-            "countries list parameter (2.170.2+) cannot take a Scenario "
-            "parameter change."
+        likelihood="medium",
+        topic="other",
+        basis_note="A business tax, outside the model; the official costing is recorded.",
+        calculator=False,
+        placeholder=False,
+    ),
+    Measure(
+        reform=Reform(
+            id="air_departure_tax",
+            name="Air Departure Tax rates",
+            description="Air Departure Tax rates for 2027-28 match the UK's Air Passenger Duty.",
         ),
-        issues=(3,),
-        data_limits=("main_homes_only",),
-        placeholder_sign=-1,
+        route="ledger",
+        cause="coverage",
+        likelihood="medium",
+        topic="other",
+        basis_note="Not a household tax in the model; the official costing is recorded.",
+        calculator=False,
+        placeholder=False,
     ),
     Measure(
         reform=Reform(
             id="council_tax_freeze",
             name="Council tax freeze",
-            description="Council tax bills held flat in cash terms in 2027-28.",
+            description="Council tax bills held at 2026-27 levels in 2027-28.",
             parameter_changes_factory=freeze_2027,
         ),
         route="dashboard-structural",
@@ -319,8 +276,9 @@ MEASURES: tuple[Measure, ...] = (
         likelihood="medium",
         topic="council_tax",
         basis_note=(
-            "Council tax is a cost to councils; any Scottish Government "
-            "funding to councils for the freeze is not modelled."
+            "Council tax is a cost to councils; the Scottish Government's "
+            "funding to councils for the freeze is not modelled. Bills grow "
+            "as forecast from the frozen level in 2028-29."
         ),
         internal_note=(
             "A freeze is g = weight growth, not g = 0: "
@@ -328,15 +286,15 @@ MEASURES: tuple[Measure, ...] = (
         ),
         issues=(4,),
         data_limits=("council_tax_is_an_input",),
-        placeholder_sign=-1,
+        placeholder=False,
     ),
     Measure(
         reform=Reform(
             id="council_tax_bands_i_j",
             name="Council tax Bands I and J",
             description=(
-                "New bands for homes worth £1m to £2m and over £2m, from "
-                "April 2028."
+                "New bands from April 2028: Band I for homes over £1m at "
+                "3.00 times Band D, Band J over £2m at 3.50 times."
             ),
         ),
         route="not-computable",
@@ -344,45 +302,101 @@ MEASURES: tuple[Measure, ...] = (
         likelihood="medium",
         topic="council_tax",
         basis_note="",
-        internal_note="Needs a Bill; applies from 2028-29 only.",
+        internal_note="Applies from 2028-29 only.",
         issues=(5,),
         data_limits=("no_band_j_homes",),
         model_limits=("no_band_j",),
         first_year=2028,
+        placeholder=False,
     ),
     Measure(
         reform=Reform(
-            id="carer_supplement_increase",
-            name="Scottish Carer Supplement raised",
+            id="scottish_benefits_uprating",
+            name="Scottish benefits uprated by 3.5%",
             description=(
-                "Carer Supplement of £12.50 in 2027-28, uprated in 2028-29."
-            ),
-            parameter_changes=threshold_change(
-                f"{CARER}.supplement", _years(12.50, 12.95)
+                "Scottish benefits up 3.5% from April 2027: Scottish Child "
+                "Payment £29.20, Carer Support Payment £89.50 and Scottish "
+                "Carer Supplement £12.10 a week."
             ),
         ),
-        route="dashboard-param",
+        route="ledger",
         cause="baseline_mismatch",
-        likelihood="medium",
+        likelihood="high",
         topic="social_security",
         basis_note=(
-            "The current-law supplement depends on the model release; the "
-            "Methodology tab names it."
+            "Already current law, so it costs nothing against the baseline."
         ),
         internal_note=(
-            "2.151.0 holds it at £11.70; 2.165.1 and later uprate it to "
-            "£12.10 (2027) and £12.50 (2028)."
+            "Trap row: baseline 2027 is SCP 29.20, CSP 89.50, supplement "
+            "12.10 on 2.177.7."
         ),
-        issues=(1, 6),
-        data_limits=("scottish_disability_carer_caseloads",),
-        model_limits=("carer_supplement_not_uprated",),
-        placeholder_sign=-1,
+        in_baseline=True,
+        calculator=False,
+        placeholder=False,
+    ),
+    Measure(
+        reform=Reform(
+            id="scp_under_one_premium",
+            name="Scottish Child Payment premium for children under one",
+            description=(
+                "Scottish Child Payment of £40.00 a week in total for each "
+                "child under one from April 2027."
+            ),
+            parameter_changes={
+                **switch_change(f"{SCP_CONTRIB}.in_effect", _flat(True)),
+                **threshold_change(
+                    f"{SCP_CONTRIB}.under_one", _years(40.00, 40.80)
+                ),
+            },
+        ),
+        route="dashboard-param",
+        cause="parameter",
+        likelihood="high",
+        topic="social_security",
+        basis_note=(
+            "Costed for a full year from April 2027; 2028-29 uses the "
+            "model's uprated amount."
+        ),
+        internal_note=(
+            "Existing contributed reform, off in the baseline; under_one is "
+            "the total weekly amount (40.80 in 2028 in the parameter)."
+        ),
+        placeholder=False,
+    ),
+    Measure(
+        reform=Reform(
+            id="young_parent_top_up",
+            name="Young parent payment",
+            description=(
+                "£10.00 a week per family from 1 October 2027 for families "
+                "receiving Scottish Child Payment with a parent under 25."
+            ),
+            simulation_modifier=young_parent_top_up,
+        ),
+        route="dashboard-structural",
+        cause="formula",
+        likelihood="low",
+        topic="social_security",
+        basis_note=(
+            "2027-28 counts 26 weeks, from 1 October 2027; 2028-29 a full "
+            "year."
+        ),
+        internal_note=(
+            "No variable exists: measures/young_parent_top_up.py pays it "
+            "through scottish_child_payment to benefit units already "
+            "receiving it."
+        ),
+        issues=(6,),
+        placeholder=False,
     ),
     Measure(
         reform=Reform(
             id="adp_changes",
-            name="Adult Disability Payment changes",
-            description="Changes to Adult Disability Payment eligibility.",
+            name="Adult Disability Payment mobility descriptors",
+            description=(
+                "Changes to the mobility component descriptors from April "
+                "2028."
+            ),
         ),
         route="not-computable",
         cause="coverage",
@@ -390,8 +404,8 @@ MEASURES: tuple[Measure, ...] = (
         topic="social_security",
         basis_note="",
         internal_note=(
-            "ADP is carried as PIP; rate changes could pass through PIP, "
-            "rule changes cannot."
+            "ADP is carried as PIP; descriptor (rule) changes cannot pass "
+            "through it."
         ),
         issues=(6,),
         data_limits=(
@@ -400,101 +414,51 @@ MEASURES: tuple[Measure, ...] = (
         ),
         model_limits=("no_scottish_payments",),
         calculator=False,
+        first_year=2028,
+        placeholder=False,
     ),
     Measure(
         reform=Reform(
-            id="young_parent_top_up",
-            name="Top-up for young parents on Universal Credit",
+            id="energy_payment_bands_a_d",
+            name="£100 payment for homes in council tax Bands A to D",
             description=(
-                "A weekly top-up for Universal Credit families with a "
-                "parent under 25."
-            ),
-            simulation_modifier=young_parent_top_up,
-        ),
-        route="dashboard-structural",
-        cause="formula",
-        likelihood="low",
-        topic="social_security",
-        basis_note="",
-        internal_note=(
-            "No variable exists: measures/young_parent_top_up.py pays it "
-            "through scottish_child_payment."
-        ),
-        issues=(6,),
-        placeholder_sign=-1,
-    ),
-    Measure(
-        reform=Reform(
-            id="benefit_cap_mitigation",
-            name="Benefit cap mitigation",
-            description=(
-                "Payments that make up the benefit cap reduction for "
-                "capped families."
-            ),
-            simulation_modifier=benefit_cap_mitigation,
-        ),
-        route="dashboard-structural",
-        cause="formula",
-        likelihood="low",
-        topic="social_security",
-        basis_note="Full take-up assumed.",
-        internal_note=(
-            "No DHP variable: measures/benefit_cap_mitigation.py pays "
-            "benefit_cap_reduction through ebr_council_tax_rebate."
-        ),
-        issues=(6,),
-        placeholder_sign=-1,
-    ),
-    Measure(
-        reform=Reform(
-            id="lbtt_ads_increase",
-            name="Additional Dwelling Supplement raised",
-            description=(
-                "Additional Dwelling Supplement on second homes and buy-to-"
-                "let purchases from 8% to 10%."
-            ),
-            parameter_changes=rate_change(
-                f"{LBTT}.additional_residence_surcharge", _flat(0.10)
+                "A one-off £100 towards energy bills for each household in "
+                "Bands A to D, paid by 31 March 2027."
             ),
         ),
-        route="dashboard-param",
-        cause="data_calibration",
-        likelihood="low",
-        topic="property_tax",
+        route="ledger",
+        cause="timing_fiscal_calendar",
+        likelihood="high",
+        topic="council_tax",
         basis_note=(
-            "Static: the number of purchases does not change. Purchases "
-            "are modelled, not observed."
+            "Paid by 31 March 2027, so it falls in 2026-27, before the "
+            "years scored here (2027-28 and 2028-29); the official costing "
+            "is recorded."
         ),
+        internal_note=(
+            "measures/energy_payment_scotland.py could pay it in fiscal "
+            "2026, but 2026 is not a policy year in years.json."
+        ),
+        issues=(3,),
         calculator=False,
-        placeholder_sign=1,
+        placeholder=False,
     ),
     Measure(
         reform=Reform(
-            id="air_departure_tax",
-            name="Air Departure Tax rates",
-            description="Rates of Air Departure Tax on flights from Scotland.",
+            id="bus_fare_cap",
+            name="£2 bus fare cap across Scotland",
+            description="The £2 single bus fare cap extended across Scotland from 1 June 2027.",
         ),
         route="ledger",
         cause="coverage",
         likelihood="medium",
         topic="other",
-        basis_note="Not a household tax in the model; the official costing is recorded.",
+        basis_note="Spending, outside the model; the official costing is recorded.",
         calculator=False,
-    ),
-    Measure(
-        reform=Reform(
-            id="non_domestic_rates",
-            name="Non-domestic rates poundage and reliefs",
-            description="Business rates poundage and reliefs.",
-        ),
-        route="ledger",
-        cause="coverage",
-        likelihood="medium",
-        topic="other",
-        basis_note="A business tax, outside the model; the official costing is recorded.",
-        calculator=False,
+        placeholder=False,
     ),
 )
+
 
 _BY_ID = {m.id: m for m in MEASURES}
 
