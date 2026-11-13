@@ -1,5 +1,5 @@
 line,statement_item,route,cause,trap,basis
-S1,starter_basic_thresholds,dashboard-param,parameter,False,"static; gross; accrued; 2027-28 and 2028-29; against thresholds CPI-uprated on the October 2026 forecast (current law, 2.177.7)"
+S1,starter_basic_thresholds,dashboard-param,parameter,False,"static; gross; accrued; 2027-28 and 2028-29; re-based at G3 to the costings' baseline (2026-27 starter and basic thresholds held in cash); 2028-29 assumes 2027-28 thresholds held"
 S2,upper_thresholds_frozen,ledger,baseline_mismatch,True,"already in the baseline (current law holds 43,662 / 75,000 / 125,140 in 2027-28 and 2028-29); no cost"
 S3,advanced_rate_plus_1p,dashboard-param,parameter,False,"static; gross; accrued; 2027-28 and 2028-29; against current law"
 S4,scottish_property_income_rates,dashboard-structural,formula,False,"static; gross; accrued; 2027-28 and 2028-29; against current law; thin property income records"
