@@ -10,7 +10,10 @@ matter (issue #1):
   measures;
 - 2.170.2 and later: the Budget 2026 measures (Pension Tax Allowance,
   household energy payment, 24/44/49 property rates). policyengine.py
-  6.17.2 pins 2.174.1 with Microcosm eeb6093e, the pair this repo now locks.
+  6.17.2 pins 2.174.1 with Microcosm eeb6093e, the certified pair this
+  branch locks. The pair planned for the day is build
+  uk-frs-calibration-attempt-20261112T133744Z-6f918b81 with policyengine-uk
+  2.177.7, not in a policyengine.py release (#19).
 
 A limit here is either worked round in this repo (a modifier in
 ``measures/``) or makes a measure ``needs-pe-uk-first``.
