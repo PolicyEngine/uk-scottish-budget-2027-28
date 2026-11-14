@@ -361,7 +361,8 @@ def household_rows(measures, calculate=None) -> list[dict]:
     rows = []
     for key, preset in presets().items():
         year = preset["year"]
-        # A preset marked "claims": False does not claim UC or SCP.
+        # A preset marked "claims": False does not claim UC or SCP; one with
+        # "not_claiming": ["scp"] claims UC but not SCP.
         situation = situation_for(preset)
         twin = rest_of_uk_twin(situation, year)
         base = calculate(situation, year)["household_net_income"]

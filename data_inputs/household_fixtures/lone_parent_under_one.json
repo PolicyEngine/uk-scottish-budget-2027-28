@@ -2,6 +2,7 @@
   "label": "Lone parent aged 24 with a child under one, earning \u00a310,000",
   "year": 2027,
   "claims": true,
+  "not_claiming": [],
   "situation": {
     "people": {
       "parent": {

@@ -16,8 +16,10 @@ Take-up: in a hand-built situation ``would_claim_uc`` and
 and the Scottish Child Payment whenever it is eligible, even one the data
 say does not claim. A preset or call marked ``claims=False`` sets both
 inputs to false for every benefit unit and its members (``not_claiming``),
-which gives the
-right answer for such a household. Population runs use the stored take-up
+which gives the right answer for such a household. To turn off one benefit
+only, a preset lists it under ``"not_claiming"`` (``["scp"]`` for a
+household that claims UC but not SCP) and ``calculate`` takes
+``not_claimed=("scp",)``. Population runs use the stored take-up
 draws in the Microcosm file instead (María Juaristi, 13 November 2026).
 """
 
@@ -30,6 +32,8 @@ SCOTTISH_TAX_INPUT = "pays_scottish_income_tax"
 # would_claim_uc is a benefit-unit input and would_claim_scp a person input.
 UC_CLAIM_INPUT = "would_claim_uc"
 SCP_CLAIM_INPUT = "would_claim_scp"
+# The benefits a household can be marked as not claiming, in that order.
+CLAIMABLE = ("uc", "scp")
 
 # The full new State Pension in 2027-28: £250.70 a week (2.174.1, 2.177.7 and
 # 2.175.4; £250.71 on 2.151.0) times 52. G0 re-checks it against the pinned release
@@ -160,16 +164,33 @@ def presets(year: int = BUDGET_YEAR) -> dict[str, dict]:
     }
 
 
-def not_claiming(
-    situation: dict, year: int = BUDGET_YEAR, benunits=None
-) -> dict:
-    """The same household with its benefit units not claiming UC or SCP.
+def _benefits(benefits) -> tuple[str, ...]:
+    """The named benefits, checked, in ``CLAIMABLE`` order."""
+    if isinstance(benefits, str):
+        raise TypeError(
+            f"Give a list of benefits, not the string {benefits!r}"
+        )
+    names = set(benefits)
+    unknown = names - set(CLAIMABLE)
+    if unknown:
+        raise ValueError(
+            f"Unknown benefit(s) {sorted(unknown)}; use any of {list(CLAIMABLE)}"
+        )
+    return tuple(b for b in CLAIMABLE if b in names)
 
-    Sets ``would_claim_uc`` to false on each named benefit unit (every one
-    by default) and ``would_claim_scp`` (a person input in 2.177.7) to
-    false on each of its members. Without this a hand-built household gets
-    both whenever it is eligible, because the inputs default to true.
+
+def not_claiming(
+    situation: dict, year: int = BUDGET_YEAR, benunits=None, benefits=CLAIMABLE
+) -> dict:
+    """The same household with its benefit units not claiming UC and/or SCP.
+
+    ``benefits`` names what is not claimed: "uc" sets ``would_claim_uc``
+    false on each named benefit unit (every one by default); "scp" sets
+    ``would_claim_scp`` (a person input in 2.177.7) false on each of its
+    members. Both by default. Without this a hand-built household gets both
+    whenever it is eligible, because the inputs default to true.
     """
+    benefits = _benefits(benefits)
     out = copy.deepcopy(situation)
     units = out.get("benunits") or {}
     names = list(units) if benunits is None else list(benunits)
@@ -177,17 +198,34 @@ def not_claiming(
     if unknown:
         raise KeyError(f"no benefit unit(s) {', '.join(unknown)}")
     for name in names:
-        units[name][UC_CLAIM_INPUT] = {str(year): False}
-        for member in units[name].get("members", []):
-            out["people"][member][SCP_CLAIM_INPUT] = {str(year): False}
+        if "uc" in benefits:
+            units[name][UC_CLAIM_INPUT] = {str(year): False}
+        if "scp" in benefits:
+            for member in units[name].get("members", []):
+                out["people"][member][SCP_CLAIM_INPUT] = {str(year): False}
     return out
 
 
+def not_claimed(preset: dict) -> tuple[str, ...]:
+    """The benefits a preset does not claim.
+
+    ``"claims": False`` means neither UC nor SCP; otherwise the preset's
+    ``"not_claiming"`` list (empty by default). Unknown values are refused,
+    so a typo never reads as claiming.
+    """
+    claims = preset.get("claims", True)
+    if not isinstance(claims, bool):
+        raise TypeError(f"'claims' must be true or false, not {claims!r}")
+    listed = _benefits(preset.get("not_claiming", ()))
+    return CLAIMABLE if not claims else listed
+
+
 def situation_for(preset: dict) -> dict:
-    """A preset's situation, with its take-up flag applied."""
-    if preset.get("claims", True):
+    """A preset's situation, with its take-up flags applied."""
+    benefits = not_claimed(preset)
+    if not benefits:
         return preset["situation"]
-    return not_claiming(preset["situation"], preset["year"])
+    return not_claiming(preset["situation"], preset["year"], benefits=benefits)
 
 
 def state_pension_amount(year: int = BUDGET_YEAR) -> float:
@@ -216,14 +254,16 @@ def combined_scenario(reforms=()):
 
 
 def calculate(
-    situation: dict, year: int, reforms=(), claims: bool = True
+    situation: dict, year: int, reforms=(), claims: bool = True, not_claimed=()
 ) -> dict[str, float]:
     """Net income and income tax for one situation (needs the model extra).
 
     ``reforms`` is a list of registry Reforms applied together, on the
     forecast overlay. ``claims=False`` marks a household that does not
     claim: UC and SCP take-up are set false on every benefit unit
-    (``not_claiming``). Check one preset by hand per coded measure at G2.
+    (``not_claiming``). ``not_claimed=("scp",)`` turns off one benefit only
+    (here, claims UC but not SCP). Check one preset by hand per coded
+    measure at G2.
     """
     from policyengine_uk import Simulation
 
@@ -231,8 +271,9 @@ def calculate(
 
     if not isinstance(reforms, (list, tuple)):
         reforms = (reforms,)
-    if not claims:
-        situation = not_claiming(situation, year)
+    benefits = CLAIMABLE if not claims else _benefits(not_claimed)
+    if benefits:
+        situation = not_claiming(situation, year, benefits=benefits)
     sim = Simulation(
         situation=situation,
         scenario=with_forecast(combined_scenario(reforms)),

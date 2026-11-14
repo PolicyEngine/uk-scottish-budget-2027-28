@@ -10,7 +10,12 @@ they drift.
 import json
 from pathlib import Path
 
-from scottish_budget.household import presets, rest_of_uk_twin, situation_for
+from scottish_budget.household import (
+    not_claimed,
+    presets,
+    rest_of_uk_twin,
+    situation_for,
+)
 
 OUT = (
     Path(__file__).resolve().parents[1] / "data_inputs" / "household_fixtures"
@@ -27,6 +32,7 @@ def fixtures() -> dict[str, dict]:
             "label": preset["label"],
             "year": preset["year"],
             "claims": preset.get("claims", True),
+            "not_claiming": list(not_claimed(preset)),
             "situation": situation,
             "rest_of_uk_twin": rest_of_uk_twin(situation, preset["year"]),
         }

@@ -173,3 +173,16 @@ def test_a_household_that_does_not_claim_gets_no_uc_or_scp():
     claiming = calculate(s, YEAR)["household_net_income"]
     not_claim = calculate(s, YEAR, claims=False)["household_net_income"]
     assert claiming - not_claim == pytest.approx(uc + scp, abs=1)
+
+
+def test_a_household_that_claims_uc_but_not_scp():
+    # Only SCP is turned off: SCP goes to 0 and UC is exactly unchanged.
+    from scottish_budget.household import not_claiming
+
+    s = presets()["lone_parent_under_one"]["situation"]
+    uc, scp = _uc_and_scp(s)
+    assert uc > 0 and scp > 0
+    assert _uc_and_scp(not_claiming(s, YEAR, benefits=["scp"])) == (uc, 0.0)
+    claiming = calculate(s, YEAR)["household_net_income"]
+    no_scp = calculate(s, YEAR, not_claimed=("scp",))["household_net_income"]
+    assert claiming - no_scp == pytest.approx(scp, abs=1)

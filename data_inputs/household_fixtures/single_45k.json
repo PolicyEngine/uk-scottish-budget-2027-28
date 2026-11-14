@@ -2,6 +2,7 @@
   "label": "Single adult earning \u00a345,000",
   "year": 2027,
   "claims": true,
+  "not_claiming": [],
   "situation": {
     "people": {
       "adult": {

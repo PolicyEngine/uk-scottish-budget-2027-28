@@ -133,3 +133,42 @@ def test_fixtures_export_a_does_not_claim_preset_as_not_claiming(monkeypatch):
     for body in (out["no"]["situation"], out["no"]["rest_of_uk_twin"]):
         assert body["benunits"]["benunit"][UC_CLAIM_INPUT] == {"2027": False}
         assert body["people"]["baby"][SCP_CLAIM_INPUT] == {"2027": False}
+
+
+def test_scp_only_not_claiming_leaves_uc_alone():
+    # REVIEW2 S1b: "claims UC but not SCP" can be expressed.
+    from scottish_budget.household import (
+        SCP_CLAIM_INPUT,
+        UC_CLAIM_INPUT,
+        not_claiming,
+        situation_for,
+    )
+
+    preset = presets(2027)["lone_parent_under_one"]
+    out = not_claiming(preset["situation"], 2027, benefits=["scp"])
+    assert UC_CLAIM_INPUT not in out["benunits"]["benunit"]
+    for person in ("parent", "baby"):
+        assert out["people"][person][SCP_CLAIM_INPUT] == {"2027": False}
+    via_preset = situation_for({**preset, "not_claiming": ["scp"]})
+    assert via_preset == out
+    uc_only = situation_for({**preset, "not_claiming": ["uc"]})
+    assert uc_only["benunits"]["benunit"][UC_CLAIM_INPUT] == {"2027": False}
+    assert SCP_CLAIM_INPUT not in uc_only["people"]["baby"]
+
+
+def test_unknown_take_up_values_are_refused():
+    import pytest
+
+    from scottish_budget.household import not_claimed, not_claiming
+
+    preset = presets(2027)["lone_parent_under_one"]
+    with pytest.raises(ValueError):
+        not_claimed({**preset, "not_claiming": ["sc p"]})
+    with pytest.raises(TypeError):
+        not_claimed({**preset, "not_claiming": "scp"})
+    with pytest.raises(TypeError):
+        not_claimed({**preset, "claims": "no"})
+    with pytest.raises(ValueError):
+        not_claiming(preset["situation"], 2027, benefits=["pension_credit"])
+    assert not_claimed({**preset, "claims": False}) == ("uc", "scp")
+    assert not_claimed(preset) == ()
