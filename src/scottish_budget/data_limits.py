@@ -71,8 +71,9 @@ DATA_LIMITS: tuple[DataLimit, ...] = (
         id="thin_scottish_property_income",
         inputs=("property_income",),
         reason=(
-            "Scottish property income rests on 666 to 807 survey records, "
-            "and its total moves from £1.83bn to £2.35bn between builds."
+            "Scottish property income rests on 666 to 807 person rows, "
+            "depending on the build (763 rows from only 99 survey households "
+            "on build 6f918b81), and its total moves from £1.83bn to £2.35bn between builds."
         ),
         issue=2,
         blocks=False,

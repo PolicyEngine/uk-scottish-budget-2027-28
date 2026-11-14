@@ -11,7 +11,8 @@ one band and every band's rate rises by the same amount. Different add-ons
 by band need the band split and are refused.
 
 Caveat (stated on the Method tab): Scottish property income rests on 666 to
-807 survey records.
+807 person rows, depending on the build (763 rows from only 99 survey
+households on build 6f918b81).
 
 PLACEHOLDER defaults: set from the statement on the day.
 """
