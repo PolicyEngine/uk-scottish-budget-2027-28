@@ -4,9 +4,10 @@
     "placeholder": true,
     "notice": "Pre-release template: placeholder figures. Not a costing of the Scottish Budget 2027-28.",
     "generated_by": "scottish_budget 0.1.0",
-    "policyengine": "6.17.2",
-    "policyengine_uk": "2.174.1",
-    "dataset": "microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+    "policyengine": null,
+    "policyengine_uk": "2.177.7",
+    "dataset": "uk-frs-calibration-attempt-20261112T133744Z-6f918b81",
+    "engine_label": "build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release",
     "dataset_sha256": null,
     "forecast": {
       "vintage": "OBR EFO October 2026",

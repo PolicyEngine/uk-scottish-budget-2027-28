@@ -4,7 +4,8 @@ import re
 import tomllib
 from pathlib import Path
 
-from scottish_budget.engine import bundle_dataset, check_dataset, sha256_file
+from scottish_budget.data_build import DATA_BUILD, LABEL
+from scottish_budget.engine import check_dataset, pinned_dataset, sha256_file
 from scottish_budget.pipeline import LOCKED_ENGINE
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,45 +17,59 @@ def _locked(name):
 
 
 def test_placeholder_engine_stamp_matches_uv_lock():
-    assert LOCKED_ENGINE["policyengine"] == _locked("policyengine")
+    assert LOCKED_ENGINE["policyengine"] is None
     assert LOCKED_ENGINE["policyengine_uk"] == _locked("policyengine-uk")
+    assert LOCKED_ENGINE["dataset"] == DATA_BUILD.id
+    assert LOCKED_ENGINE["engine_label"] == LABEL
 
 
-def test_model_extra_pins_the_locked_policyengine():
+def test_lock_holds_the_engine_the_build_was_made_on():
+    assert _locked("policyengine-uk") == DATA_BUILD.engine
+    assert _locked("policyengine-core") == DATA_BUILD.core
+    lock = tomllib.loads((ROOT / "uv.lock").read_text())
+    assert "policyengine" not in {p["name"] for p in lock["package"]}
+
+
+def test_model_extra_pins_the_builds_engine():
     project = tomllib.loads((ROOT / "pyproject.toml").read_text())
     model = project["project"]["optional-dependencies"]["model"]
-    pin = next(d for d in model if d.startswith("policyengine["))
-    assert pin == f"policyengine[uk]=={_locked('policyengine')}"
+    assert f"policyengine-uk=={DATA_BUILD.engine}" in model
+    assert f"policyengine-core=={DATA_BUILD.core}" in model
+    assert not any(d.startswith("policyengine[") for d in model)
 
 
-def test_docs_state_the_locked_pair():
+def test_docs_state_the_pinned_pair():
     method = (ROOT / "docs" / "METHOD.md").read_text()
-    assert f"policyengine.py {_locked('policyengine')}" in method
     assert f"policyengine-uk {_locked('policyengine-uk')}" in method
-    assert LOCKED_ENGINE["dataset"] in method
+    assert DATA_BUILD.id in method
+    assert DATA_BUILD.sha256 in method
+    assert LABEL in method
+    assert "certified by policyengine" not in method
 
 
-def test_bundle_dataset_reads_the_manifest():
-    manifest = {
-        "data_releases": {
-            "uk": {
-                "default_dataset": "d",
-                "datasets": {
-                    "d": {
-                        "revision": "build-1",
-                        "sha256": "ab",
-                        "path": "d.h5",
-                    }
-                },
-            }
-        }
-    }
-    assert bundle_dataset(manifest) == {
-        "name": "d",
-        "build": "build-1",
-        "sha256": "ab",
-        "path": "d.h5",
-    }
+def test_label_and_pinned_dataset():
+    assert LABEL == (
+        f"build {DATA_BUILD.id}, policyengine-uk {DATA_BUILD.engine}, "
+        "not in a policyengine.py release"
+    )
+    pinned = pinned_dataset()
+    assert pinned["repo_id"] == "policyengine/populace-uk-private"
+    assert pinned["repo_type"] == "dataset"
+    assert pinned["path"] == (
+        "releases/microcosm-uk-2024-25-national/"
+        f"{DATA_BUILD.id}/microcosm_uk_2024_25.h5"
+    )
+    assert pinned["sha256"] == DATA_BUILD.sha256
+
+
+def test_engine_guard_refuses_another_release(monkeypatch):
+    import pytest
+
+    from scottish_budget import engine
+
+    monkeypatch.setattr(engine, "installed_version", lambda name: "2.174.1")
+    with pytest.raises(engine.EngineMismatch):
+        engine.check_engine()
 
 
 def test_dataset_guard_refuses_a_different_file(tmp_path):

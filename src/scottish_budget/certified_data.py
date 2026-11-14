@@ -2,17 +2,15 @@
 
 Copied from the Autumn Budget 2026 dashboard (``uk_budget_data.certified_data``).
 
-The dashboard builds microsimulations through policyengine.py, which pins a
-certified UK dataset in its release bundle and downloads it from a private
-Hugging Face repository. CI runs this check before the certified-data tests,
-so a missing or rejected credential fails at once with an actionable message
-instead of surfacing as a download error ten minutes into the test run, or as
-a silent skip.
+The dashboard runs on the Microcosm build pinned in
+``data_build.DATA_BUILD`` (with the policyengine-uk version it was built on;
+no policyengine.py release covers the pair), downloaded from a private
+Hugging Face dataset repository. CI runs this check so a missing or rejected
+credential fails at once with an actionable message instead of surfacing as
+a download error during a run, or as a silent skip.
 
-For every UK artifact pinned in the installed bundle, and every overlay
-dataset named with ``--also``, it confirms that the token can see the file at
-the pinned revision and that the file's SHA-256 equals the hash in the bundle
-manifest. A file stored in LFS is checked from its metadata, which carries the
+It confirms that the token can see the pinned build's file and that its
+SHA-256 equals the hash in ``DATA_BUILD``. A file stored in LFS is checked from its metadata, which carries the
 SHA-256, so no dataset is downloaded. A small file stored in plain git (a
 release's certification or diagnostics JSON) has no SHA-256 in its metadata,
 so it is downloaded to a temporary directory and hashed, up to
@@ -21,30 +19,27 @@ so it is downloaded to a temporary directory and hashed, up to
 Usage::
 
     HUGGING_FACE_TOKEN=... uv run --extra model python -m scottish_budget.certified_data
-
-``--also DATASET``, which may be repeated, checks an overlay dataset as well.
 """
 
 import argparse
 import hashlib
-import json
 import os
 import sys
 import tempfile
 from dataclasses import dataclass
-from importlib import resources
 from pathlib import Path
 from typing import Optional
+
+from scottish_budget.data_build import DATA_BUILD, HF_REPO, HF_REPO_TYPE
 
 TOKEN_ENV = "HUGGING_FACE_TOKEN"
 
 ACCESS_HINT = (
     "CI reads the token from the organisation secret "
     "PE_UK_PRIVATE_HF_READ_TOKEN. It must be able to read every Hugging Face "
-    "repository this check lists: the one the installed bundle's certified "
-    "data comes from (policyengine/populace-uk-private for Microcosm, from "
-    "policyengine 6.10.0; policyengine/policyengine-uk-data-private before), "
-    "and that of any dataset named with --also. This repository must be "
+    "repository this check lists: the Hugging Face dataset repository "
+    "policyengine/populace-uk-private that holds the pinned Microcosm build. "
+    "This repository must be "
     "among that secret's selected repositories. Changing either is an "
     "organisation admin's call."
 )
@@ -62,7 +57,7 @@ class CertifiedDataAccessError(RuntimeError):
 
 @dataclass(frozen=True)
 class Artifact:
-    """One file pinned by the policyengine.py release bundle."""
+    """One pinned data file."""
 
     name: str
     repo_id: str
@@ -72,72 +67,18 @@ class Artifact:
     sha256: str
 
 
-def load_bundle_manifest() -> dict:
-    """Load the release manifest shipped inside the installed policyengine."""
-    manifest = (
-        resources.files("policyengine") / "data" / "bundle" / "manifest.json"
-    )
-    return json.loads(manifest.read_text())
-
-
-def _artifact(name: str, entry: dict, package: dict) -> Artifact:
-    """One pinned dataset, located as policyengine locates it.
-
-    Where the entry names no repository, repository type or revision, the
-    release's data package supplies it, as in policyengine's
-    ``resolve_dataset_reference``; that holds for overlays too, which
-    policyengine merges into the release's datasets.
-    """
-    located = {
-        "repo_id": entry.get("repo_id") or package.get("repo_id"),
-        "path": entry.get("path"),
-        "revision": entry.get("revision")
-        or package.get("release_manifest_revision")
-        or package.get("version"),
-        "sha256": entry.get("sha256"),
-    }
-    missing = [field for field, value in located.items() if not value]
-    if missing:
-        raise CertifiedDataAccessError(
-            f"The bundle's UK dataset {name!r} pins no {', '.join(missing)}."
+def pinned_artifacts() -> list[Artifact]:
+    """The pinned build's dataset file (``data_build.DATA_BUILD``)."""
+    return [
+        Artifact(
+            name=DATA_BUILD.id,
+            repo_id=HF_REPO,
+            repo_type=HF_REPO_TYPE,
+            path=DATA_BUILD.hf_path,
+            revision="main",
+            sha256=DATA_BUILD.sha256,
         )
-    return Artifact(
-        name=name,
-        repo_type=entry.get("repo_type")
-        or package.get("repo_type")
-        or "model",
-        **located,
-    )
-
-
-def uk_artifacts(manifest: dict, also: tuple[str, ...] = ()) -> list[Artifact]:
-    """List every UK data artifact pinned in a bundle manifest.
-
-    ``also`` names further datasets to check: each must be one of the
-    release's datasets (already listed) or one of the bundle's UK dataset
-    overlays, which pin a dataset outside the release, usually in its own
-    repository.
-    """
-    release = manifest["data_releases"]["uk"]
-    package = release.get("data_package", {})
-    artifacts = [
-        _artifact(name, entry, package)
-        for name, entry in sorted(release["datasets"].items())
     ]
-    if not any(a.name == release["default_dataset"] for a in artifacts):
-        raise CertifiedDataAccessError(
-            f"Bundle default dataset {release['default_dataset']!r} is not "
-            "listed among the bundle's UK datasets."
-        )
-    overlays = manifest.get("dataset_overlays", {}).get("uk", {})
-    for name in sorted(set(also) - set(release["datasets"])):
-        entry = overlays.get(name)
-        if entry is None:
-            raise CertifiedDataAccessError(
-                f"The bundle pins no UK dataset or overlay {name!r}."
-            )
-        artifacts.append(_artifact(name, entry, package))
-    return artifacts
 
 
 def _reason(error: Exception) -> str:
@@ -159,7 +100,7 @@ def check_access(
 
     Args:
         token: The Hugging Face token, or None/empty if unset.
-        artifacts: Artifacts pinned by the bundle.
+        artifacts: Artifacts pinned in data_build.DATA_BUILD.
         api: A ``huggingface_hub.HfApi``-compatible client (for tests).
 
     Returns:
@@ -167,7 +108,7 @@ def check_access(
 
     Raises:
         CertifiedDataAccessError: If the token is missing, rejected, cannot
-            see an artifact, or an artifact's hash differs from the bundle.
+            see an artifact, or an artifact's hash differs from the pin.
     """
     if not token:
         raise CertifiedDataAccessError(
@@ -219,7 +160,7 @@ def check_access(
             if info is None:
                 raise CertifiedDataAccessError(
                     f"{repo_id}@{revision} has no file {artifact.path} "
-                    f"(bundle dataset {artifact.name})."
+                    f"(pinned dataset {artifact.name})."
                 )
             lfs = getattr(info, "lfs", None)
             if lfs is not None:
@@ -230,7 +171,7 @@ def check_access(
             if remote_sha != artifact.sha256:
                 raise CertifiedDataAccessError(
                     f"{repo_id}@{revision}/{artifact.path} has SHA-256 "
-                    f"{remote_sha}, but the bundle pins {artifact.sha256} "
+                    f"{remote_sha}, but DATA_BUILD pins {artifact.sha256} "
                     f"(dataset {artifact.name})."
                 )
             lines.append(
@@ -290,18 +231,11 @@ def _git_file_sha256(api, artifact: Artifact, info, token: str) -> str:
 
 
 def main(argv: Optional[list[str]] = None) -> int:
-    """Run the check against the installed bundle and the environment."""
+    """Run the check against the pinned build and the environment."""
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument(
-        "--also",
-        action="append",
-        default=[],
-        metavar="DATASET",
-        help="also check this release dataset or bundle overlay",
-    )
-    args = parser.parse_args(argv)
+    parser.parse_args(argv)
     try:
-        artifacts = uk_artifacts(load_bundle_manifest(), tuple(args.also))
+        artifacts = pinned_artifacts()
         for line in check_access(os.environ.get(TOKEN_ENV), artifacts):
             print(line)
     except CertifiedDataAccessError as error:

@@ -7,17 +7,17 @@ One integrator pushes. Everyone else posts defects as PR comments within 5 minut
 ## Set-up
 
 - `uv sync --locked --extra dev --extra model`, then `cd dashboard && bun install --frozen-lockfile`.
-- `HUGGING_FACE_TOKEN` must be set (copy `.env.example` to `.env` and fill it, or export it). The certified Microcosm file is in a private Hugging Face repository; `uv run python -m scottish_budget.certified_data` checks the token can read it and that its SHA-256 matches the bundle, without downloading it. Never print the token.
+- `HUGGING_FACE_TOKEN` must be set (copy `.env.example` to `.env` and fill it, or export it). The pinned Microcosm build (`data_build.DATA_BUILD`) is in a private Hugging Face dataset repository; `uv run python -m scottish_budget.certified_data` checks the token can read it and that its SHA-256 matches the pin, without downloading it. Never print the token.
 
 ## Heavy runs
 
-Anything that loads Microcosm (`generate --reforms`, `generate --package`) or runs a Next.js production build takes the lock and waits for free memory first. One measure per process; the next waits for the lock.
+Anything that loads Microcosm (`generate --reforms`, `generate --package`) or runs a Next.js production build takes the machine-wide lock and waits for 22 GB of free+inactive memory first. The lock is a file holding "<pid> <label>", created with noclobber (`set -C`) and removed only by the process that wrote it; never delete a lock you do not own. One measure per process; the next waits for the lock.
 
 ```
-until mkdir /tmp/pe-heavy.lock 2>/dev/null; do sleep 15; done
-trap 'rmdir /tmp/pe-heavy.lock' EXIT
-free_gb() { vm_stat | awk '/Pages free/ {f=$3} /Pages inactive/ {i=$3} END {print int((f+i)*16384/1e9)}'; }
-until [ "$(free_gb)" -ge 14 ]; do sleep 30; done
+until ( set -C; echo "$$ scottish-budget-manual" > /tmp/pe-heavy.lock ) 2>/dev/null; do sleep 15; done
+trap '[ "$(cut -d" " -f1 /tmp/pe-heavy.lock 2>/dev/null)" = "$$" ] && rm -f /tmp/pe-heavy.lock' EXIT
+free_gb() { vm_stat | awk '/page size of/ {p=$8} /Pages free/ {f=$3} /Pages inactive/ {i=$3} END {print int((f+i)*p/1e9)}'; }
+until [ "$(free_gb)" -ge 22 ]; do sleep 30; done
 uv run --extra model scottish-budget generate --reforms <measure id>
 ```
 
@@ -27,7 +27,7 @@ One measure took 2 min 16 s and peaked at 11.3 GB resident (6 November, 6.14.0 o
 
 | Gate | When | What | Command |
 |---|---|---|---|
-| G0 | by T−60 | Freeze record in the PR: start SHA, policyengine, policyengine-uk and core versions, dataset name and SHA-256, and either the certified pair or the label "unvalidated under this engine" | `uv run --extra model scottish-budget freeze` |
+| G0 | by T−60 | Freeze record in the PR: start SHA, policyengine, policyengine-uk and core versions, dataset name and SHA-256 (must be the pinned build's), `engine_matches_build: true`, and the label "build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release" | `uv run --extra model scottish-budget freeze` |
 | G1 | T+0 to T+10 | Coverage ledger: every statement line gets a route and a cause class (`docs/candidate-reforms.md` lists the expected lines). Trap rows (already in the baseline) are recorded, not costed. Set each kept measure's values and `placeholder=False`; delete entries the statement does not have | |
 | G2 | T+30 | Provisional numbers, and one hand-checked example household per coded measure (`data_inputs/household_fixtures/`) | `generate --reforms ID` per measure, `generate --package provisional`, `combine --provisional` |
 | G3 | documents + 30 min | Re-base and reconcile against the Scottish Fiscal Commission's costings in `data_inputs/official/sfc_costings_2027_28.csv`. Each gap over 10% gets a written reason and a cause class. Then set `publish=True` for each reconciled measure | `scottish-budget reconcile --official data_inputs/official/sfc_costings_2027_28.csv` |
@@ -69,3 +69,10 @@ Nothing deploys from this repository yet: `deploy.yml` runs on manual dispatch o
 ## Basis
 
 State gross or net, cash or accrued, fiscal or calendar year, and static or behavioural once, on the Method tab. Most reconciliation gaps against official costings come from basis, not the model.
+
+### Gap reasons at G3
+
+- A gap over 10% against a costing that includes behaviour, or that is a grant to councils, is cause `basis`. Our figures are static and household-level; that costing is not. Do not call it take-up. On the last check, 7 of the 11 line-years over 10% were of this kind (María Juaristi, 13 November 2026).
+- Take-up or caseload is a reason only where the official costing has no behaviour in it. On that check this applied to two lines only: the Scottish Child Payment under-one premium and the young parent top-up. Record it with cause `data_calibration` and name take-up or caseload in the reason.
+- Before writing take-up or caseload, check what the build is calibrated to. Build `…-6f918b81` meets its 2025 targets for Scottish Child Payment spending, Scottish Universal Credit households with a child under one, and babies under one. Nothing targets young parents, so a young parent top-up gap can be caseload; an under-one premium gap on this build is less likely to be.
+- Household examples are not take-up evidence: hand-built households claim everything they are eligible for unless marked not claiming (`household.not_claiming`). Population runs use the stored take-up draws.

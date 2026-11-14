@@ -51,7 +51,8 @@ describe("Dashboard", () => {
   it("opens the tab named in the address", () => {
     window.history.replaceState(null, "", "/?tab=methodology");
     render(<Dashboard data={results} />);
-    expect(screen.getByTestId("replication").textContent).toContain(results.meta.policyengine);
+    expect(screen.getByTestId("replication").textContent).toContain(results.meta.engine_label);
+    expect(screen.getByTestId("replication").textContent).toContain("not in a policyengine.py release");
   });
 
   it("keeps the selected policies when the methodology link is followed", () => {

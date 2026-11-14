@@ -9,6 +9,11 @@ Every row must name a registry measure and a policy year, or the command
 fails. A gap over ``THRESHOLD`` (10%) needs a written reason and a cause
 class; rows that lack one are flagged and the command exits non-zero, so
 G3 is not passed until every flagged gap has a reason.
+
+Cause guidance (docs/RUNBOOK.md, "Gap reasons at G3"): a gap against a
+costing that includes behaviour, or a grant to councils, is ``basis``;
+take-up or caseload (``data_calibration``) applies only where the costing
+has no behaviour in it.
 """
 
 import csv

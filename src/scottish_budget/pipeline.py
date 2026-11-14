@@ -23,11 +23,13 @@ import json
 from pathlib import Path
 
 from scottish_budget import __version__
+from scottish_budget.data_build import DATA_BUILD, LABEL
 from scottish_budget.data_limits import blocking_limits
 from scottish_budget.engine import (
-    bundle_dataset,
+    check_engine,
     git_identity,
     installed_versions,
+    pinned_dataset,
 )
 from scottish_budget.forecast import forecast_record
 from scottish_budget.household import presets
@@ -43,14 +45,16 @@ from scottish_budget.years import BASIS, POLICY_YEARS, fiscal_year_label
 ROOT = Path(__file__).resolve().parents[2]
 PARTIAL_DIR = ROOT / "data_outputs" / "partials"
 
-# The certified pair in the lock file, for the placeholder file only. A
-# model run records what is installed (``installed_versions``) and what the
-# simulation loaded (the partials' provenance). tests/test_provenance.py
-# checks these against uv.lock.
+# The pinned pair (``data_build.DATA_BUILD``), for the placeholder file
+# only. A model run records what is installed (``installed_versions``) and
+# what the simulation loaded (the partials' provenance).
+# tests/test_provenance.py checks these against uv.lock. No policyengine.py
+# release covers the pair, so ``policyengine`` is None.
 LOCKED_ENGINE = {
-    "policyengine": "6.17.2",
-    "policyengine_uk": "2.174.1",
-    "dataset": "microcosm-uk-2024-25-national-20261107T020434Z-eeb6093e",
+    "policyengine": None,
+    "policyengine_uk": DATA_BUILD.engine,
+    "dataset": DATA_BUILD.id,
+    "engine_label": LABEL,
 }
 
 ROUTE_LABELS = {
@@ -310,6 +314,31 @@ def _engine_meta(partials: dict[str, dict]) -> dict:
         )
     versions_json, sha, name = pairs.pop()
     versions = json.loads(versions_json) or {}
+    # Agreeing with each other is not enough: partials are git-ignored and
+    # survive branch switches, so old runs on another engine and data pair
+    # would otherwise be published. Refuse anything but DATA_BUILD's pair.
+    expected = {
+        "dataset SHA-256": (sha, DATA_BUILD.sha256),
+        "policyengine-uk": (
+            versions.get("policyengine-uk"),
+            DATA_BUILD.engine,
+        ),
+        "policyengine-core": (
+            versions.get("policyengine-core"),
+            DATA_BUILD.core,
+        ),
+    }
+    wrong = [
+        f"{what} {got} (build wants {want})"
+        for what, (got, want) in expected.items()
+        if got != want
+    ]
+    if wrong:
+        raise CombineError(
+            f"The partials are not on build {DATA_BUILD.id} with "
+            f"policyengine-uk {DATA_BUILD.engine}: {'; '.join(wrong)}. "
+            "Delete them and re-run each measure on the pinned pair."
+        )
     provenance = next(iter(partials.values())).get("provenance") or {}
     return {
         "policyengine": versions.get("policyengine"),
@@ -317,6 +346,7 @@ def _engine_meta(partials: dict[str, dict]) -> dict:
         "policyengine_core": versions.get("policyengine-core"),
         "dataset": provenance.get("runtime_dataset_revision") or name,
         "dataset_sha256": sha,
+        "engine_label": provenance.get("label"),
     }
 
 
@@ -324,14 +354,16 @@ def household_rows(measures, calculate=None) -> list[dict]:
     """Each preset and its rest-of-UK twin, current law and with the
     measures (``household.calculate``; injectable for tests)."""
     from scottish_budget.household import calculate as engine_calculate
-    from scottish_budget.household import rest_of_uk_twin
+    from scottish_budget.household import rest_of_uk_twin, situation_for
 
     calculate = calculate or engine_calculate
     reforms = [m.reform for m in measures if m.calculator]
     rows = []
     for key, preset in presets().items():
         year = preset["year"]
-        situation = preset["situation"]
+        # A preset marked "claims": False does not claim UC or SCP; one with
+        # "not_claiming": ["scp"] claims UC but not SCP.
+        situation = situation_for(preset)
         twin = rest_of_uk_twin(situation, year)
         base = calculate(situation, year)["household_net_income"]
         new = calculate(situation, year, reforms)["household_net_income"]
@@ -417,6 +449,10 @@ def combine(
     engine = _engine_meta(
         {**partials, **({PACKAGE_ID: package} if package else {})}
     )
+    if with_households and (calculate is None or curve is None):
+        # The household rows and the curve run on the engine installed in
+        # this process, so it must be the build's too.
+        check_engine()
     status = "provisional" if provisional else "published"
     results = {
         "meta": {
@@ -454,7 +490,7 @@ def combine(
         **git_identity(),
         "generated_at": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         "versions": installed_versions(),
-        "bundle_dataset": bundle_dataset(),
+        "pinned_dataset": pinned_dataset(),
         "dataset": engine["dataset"],
         "dataset_sha256": engine["dataset_sha256"],
         "measures_scored": [m.id for m in scored],

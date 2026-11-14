@@ -1,6 +1,8 @@
 {
   "label": "Couple with two children on Universal Credit, one earner on \u00a318,000",
   "year": 2027,
+  "claims": true,
+  "not_claiming": [],
   "situation": {
     "people": {
       "adult_1": {

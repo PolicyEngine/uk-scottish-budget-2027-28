@@ -1,8 +1,8 @@
 from scottish_budget.data_limits import DATA_LIMITS, blocking_limits
 from scottish_budget.model_limits import (
-    BUNDLE_RELEASE,
     MODEL_LIMITS,
     NEWEST_RELEASE,
+    PINNED_RELEASE,
     fixed_in_release,
 )
 
@@ -24,10 +24,16 @@ def test_blocking_filter():
 
 
 def test_release_comparison():
-    assert fixed_in_release("pension_tax_allowance", BUNDLE_RELEASE)
-    assert fixed_in_release("carer_supplement_not_uprated", BUNDLE_RELEASE)
+    assert fixed_in_release("pension_tax_allowance", PINNED_RELEASE)
+    assert fixed_in_release("carer_supplement_not_uprated", PINNED_RELEASE)
     assert fixed_in_release("pension_tax_allowance", NEWEST_RELEASE)
     assert not fixed_in_release("no_band_j", NEWEST_RELEASE)
     assert fixed_in_release("carer_supplement_not_uprated", "2.165.1")
     assert not fixed_in_release("pension_tax_allowance", "2.165.1")
     assert fixed_in_release("energy_payment_england_only", "2.170.2")
+
+
+def test_pinned_release_is_the_builds_engine():
+    from scottish_budget.data_build import DATA_BUILD
+
+    assert PINNED_RELEASE == DATA_BUILD.engine

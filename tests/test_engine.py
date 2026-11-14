@@ -16,6 +16,7 @@ from scottish_budget.household import (  # noqa: E402
     calculate,
     presets,
     rest_of_uk_twin,
+    situation_for,
     state_pension_amount,
 )
 from scottish_budget.models import Reform  # noqa: E402
@@ -47,9 +48,10 @@ def _modifier_reform(modifier):
 
 def test_every_preset_runs_on_the_pinned_release():
     for key, preset in presets().items():
-        out = calculate(preset["situation"], preset["year"])
+        situation = situation_for(preset)
+        out = calculate(situation, preset["year"])
         assert out["household_net_income"] > 0, key
-        twin = calculate(rest_of_uk_twin(preset["situation"]), preset["year"])
+        twin = calculate(rest_of_uk_twin(situation), preset["year"])
         assert twin["household_net_income"] > 0, key
 
 
@@ -145,3 +147,42 @@ def test_income_tax_curve_compares_scotland_with_the_rest_of_the_uk():
     at_60k = next(r for r in rows if r["gross"] == 60_000)
     assert at_60k["scotland_current_law"] > at_60k["rest_of_uk"]
     assert at_60k["scotland_with_measures"] > at_60k["scotland_current_law"]
+
+
+def _uc_and_scp(situation):
+    from policyengine_uk import Simulation
+
+    from scottish_budget.forecast import with_forecast
+
+    sim = Simulation(situation=situation, scenario=with_forecast(None))
+    return (
+        float(sim.calculate("universal_credit", YEAR).sum()),
+        float(sim.calculate("scottish_child_payment", YEAR).sum()),
+    )
+
+
+def test_a_household_that_does_not_claim_gets_no_uc_or_scp():
+    # Hand-built households default to claiming (would_claim_uc and
+    # would_claim_scp are true); a does-not-claim household gets neither.
+    from scottish_budget.household import not_claiming
+
+    s = presets()["lone_parent_under_one"]["situation"]
+    uc, scp = _uc_and_scp(s)
+    assert uc > 0 and scp > 0
+    assert _uc_and_scp(not_claiming(s, YEAR)) == (0.0, 0.0)
+    claiming = calculate(s, YEAR)["household_net_income"]
+    not_claim = calculate(s, YEAR, claims=False)["household_net_income"]
+    assert claiming - not_claim == pytest.approx(uc + scp, abs=1)
+
+
+def test_a_household_that_claims_uc_but_not_scp():
+    # Only SCP is turned off: SCP goes to 0 and UC is exactly unchanged.
+    from scottish_budget.household import not_claiming
+
+    s = presets()["lone_parent_under_one"]["situation"]
+    uc, scp = _uc_and_scp(s)
+    assert uc > 0 and scp > 0
+    assert _uc_and_scp(not_claiming(s, YEAR, benefits=["scp"])) == (uc, 0.0)
+    claiming = calculate(s, YEAR)["household_net_income"]
+    no_scp = calculate(s, YEAR, not_claimed=("scp",))["household_net_income"]
+    assert claiming - no_scp == pytest.approx(scp, abs=1)

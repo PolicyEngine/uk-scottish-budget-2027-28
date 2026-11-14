@@ -34,9 +34,10 @@ def _generate(args) -> int:
         print("--dataset-sha256 needs --dataset", file=sys.stderr)
         return 2
     if args.dataset:
+        from scottish_budget.data_build import DATA_BUILD
         from scottish_budget.engine import check_dataset
 
-        check_dataset(args.dataset, args.dataset_sha256)
+        check_dataset(args.dataset, args.dataset_sha256 or DATA_BUILD.sha256)
     if args.placeholder:
         results = placeholder_results()
         path = write(results, args.out)
@@ -80,21 +81,25 @@ def _combine(args) -> int:
 
 def _freeze(args) -> int:
     from scottish_budget.engine import (
-        bundle_dataset,
         check_dataset,
         git_identity,
         installed_versions,
+        pinned_dataset,
     )
 
+    pinned = pinned_dataset()
+    versions = installed_versions()
     record = {
         **git_identity(),
-        "versions": installed_versions(),
-        "bundle_dataset": bundle_dataset(),
+        "versions": versions,
+        "pinned_dataset": pinned,
+        "engine_matches_build": versions.get("policyengine-uk")
+        == pinned["policyengine_uk"],
     }
     if args.dataset:
         record["dataset_path"] = str(args.dataset)
         record["dataset_sha256"] = check_dataset(
-            args.dataset, args.dataset_sha256
+            args.dataset, args.dataset_sha256 or pinned["sha256"]
         )
     print(json.dumps(record, indent=2))
     return 0

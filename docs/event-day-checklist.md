@@ -19,7 +19,7 @@ The order of 3 December on one page. Detail and reasons are in [`RUNBOOK.md`](RU
 
 ## Never
 
-1. Never run two heavy jobs at once, or a heavy job without the lock and 14 GB free.
+1. Never run two heavy jobs at once, or a heavy job without the lock (the file `/tmp/pe-heavy.lock`, removed only by its owner) and 22 GB free+inactive.
 2. Never run more than one measure in a `generate --reforms` call.
 3. Never publish a figure from an engine and data pair not recorded at G0.
 4. Never show a not-computable measure as £0.

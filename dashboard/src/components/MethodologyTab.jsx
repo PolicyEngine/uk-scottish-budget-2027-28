@@ -28,8 +28,8 @@ export default function MethodologyTab({ meta, measures, repoUrl, onOpenPolicy }
           Model and data
         </h2>
         <p className="text-sm" data-testid="replication">
-          Built with policyengine.py {meta.policyengine} (policyengine-uk {meta.policyengine_uk}) on Microcosm, PolicyEngine&apos;s
-          calibrated survey dataset, build {meta.dataset}. Replication code:{" "}
+          Built with PolicyEngine UK on Microcosm, PolicyEngine&apos;s calibrated survey dataset:{" "}
+          {meta.engine_label ?? `build ${meta.dataset}, policyengine-uk ${meta.policyengine_uk}`}. Replication code:{" "}
           <a href={repoUrl}>PolicyEngine/uk-scottish-budget-2027-28</a>.
         </p>
         <p className="mt-2 text-sm">
