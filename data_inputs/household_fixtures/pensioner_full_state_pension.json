@@ -1,6 +1,7 @@
 {
   "label": "Single pensioner on the full new State Pension",
   "year": 2027,
+  "claims": true,
   "situation": {
     "people": {
       "pensioner": {

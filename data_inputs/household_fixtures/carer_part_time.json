@@ -1,6 +1,7 @@
 {
   "label": "Carer on Carer Support Payment, earning \u00a38,000",
   "year": 2027,
+  "claims": true,
   "situation": {
     "people": {
       "carer": {

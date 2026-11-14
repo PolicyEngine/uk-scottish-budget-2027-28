@@ -102,3 +102,34 @@ def test_household_rows_honour_a_does_not_claim_preset(monkeypatch):
     assert rows["does_not_claim"]["baseline_net_income"] == 15_000.0
     # Baseline, reform and the rest-of-UK twin all keep the flag.
     assert seen == {True: 3, False: 3}
+
+
+def test_fixtures_export_a_does_not_claim_preset_as_not_claiming(monkeypatch):
+    # REVIEW2 S1: the fixture writer goes through situation_for, so a preset
+    # marked "claims": False exports (with its twin) as not claiming.
+    import importlib.util
+    from pathlib import Path
+
+    from scottish_budget.household import SCP_CLAIM_INPUT, UC_CLAIM_INPUT
+
+    root = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location(
+        "fixtures", root / "scripts" / "write_household_fixtures.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    preset = presets(2027)["lone_parent_under_one"]
+    monkeypatch.setattr(
+        module,
+        "presets",
+        lambda: {"claims": preset, "no": {**preset, "claims": False}},
+    )
+    out = module.fixtures()
+    assert out["claims"]["claims"] is True
+    assert (
+        UC_CLAIM_INPUT not in out["claims"]["situation"]["benunits"]["benunit"]
+    )
+    assert out["no"]["claims"] is False
+    for body in (out["no"]["situation"], out["no"]["rest_of_uk_twin"]):
+        assert body["benunits"]["benunit"][UC_CLAIM_INPUT] == {"2027": False}
+        assert body["people"]["baby"][SCP_CLAIM_INPUT] == {"2027": False}

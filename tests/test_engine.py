@@ -16,6 +16,7 @@ from scottish_budget.household import (  # noqa: E402
     calculate,
     presets,
     rest_of_uk_twin,
+    situation_for,
     state_pension_amount,
 )
 from scottish_budget.models import Reform  # noqa: E402
@@ -47,9 +48,10 @@ def _modifier_reform(modifier):
 
 def test_every_preset_runs_on_the_pinned_release():
     for key, preset in presets().items():
-        out = calculate(preset["situation"], preset["year"])
+        situation = situation_for(preset)
+        out = calculate(situation, preset["year"])
         assert out["household_net_income"] > 0, key
-        twin = calculate(rest_of_uk_twin(preset["situation"]), preset["year"])
+        twin = calculate(rest_of_uk_twin(situation), preset["year"])
         assert twin["household_net_income"] > 0, key
 
 
