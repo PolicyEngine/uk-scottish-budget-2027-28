@@ -147,12 +147,19 @@ Fill the clock table as the drill runs, with start, end, machine time, people ti
 
 ## Packet
 
-The drill owner writes the packet by 13:30 Friday and adds the hashes below. The integrator doesn't open any file before its release time, and checks each file's hash on arrival.
+The drill owner wrote the packet on 26 November; its hashes are below. The integrator doesn't open any file before its release time, and checks each file's hash on arrival.
 
 | File | Release | SHA-256 |
 |---|---|---|
-| `00-owner-notes.md` | drill owner only | |
-| `01-statement.md` | 14:00 | |
-| `02-documents.md`, `02-costings.csv`, `02-households.csv`, `02-scoring-sheet.csv` | 14:40 | |
-| `03-correction-notice.md` | 15:15 | |
-| `04-answer-key.md`, `04-answer-key-households.csv`, `04-answer-key-ledger.csv`, `generate_household_key.py`, `04-score.py` | 16:10 | |
+| `00-owner-notes.md` | drill owner only | `fc94f4736a35cebd47ab0f8e5cf03f767c5f20515c87b7554c9171ef4cd218a9` |
+| `01-statement.md` | 14:00 | `890f6d846d7f76931257ac6f049dbfba0f3f2ffb2c25a4215e960738a8a8d640` |
+| `02-documents.md` | 14:40 | `d121228f896e1b67bcd7b3e2caab74dff689f9c7ef6d347bde82b6ec998af1f0` |
+| `02-costings.csv` | 14:40 | `642ff2323dc40143141e4e6851be5fde2928d7ed52aabd8d4220739c7b08f00f` |
+| `02-households.csv` | 14:40 | `95d7d23c2a9e711c0f4030feafb01996f366a43bba43efd02c7cc104f3f8856a` |
+| `02-scoring-sheet.csv` | 14:40 | `ea4ab2c3e8bda26b94f21e7461c99d81425679899dc92b2004421d2ffdc3771c` |
+| `03-correction-notice.md` | 15:15 | `4ced0082606569230d5a5a6df06299e6dc6a67aa73fb3c729f4c42d034ad56e4` |
+| `04-answer-key.md` | 16:10 | `681afc82ad6464f1fc1892840b36656071485f3d48e07e82b95e8f8411f20160` |
+| `04-answer-key-households.csv` | 16:10 | `42d0f46274d15a739c646a09c98135b49265d1f638997b9a529cb8d139c216d9` |
+| `04-answer-key-ledger.csv` | 16:10 | `174f53779b2864a3a49af751a1d4c9f96bd561d12c300dc37fa13775ca38244d` |
+| `generate_household_key.py` | 16:10 | `6cf0c171a9767db92f89b21cc1683f15dead66867c7e091791c1ec3e32eb2513` |
+| `04-score.py` | 16:10 | `fcdc5cc254dbd6a8d63ccb76aef8e44b49646235f579b79e99224bd3397dd4b6` |
