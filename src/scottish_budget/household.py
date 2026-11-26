@@ -28,15 +28,15 @@ import copy
 from scottish_budget.years import BUDGET_YEAR
 
 SCOTTISH_TAX_INPUT = "pays_scottish_income_tax"
-# Take-up inputs; both default to true in policyengine-uk. In 2.177.7
+# Take-up inputs; both default to true in policyengine-uk. In 2.179.2
 # would_claim_uc is a benefit-unit input and would_claim_scp a person input.
 UC_CLAIM_INPUT = "would_claim_uc"
 SCP_CLAIM_INPUT = "would_claim_scp"
 # The benefits a household can be marked as not claiming, in that order.
 CLAIMABLE = ("uc", "scp")
 
-# The full new State Pension in 2027-28: £250.70 a week (2.174.1, 2.177.7 and
-# 2.175.4; £250.71 on 2.151.0) times 52. G0 re-checks it against the pinned release
+# The full new State Pension in 2027-28: £250.70 a week (2.174.1, 2.177.7,
+# 2.179.2 and 2.175.4; £250.71 on 2.151.0) times 52. G0 re-checks it against the pinned release
 # (``state_pension_amount``); 2026-27's £12,548 would sit below the
 # personal allowance and hide any tax change for pensioners.
 FULL_NEW_STATE_PENSION_2027 = 13_036
@@ -186,7 +186,7 @@ def not_claiming(
 
     ``benefits`` names what is not claimed: "uc" sets ``would_claim_uc``
     false on each named benefit unit (every one by default); "scp" sets
-    ``would_claim_scp`` (a person input in 2.177.7) false on each of its
+    ``would_claim_scp`` (a person input in 2.179.2) false on each of its
     members. Both by default. Without this a hand-built household gets both
     whenever it is eligible, because the inputs default to true.
     """

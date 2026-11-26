@@ -52,7 +52,7 @@ describe("Dashboard", () => {
     window.history.replaceState(null, "", "/?tab=methodology");
     render(<Dashboard data={results} />);
     expect(screen.getByTestId("replication").textContent).toContain(results.meta.engine_label);
-    expect(screen.getByTestId("replication").textContent).toContain("not in a policyengine.py release");
+    expect(screen.getByTestId("replication").textContent).toContain("certified in policyengine");
   });
 
   it("keeps the selected policies when the methodology link is followed", () => {

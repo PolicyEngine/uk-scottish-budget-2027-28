@@ -9,10 +9,11 @@ from scottish_budget import pipeline, reforms
 from scottish_budget.publication import validate_results
 from scottish_budget.years import POLICY_YEARS
 
-SHA = "e268e3af7932784ad4471f008097a5acc6c3c5bc15c4c54fbb5a489b2a0ac9ae"
-BUILD = "uk-frs-calibration-attempt-20261112T133744Z-6f918b81"
+SHA = "ae116bc3cff798fe68df253083f0b26d779e02a0a818ee68df7d29fbc557165a"
+BUILD = "uk-frs-calibration-attempt-20261122T100732Z-b891aa69"
+REVISION = "a80a4bf70ab4ffeac77357fe0633d3cee4ce7401"
 LABEL = (
-    f"build {BUILD}, policyengine-uk 2.177.7, not in a policyengine.py release"
+    "build b891aa69, policyengine-uk 2.179.2, certified in policyengine 6.20.3"
 )
 
 
@@ -47,13 +48,13 @@ def _partial(measure_id):
         ],
         "poverty": [],
         "versions": {
-            "policyengine": None,
-            "policyengine-uk": "2.177.7",
+            "policyengine": "6.20.3",
+            "policyengine-uk": "2.179.2",
             "policyengine-core": "3.34.10",
         },
         "provenance": {
             "runtime_dataset": BUILD,
-            "runtime_dataset_revision": BUILD,
+            "runtime_dataset_revision": REVISION,
             "runtime_dataset_sha256": SHA,
             "label": LABEL,
         },
@@ -150,6 +151,7 @@ def _old_pair(measure_id, **changes):
     eeb6093e. The fields can be set one at a time."""
     partial = _partial(measure_id)
     sha = changes.get("sha", "0a9b77db" + "0" * 56)
+    partial["versions"]["policyengine"] = changes.get("pe", "6.17.2")
     partial["versions"]["policyengine-uk"] = changes.get("uk", "2.174.1")
     partial["versions"]["policyengine-core"] = changes.get("core", "3.34.10")
     partial["provenance"] = {
@@ -177,9 +179,18 @@ def test_partials_from_another_engine_and_data_pair_are_refused(day):
 @pytest.mark.parametrize(
     "changes",
     [
-        {"sha": SHA, "build": BUILD},  # right file, old engine
-        {"uk": "2.177.7"},  # right engine, old file
-        {"sha": SHA, "build": BUILD, "uk": "2.177.7", "core": "3.34.0"},
+        {"sha": SHA, "build": BUILD, "pe": "6.20.3"},  # right file, old engine
+        {"pe": "6.20.3", "uk": "2.179.2"},  # right engine, old file
+        {
+            "sha": SHA,
+            "build": BUILD,
+            "pe": "6.20.3",
+            "uk": "2.179.2",
+            "core": "3.34.0",
+        },
+        # right file and engine, loaded outside policyengine.py (the old
+        # route for 2.177.7)
+        {"sha": SHA, "build": BUILD, "pe": None, "uk": "2.179.2"},
     ],
 )
 def test_any_one_field_off_the_build_is_refused(day, changes):
@@ -193,8 +204,11 @@ def test_partials_on_the_pinned_pair_are_accepted(day):
         provisional=True, out_dir=day, with_households=False
     )
     assert results["meta"]["dataset_sha256"] == SHA
-    assert results["meta"]["policyengine_uk"] == "2.177.7"
+    assert results["meta"]["dataset"] == BUILD
+    assert results["meta"]["policyengine"] == "6.20.3"
+    assert results["meta"]["policyengine_uk"] == "2.179.2"
     assert results["meta"]["policyengine_core"] == "3.34.10"
+    assert results["meta"]["engine_label"] == LABEL
 
 
 def test_household_rows_need_the_build_engine(day, monkeypatch):

@@ -80,29 +80,17 @@ def _combine(args) -> int:
 
 
 def _freeze(args) -> int:
-    from scottish_budget.engine import (
-        check_dataset,
-        git_identity,
-        installed_versions,
-        pinned_dataset,
-    )
+    from scottish_budget.engine import check_dataset, git_identity, pair_record
 
-    pinned = pinned_dataset()
-    versions = installed_versions()
-    record = {
-        **git_identity(),
-        "versions": versions,
-        "pinned_dataset": pinned,
-        "engine_matches_build": versions.get("policyengine-uk")
-        == pinned["policyengine_uk"],
-    }
+    record = {**git_identity(), **pair_record()}
     if args.dataset:
         record["dataset_path"] = str(args.dataset)
         record["dataset_sha256"] = check_dataset(
-            args.dataset, args.dataset_sha256 or pinned["sha256"]
+            args.dataset,
+            args.dataset_sha256 or record["pinned_dataset"]["sha256"],
         )
     print(json.dumps(record, indent=2))
-    return 0
+    return 0 if record["engine_matches_build"] else 1
 
 
 def _reconcile(args) -> int:

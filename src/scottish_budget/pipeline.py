@@ -45,13 +45,12 @@ from scottish_budget.years import BASIS, POLICY_YEARS, fiscal_year_label
 ROOT = Path(__file__).resolve().parents[2]
 PARTIAL_DIR = ROOT / "data_outputs" / "partials"
 
-# The pinned pair (``data_build.DATA_BUILD``), for the placeholder file
+# The pinned bundle (``data_build.DATA_BUILD``), for the placeholder file
 # only. A model run records what is installed (``installed_versions``) and
 # what the simulation loaded (the partials' provenance).
-# tests/test_provenance.py checks these against uv.lock. No policyengine.py
-# release covers the pair, so ``policyengine`` is None.
+# tests/test_provenance.py checks these against uv.lock.
 LOCKED_ENGINE = {
-    "policyengine": None,
+    "policyengine": DATA_BUILD.policyengine,
     "policyengine_uk": DATA_BUILD.engine,
     "dataset": DATA_BUILD.id,
     "engine_label": LABEL,
@@ -316,9 +315,13 @@ def _engine_meta(partials: dict[str, dict]) -> dict:
     versions = json.loads(versions_json) or {}
     # Agreeing with each other is not enough: partials are git-ignored and
     # survive branch switches, so old runs on another engine and data pair
-    # would otherwise be published. Refuse anything but DATA_BUILD's pair.
+    # would otherwise be published. Refuse anything but DATA_BUILD's bundle.
     expected = {
         "dataset SHA-256": (sha, DATA_BUILD.sha256),
+        "policyengine": (
+            versions.get("policyengine"),
+            DATA_BUILD.policyengine,
+        ),
         "policyengine-uk": (
             versions.get("policyengine-uk"),
             DATA_BUILD.engine,
@@ -336,15 +339,16 @@ def _engine_meta(partials: dict[str, dict]) -> dict:
     if wrong:
         raise CombineError(
             f"The partials are not on build {DATA_BUILD.id} with "
-            f"policyengine-uk {DATA_BUILD.engine}: {'; '.join(wrong)}. "
-            "Delete them and re-run each measure on the pinned pair."
+            f"policyengine-uk {DATA_BUILD.engine} (policyengine "
+            f"{DATA_BUILD.policyengine}): {'; '.join(wrong)}. "
+            "Delete them and re-run each measure on the pinned bundle."
         )
     provenance = next(iter(partials.values())).get("provenance") or {}
     return {
         "policyengine": versions.get("policyengine"),
         "policyengine_uk": versions.get("policyengine-uk"),
         "policyengine_core": versions.get("policyengine-core"),
-        "dataset": provenance.get("runtime_dataset_revision") or name,
+        "dataset": name,
         "dataset_sha256": sha,
         "engine_label": provenance.get("label"),
     }
