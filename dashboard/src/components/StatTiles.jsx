@@ -1,7 +1,7 @@
 import { formatBn, formatShare } from "../utils/format";
 
 /** Headline tiles for the selected year: one home per number. */
-export default function StatTiles({ measures, year, versus, poverty, placeholder }) {
+export default function StatTiles({ measures, year, versus, poverty, placeholder, label }) {
   const total = measures.reduce(
     (sum, m) => sum + (m.budgetary_impact?.find((f) => f.year === year.year)?.value_bn ?? 0),
     0,
@@ -14,7 +14,8 @@ export default function StatTiles({ measures, year, versus, poverty, placeholder
         <p className="eyebrow text-slate-500">Net effect on revenue, {year.label}</p>
         <p className="text-2xl font-bold">{formatBn(Math.round(total * 100) / 100)}</p>
         <p className="text-xs text-slate-500">
-          Selected measures; negative is a cost.{placeholder ? " Placeholder." : ""}
+          Selected measures; negative is a cost. Static.{placeholder ? " Placeholder." : ""}
+          {label ? ` ${label}.` : ""}
         </p>
       </div>
       <div className="metric-card">

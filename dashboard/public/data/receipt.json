@@ -1,0 +1,34 @@
+{
+  "package_run": true,
+  "git_sha": "d9603f4e42c29d45e3d161dacd56d01255a81d22",
+  "clean_tree": true,
+  "generated_at": "2026-11-13T15:25:51+00:00",
+  "versions": {
+    "policyengine": null,
+    "policyengine-uk": "2.177.7",
+    "policyengine-core": "3.34.10"
+  },
+  "pinned_dataset": {
+    "build": "uk-frs-calibration-attempt-20261112T133744Z-6f918b81",
+    "sha256": "e268e3af7932784ad4471f008097a5acc6c3c5bc15c4c54fbb5a489b2a0ac9ae",
+    "repo_id": "policyengine/populace-uk-private",
+    "repo_type": "dataset",
+    "path": "releases/microcosm-uk-2024-25-national/uk-frs-calibration-attempt-20261112T133744Z-6f918b81/microcosm_uk_2024_25.h5",
+    "policyengine_uk": "2.177.7",
+    "policyengine_core": "3.34.10",
+    "label": "build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+  },
+  "dataset": "uk-frs-calibration-attempt-20261112T133744Z-6f918b81",
+  "dataset_sha256": "e268e3af7932784ad4471f008097a5acc6c3c5bc15c4c54fbb5a489b2a0ac9ae",
+  "measures_scored": [
+    "starter_basic_thresholds",
+    "advanced_rate_plus_1p",
+    "scottish_property_income_rates",
+    "lbtt_ads_increase",
+    "council_tax_freeze",
+    "scp_under_one_premium",
+    "young_parent_top_up"
+  ],
+  "placeholders_dropped": [],
+  "results_sha256": "2a32e4c4305f94c3d83cff433e7d5074d39bae893a08750abbb556a2fdae7bf5"
+}

@@ -54,7 +54,7 @@ function BarList({ rows, years, placeholder }) {
 }
 
 /** Net effect on revenue by measure and year (£bn; negative is a cost). */
-export default function BudgetaryImpactChart({ measures, years, placeholder }) {
+export default function BudgetaryImpactChart({ measures, years, placeholder, label }) {
   const narrow = useNarrow();
   const rows = budgetRows(measures, years);
   const height = Math.max(240, 44 * rows.length + 60);
@@ -68,8 +68,9 @@ export default function BudgetaryImpactChart({ measures, years, placeholder }) {
         <ChartDownloadMenu rows={rows} filename="budgetary-impact" />
       </div>
       <p className="mb-3 text-sm text-slate-600">
-        £bn a year. Positive is more revenue, negative is a cost.
+        £bn a year. Positive is more revenue, negative is a cost. Static.
         {placeholder && " * Placeholder figures."}
+        {label ? ` Figures: ${label}.` : ""}
       </p>
       {narrow ? (
         <BarList rows={rows} years={years} placeholder={placeholder} />

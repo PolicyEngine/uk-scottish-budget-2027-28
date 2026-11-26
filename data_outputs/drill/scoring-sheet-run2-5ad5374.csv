@@ -1,0 +1,162 @@
+section,id,field,submitted_value,commit_sha,notes
+household,H1,scottish_income_tax_2027_28,461.70,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H1,scottish_child_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H1,young_parent_top_up_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H1,carer_support_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H1,scottish_carer_supplement_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H1,energy_payment_2026_27,100.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H1,energy_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H2,scottish_income_tax_2027_28,2844.94,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H2,scottish_child_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H2,young_parent_top_up_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H2,carer_support_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H2,scottish_carer_supplement_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H2,energy_payment_2026_27,100.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H2,energy_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H3,scottish_income_tax_2027_28,5543.75,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H3,scottish_child_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H3,young_parent_top_up_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H3,carer_support_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H3,scottish_carer_supplement_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H3,energy_payment_2026_27,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H3,energy_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H4,scottish_income_tax_2027_28,30974.73,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H4,scottish_child_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H4,young_parent_top_up_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H4,carer_support_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H4,scottish_carer_supplement_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H4,energy_payment_2026_27,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H4,energy_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H5,scottish_income_tax_2027_28,6203.75,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H5,scottish_child_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H5,young_parent_top_up_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H5,carer_support_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H5,scottish_carer_supplement_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H5,energy_payment_2026_27,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H5,energy_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H6,scottish_income_tax_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H6,scottish_child_payment_2027_28,1759.30,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H6,young_parent_top_up_2027_28,267.10,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H6,carer_support_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H6,scottish_carer_supplement_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H6,energy_payment_2026_27,100.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H6,energy_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H7,scottish_income_tax_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H7,scottish_child_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H7,young_parent_top_up_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H7,carer_support_payment_2027_28,4654.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H7,scottish_carer_supplement_2027_28,629.20,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H7,energy_payment_2026_27,100.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H7,energy_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H8,scottish_income_tax_2027_28,2889.88,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H8,scottish_child_payment_2027_28,0.00,5ad5374,H8 receives no qualifying benefit per the household file (the engine would award UC and SCP to this couple)
+household,H8,young_parent_top_up_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H8,carer_support_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H8,scottish_carer_supplement_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H8,energy_payment_2026_27,100.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+household,H8,energy_payment_2027_28,0.00,5ad5374,hand-computed on the documents' basis; engine agrees except as noted
+ledger,S1,route,dashboard-param,5ad5374,starter_basic_thresholds
+ledger,S1,cause,parameter,5ad5374,
+national,S1,pe_static_gbp_m_2026_27,0,5ad5374,measure starts in 2027-28; nothing in 2026-27
+national,S1,pe_static_gbp_m_2027_28,-14,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S1,pe_static_gbp_m_2028_29,-14,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S1,basis,"corrected 15:15 (C1: 16,676 / 30,119); static; gross; accrued (fiscal-year liabilities, nominal £); 2027-28 and 2028-29; re-based at G3 to the costings' baseline (2026-27 starter and basic thresholds held in cash); 2028-29 assumes 2027-28 thresholds held",5ad5374,our basis
+national,S1,gap_class,2027-28: basis — Ours is static on the same re-based baseline (2026-27 thresholds held in cash); the costing includes behaviour. | 2028-29: basis — Ours is static and assumes the 2027-28 thresholds are held in 2028-29 (the statement gives no 2028-29 value); the costing includes behaviour.,5ad5374,
+ledger,S2,route,ledger,5ad5374,upper_thresholds_frozen
+ledger,S2,cause,baseline_mismatch,5ad5374,
+national,S2,pe_static_gbp_m_2026_27,0,5ad5374,"trap row: already in the baseline, no change against it"
+national,S2,pe_static_gbp_m_2027_28,0,5ad5374,"trap row: already in the baseline, no change against it"
+national,S2,pe_static_gbp_m_2028_29,0,5ad5374,"trap row: already in the baseline, no change against it"
+national,S2,basis,in the baseline: committed in the 2026-27 Budget,5ad5374,costing's basis (ledger/not-computable line)
+national,S2,gap_class,2027-28: baseline_mismatch — Trap row: already current law; not costed. | 2028-29: baseline_mismatch — Trap row: already current law; not costed.,5ad5374,
+ledger,S3,route,dashboard-param,5ad5374,advanced_rate_plus_1p
+ledger,S3,cause,parameter,5ad5374,
+national,S3,pe_static_gbp_m_2026_27,0,5ad5374,measure starts in 2027-28; nothing in 2026-27
+national,S3,pe_static_gbp_m_2027_28,59,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S3,pe_static_gbp_m_2028_29,64,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S3,basis,"static; gross; accrued (fiscal-year liabilities, nominal £); 2027-28 and 2028-29; against current law",5ad5374,our basis
+national,S3,gap_class,"2027-28: basis — Ours is static, as declared; the costing includes the behavioural response of advanced-rate taxpayers (taxable income elasticity), which roughly halves a static yield at this income level. | 2028-29: basis — Ours is static, as declared; the costing includes the behavioural response of advanced-rate taxpayers (taxable income elasticity), which roughly halves a static yield at this income level.",5ad5374,
+ledger,S4,route,dashboard-structural,5ad5374,scottish_property_income_rates
+ledger,S4,cause,formula,5ad5374,
+national,S4,pe_static_gbp_m_2026_27,0,5ad5374,measure starts in 2027-28; nothing in 2026-27
+national,S4,pe_static_gbp_m_2027_28,47,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S4,pe_static_gbp_m_2028_29,48,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S4,basis,"static; gross; accrued (fiscal-year liabilities, nominal £); 2027-28 and 2028-29; against current law; thin property income records",5ad5374,our basis
+national,S4,gap_class,"2027-28: basis — Ours is static, as declared; the costing includes behaviour (incorporation, timing of property income). Scottish property income also rests on few survey records. | 2028-29: basis — Ours is static, as declared; the costing includes behaviour (incorporation, timing of property income). Scottish property income also rests on few survey records.",5ad5374,
+ledger,S5,route,dashboard-param,5ad5374,lbtt_ads_increase
+ledger,S5,cause,parameter,5ad5374,
+national,S5,pe_static_gbp_m_2026_27,,5ad5374,not costed in this year
+national,S5,pe_static_gbp_m_2027_28,45,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S5,pe_static_gbp_m_2028_29,46,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S5,basis,"static; gross; accrued (fiscal-year liabilities, nominal £); 2027-28 and 2028-29 only (2026-27 part year from 4 Dec 2026 not costed); against current law",5ad5374,our basis
+national,S5,gap_class,2026-27: timing_fiscal_calendar — costing 14m for 4 Dec 2026 to 31 Mar 2027; the part year is not modelled (scored years start 2027-28) | 2027-28: within 10% — Within 10%. | 2028-29: within 10% — Within 10%.,5ad5374,
+ledger,S6,route,ledger,5ad5374,non_domestic_rates
+ledger,S6,cause,coverage,5ad5374,
+national,S6,pe_static_gbp_m_2026_27,,5ad5374,ledger: not modelled; business tax outside the model; official costing recorded
+national,S6,pe_static_gbp_m_2027_28,,5ad5374,ledger: not modelled; business tax outside the model; official costing recorded
+national,S6,pe_static_gbp_m_2028_29,,5ad5374,ledger: not modelled; business tax outside the model; official costing recorded
+national,S6,basis,post-behavioural; cash; fiscal year; against CPI-linked poundage,5ad5374,costing's basis (ledger/not-computable line)
+national,S6,gap_class,2027-28: coverage — Business tax outside the model; official costing recorded. | 2028-29: coverage — Business tax outside the model; official costing recorded.,5ad5374,
+ledger,S7,route,ledger,5ad5374,air_departure_tax
+ledger,S7,cause,baseline_mismatch,5ad5374,
+national,S7,pe_static_gbp_m_2026_27,0,5ad5374,"trap row: already in the baseline, no change against it"
+national,S7,pe_static_gbp_m_2027_28,0,5ad5374,"trap row: already in the baseline, no change against it"
+national,S7,pe_static_gbp_m_2028_29,0,5ad5374,"trap row: already in the baseline, no change against it"
+national,S7,basis,in the baseline,5ad5374,costing's basis (ledger/not-computable line)
+national,S7,gap_class,2027-28: baseline_mismatch — Trap row: in the baseline per the costings (nil); not modelled. | 2028-29: baseline_mismatch — Trap row: in the baseline per the costings (nil); not modelled.,5ad5374,
+ledger,S8,route,dashboard-structural,5ad5374,council_tax_freeze
+ledger,S8,cause,data_calibration,5ad5374,
+national,S8,pe_static_gbp_m_2026_27,0,5ad5374,measure starts in 2027-28; nothing in 2026-27
+national,S8,pe_static_gbp_m_2027_28,-132,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S8,pe_static_gbp_m_2028_29,-137,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S8,basis,static; gross household saving (cost to councils); accrued; 2027-28 and 2028-29; against current-law council tax growth; council funding not modelled,5ad5374,our basis
+national,S8,gap_class,"2027-28: basis — Different measures of the same freeze: ours is the static fall in Scottish household council tax bills (gross, before council tax reduction effects on the grant); the costing is the grant paid to councils. | 2028-29: timing_fiscal_calendar — No official figure for 2028-29; ours carries the 2027-28 freeze forward in the bill level.",5ad5374,
+ledger,S9,route,not-computable,5ad5374,council_tax_bands_i_j
+ledger,S9,cause,coverage,5ad5374,
+national,S9,pe_static_gbp_m_2026_27,not-computable,5ad5374,"from 2028-29; no Band I/J homes (over £1m / £2m) in the data; published with reason, not £0"
+national,S9,pe_static_gbp_m_2027_28,not-computable,5ad5374,"from 2028-29; no Band I/J homes (over £1m / £2m) in the data; published with reason, not £0"
+national,S9,pe_static_gbp_m_2028_29,not-computable,5ad5374,"from 2028-29; no Band I/J homes (over £1m / £2m) in the data; published with reason, not £0"
+national,S9,basis,post-behavioural; cash; fiscal year; yield to councils,5ad5374,costing's basis (ledger/not-computable line)
+national,S9,gap_class,2027-28: coverage — Applies from 2028-29. | 2028-29: coverage — Not computable: no homes valued over £1m or £2m (Bands I and J) in the data; published with the reason.,5ad5374,
+ledger,S10,route,ledger,5ad5374,scottish_benefits_uprating
+ledger,S10,cause,baseline_mismatch,5ad5374,
+national,S10,pe_static_gbp_m_2026_27,0,5ad5374,"trap row: already in the baseline, no change against it"
+national,S10,pe_static_gbp_m_2027_28,0,5ad5374,"trap row: already in the baseline, no change against it"
+national,S10,pe_static_gbp_m_2028_29,0,5ad5374,"trap row: already in the baseline, no change against it"
+national,S10,basis,in the baseline: statutory uprating,5ad5374,costing's basis (ledger/not-computable line)
+national,S10,gap_class,2027-28: baseline_mismatch — Trap row: already current law; not costed. | 2028-29: baseline_mismatch — Trap row: already current law; not costed.,5ad5374,
+ledger,S11,route,dashboard-param,5ad5374,scp_under_one_premium
+ledger,S11,cause,parameter,5ad5374,
+national,S11,pe_static_gbp_m_2026_27,0,5ad5374,measure starts in 2027-28; nothing in 2026-27
+national,S11,pe_static_gbp_m_2027_28,-4,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S11,pe_static_gbp_m_2028_29,-8,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S11,basis,"corrected 15:15 (C2: from 1 Nov 2027, 157/366 days in 2027-28); static; gross; accrued (fiscal-year liabilities, nominal £); 2027-28 and 2028-29; against current law",5ad5374,our basis
+national,S11,gap_class,2027-28: data_calibration — Ours uses the model's modelled take-up and its count of Scottish children under one on qualifying benefits; the costing uses the SCP forecast's take-up and caseload. | 2028-29: data_calibration — Ours uses the model's modelled take-up and its count of Scottish children under one on qualifying benefits; the costing uses the SCP forecast's take-up and caseload.,5ad5374,
+ledger,S12,route,dashboard-structural,5ad5374,young_parent_top_up
+ledger,S12,cause,formula,5ad5374,
+national,S12,pe_static_gbp_m_2026_27,0,5ad5374,measure starts in 2027-28; nothing in 2026-27
+national,S12,pe_static_gbp_m_2027_28,-3,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S12,pe_static_gbp_m_2028_29,-6,5ad5374,"static; label: build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release"
+national,S12,basis,"static; gross; accrued (fiscal-year liabilities, nominal £); 2027-28 part year (26 weeks from 1 Oct 2027), 2028-29 full year; against current law",5ad5374,our basis
+national,S12,gap_class,"2027-28: data_calibration — Same part year (188/366) as the costing. Parents under 25 receiving SCP are thin in the survey and the model's SCP take-up differs from the SCP forecast, so the caseload is lower. | 2028-29: data_calibration — Parents under 25 receiving SCP are thin in the survey and the model's SCP take-up differs from the SCP forecast, so the caseload is lower.",5ad5374,
+ledger,S13,route,not-computable,5ad5374,adp_changes
+ledger,S13,cause,coverage,5ad5374,
+national,S13,pe_static_gbp_m_2026_27,not-computable,5ad5374,"from 2028-29; ADP carried as PIP, descriptors not in the data; published with reason, not £0"
+national,S13,pe_static_gbp_m_2027_28,not-computable,5ad5374,"from 2028-29; ADP carried as PIP, descriptors not in the data; published with reason, not £0"
+national,S13,pe_static_gbp_m_2028_29,not-computable,5ad5374,"from 2028-29; ADP carried as PIP, descriptors not in the data; published with reason, not £0"
+national,S13,basis,spending; fiscal year,5ad5374,costing's basis (ledger/not-computable line)
+national,S13,gap_class,2027-28: coverage — Applies from 2028-29. | 2028-29: coverage — Not computable: ADP is carried as PIP and the mobility descriptors are not in the data; published with the reason.,5ad5374,
+ledger,S14,route,dashboard-structural,5ad5374,energy_payment_bands_a_d
+ledger,S14,cause,timing_fiscal_calendar,5ad5374,
+national,S14,pe_static_gbp_m_2026_27,-185,5ad5374,"model estimate (repo modifier, fiscal 2026), outside the dashboard's scored years"
+national,S14,pe_static_gbp_m_2027_28,0,5ad5374,one-off paid in 2026-27; nothing in this year
+national,S14,pe_static_gbp_m_2028_29,0,5ad5374,one-off paid in 2026-27; nothing in this year
+national,S14,basis,"static; gross; one-off, counted in 2026-27 (paid by 31 March 2027) via measures/energy_payment_scotland.py; model -185m in 2026-27, nil in 2027-28 and 2028-29; shown on the page as a recorded line because the page scores 2027-28 and 2028-29 only",5ad5374,our basis
+national,S14,gap_class,2026-27: within 10% — model static -185m vs costing -189m (2%) | 2027-28: timing_fiscal_calendar — Nothing in 2027-28: the payment falls in 2026-27. Model static estimate for 2026-27 -185m (1.85m households) vs costing -189m: within 10%. | 2028-29: timing_fiscal_calendar — Nothing in 2028-29.,5ad5374,
+ledger,S15,route,ledger,5ad5374,bus_fare_cap
+ledger,S15,cause,coverage,5ad5374,
+national,S15,pe_static_gbp_m_2026_27,,5ad5374,"ledger: not modelled; spending, outside the model; official costing recorded"
+national,S15,pe_static_gbp_m_2027_28,,5ad5374,"ledger: not modelled; spending, outside the model; official costing recorded"
+national,S15,pe_static_gbp_m_2028_29,,5ad5374,"ledger: not modelled; spending, outside the model; official costing recorded"
+national,S15,basis,spending,5ad5374,costing's basis (ledger/not-computable line)
+national,S15,gap_class,2027-28: coverage — Spending outside the model; official costing recorded. | 2028-29: coverage — Spending outside the model; official costing recorded.,5ad5374,
