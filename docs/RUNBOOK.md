@@ -46,7 +46,7 @@ One measure took 2 min 16 s and peaked at 11.3 GB resident (6 November, 6.14.0 o
 ## Corrections (G5)
 
 1. Record the correction (time received, what it changes) as a PR comment.
-2. Change the affected measures; re-run each one and the package under the lock; `combine`.
+2. Change the affected measures; re-run each one and the package under the lock; `combine --official <corrected costings file>` when the correction changes the costings. The output and `receipt.json` give the path and SHA-256 of the costings file read: put that SHA-256 in the G5 comment.
 3. The new `results.json` SHA-256 (`receipt.json`, `results_sha256`) is the new scoring SHA; record it beside the old one.
 4. On a published page, add a dated correction note to the Methodology tab saying what changed, and keep the old figures out of the page.
 

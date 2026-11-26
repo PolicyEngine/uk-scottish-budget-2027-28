@@ -72,10 +72,19 @@ def _combine(args) -> int:
         provisional=args.provisional,
         out_dir=args.partial_dir or PARTIAL_DIR,
         with_households=not args.no_households,
+        official=args.official,
     )
     path = write(results, args.out)
     write(receipt, path.with_name("receipt.json"))
-    print(json.dumps({"written": str(path), **manifest(results)}))
+    print(
+        json.dumps(
+            {
+                "written": str(path),
+                **manifest(results),
+                "official_costings": receipt["official_costings"],
+            }
+        )
+    )
     return 0
 
 
@@ -143,6 +152,11 @@ def main(argv=None) -> int:
     com = sub.add_parser("combine", help="Partials into results.json")
     com.add_argument("--provisional", action="store_true", help="G2 figures")
     com.add_argument("--no-households", action="store_true")
+    com.add_argument(
+        "--official",
+        type=Path,
+        help="Official costings file (after a correction, the corrected one)",
+    )
     com.add_argument("--partial-dir", type=Path)
     com.add_argument("--out", type=Path, default=DEFAULT_OUT)
     com.set_defaults(func=_combine)

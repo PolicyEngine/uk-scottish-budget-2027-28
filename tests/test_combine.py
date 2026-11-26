@@ -297,3 +297,29 @@ def test_cells_below_the_floor_must_be_withheld(day):
     )
     with pytest.raises(PublicationError, match="below the disclosure floor"):
         pipeline.combine(provisional=True, out_dir=day, with_households=False)
+
+
+def test_combine_reads_the_costings_file_it_is_given(day, tmp_path):
+    """After a correction, combine reads the corrected file and the
+    receipt records which one (drill 12 read the uncorrected file)."""
+    import hashlib
+
+    header = "measure_id,year,official_value_bn,official_source,basis\n"
+    first = tmp_path / "costings.csv"
+    first.write_text(header + "starter_basic_thresholds,2027,-0.10,SFC,\n")
+    corrected = tmp_path / "costings-corrected.csv"
+    corrected.write_text(header + "starter_basic_thresholds,2027,-0.12,SFC,\n")
+    for path, value in ((first, -0.10), (corrected, -0.12)):
+        results, receipt = pipeline.combine(
+            provisional=True,
+            out_dir=day,
+            with_households=False,
+            official=path,
+        )
+        assert [
+            r["official_value_bn"] for r in results["official_costings"]
+        ] == [value]
+        assert receipt["official_costings"] == {
+            "path": str(path),
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        }

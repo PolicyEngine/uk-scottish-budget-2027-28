@@ -402,8 +402,15 @@ def combine(
     calculate=None,
     with_households: bool = True,
     curve=None,
+    official=None,
 ) -> tuple[dict, dict]:
-    """results.json and its receipt from the partials and the registry."""
+    """results.json and its receipt from the partials and the registry.
+
+    ``official`` is the official costings file (default
+    ``OFFICIAL_COSTINGS``). After a correction, pass the corrected file;
+    the receipt records the path and SHA-256 of the file read, so G5 can
+    show which costings the published comparison rests on."""
+    official = Path(official) if official is not None else OFFICIAL_COSTINGS
     partials = read_partials(out_dir)
     if not partials:
         raise CombineError(
@@ -480,7 +487,7 @@ def combine(
         "poverty": poverty,
         "council_tax_bands": bands,
         "scotland_vs_rest_of_uk": versus,
-        "official_costings": official_costings(),
+        "official_costings": official_costings(official),
         "households": (
             household_rows(scored, calculate) if with_households else []
         ),
@@ -499,6 +506,14 @@ def combine(
         "dataset_sha256": engine["dataset_sha256"],
         "measures_scored": [m.id for m in scored],
         "placeholders_dropped": dropped,
+        "official_costings": {
+            "path": str(official),
+            "sha256": (
+                hashlib.sha256(official.read_bytes()).hexdigest()
+                if official.exists()
+                else None
+            ),
+        },
         "results_sha256": manifest(results)["sha256"],
     }
     return results, receipt
