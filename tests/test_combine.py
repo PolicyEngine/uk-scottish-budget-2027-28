@@ -5,7 +5,7 @@ import json
 
 import pytest
 
-from scottish_budget import pipeline, reforms
+from scottish_budget import pipeline
 from scottish_budget.publication import validate_results
 from scottish_budget.years import POLICY_YEARS
 
@@ -62,9 +62,10 @@ def _partial(measure_id):
 
 
 @pytest.fixture
-def day(monkeypatch, tmp_path):
-    """The registry as on the day: the two threshold-style measures real,
-    one signed off; everything else dropped as not in the statement."""
+def day(monkeypatch, tmp_path, template):
+    """The registry as on the day, built on the frozen template: the two
+    threshold-style measures real, one signed off; everything else
+    dropped as not in the statement."""
     real = {
         "starter_basic_thresholds": True,
         "scp_increase": False,
@@ -75,7 +76,7 @@ def day(monkeypatch, tmp_path):
         dataclasses.replace(m, placeholder=False, publish=real[m.id])
         if m.id in real
         else m
-        for m in reforms.MEASURES
+        for m in template
     )
     monkeypatch.setattr(pipeline, "MEASURES", measures)
     by_id = {m.id: m for m in measures}

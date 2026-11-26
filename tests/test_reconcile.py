@@ -2,6 +2,7 @@ import csv
 from pathlib import Path
 
 import pytest
+from template_registry import TEMPLATE_IDS
 
 from scottish_budget.pipeline import placeholder_results
 from scottish_budget.reconcile import (
@@ -37,12 +38,23 @@ def _write(tmp_path, rows):
     return path
 
 
-def test_every_expected_effect_names_a_measure_and_a_policy_year():
-    ids = {m.id for m in MEASURES}
+def test_every_expected_effect_names_a_measure_and_a_policy_year(
+    monkeypatch,
+):
+    # The expectations were written for the template; G1 may delete some
+    # of its entries, so they are read against the template's ids too.
+    from types import SimpleNamespace
+
+    from scottish_budget import reconcile as module
+
+    ids = {m.id for m in MEASURES} | set(TEMPLATE_IDS)
     with open(EXPECTED, newline="") as handle:
         for row in csv.DictReader(handle):
             assert row["measure_id"] in ids, row
             assert int(row["year"]) in POLICY_YEARS, row
+    monkeypatch.setattr(
+        module, "MEASURES", tuple(SimpleNamespace(id=i) for i in sorted(ids))
+    )
     read_official(EXPECTED)
 
 
@@ -52,7 +64,7 @@ def test_unknown_ids_and_years_fail(tmp_path):
         read_official(path)
 
 
-def test_big_gaps_need_a_reason_and_cause(tmp_path):
+def test_big_gaps_need_a_reason_and_cause(tmp_path, template):
     results = placeholder_results()
     row = next(
         m for m in results["measures"] if m["id"] == "starter_basic_thresholds"

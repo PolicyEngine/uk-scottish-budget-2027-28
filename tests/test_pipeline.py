@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "dashboard" / "public" / "data" / "results.json"
 
 
-def test_placeholder_file_is_flagged_everywhere():
+def test_placeholder_file_is_flagged_everywhere(template):
     results = placeholder_results()
     assert results["meta"]["placeholder"] is True
     assert "placeholder" in results["meta"]["notice"].lower()
@@ -36,7 +36,12 @@ def test_not_computable_is_never_zero():
 
 
 def test_committed_file_matches_the_generator():
-    """dashboard/public/data/results.json is generated, never hand-edited."""
+    """dashboard/public/data/results.json is generated, never hand-edited.
+
+    Only while the registry is the template: from G1 the integrator fills
+    the registry, and from G2 ``combine`` writes the file."""
+    if not all(m.placeholder for m in MEASURES):
+        pytest.skip("registry filled at G1; combine writes the file")
     committed = json.loads(PUBLIC.read_text())
     assert committed == json.loads(json.dumps(placeholder_results()))
 
