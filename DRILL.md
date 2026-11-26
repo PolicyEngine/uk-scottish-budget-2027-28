@@ -43,7 +43,13 @@ Only the integrator pushes. The scorer is the drill owner, working only on the f
 | 16:10 | T+130 | answer key and scoring tool | scoring (to 16:25) |
 | 16:30 | T+150 | none | retro filed on the drill issue (#26) |
 
-No other drill runs on the machine, so the heavy slots are this drill's alone. Heavy runs take `/tmp/pe-heavy.lock` as described in `docs/RUNBOOK.md` ("Heavy runs"): at least 22 GB free, one measure per process, and the lock removed only by the process that wrote it. A run that can't finish inside its slot isn't started.
+No other drill runs on the machine, so the heavy slots are this drill's alone. Heavy runs take `/tmp/pe-heavy.lock` as described in `docs/RUNBOOK.md` ("Heavy runs"): one measure per process, and the lock removed only by the process that wrote it. A run that can't finish inside its slot isn't started.
+
+Decisions for this drill (made on 26 November):
+
+- **Memory floor: 17 GB.** Run heavy work through `make` with `MIN_FREE_GB=17`, and log it at G0: `make measures IDS="a b c" MIN_FREE_GB=17`, `make package MODE=provisional MIN_FREE_GB=17` (later `MODE=final`), `NEXT_PUBLIC_MOCK=1 make build MIN_FREE_GB=17`. Don't run `generate` outside `make`. A measure peaks at 15–17 GB on the new pair, so 22 GB would never clear on the integrator's machine, and 12 GB is below the peak. If a run waits more than 2 minutes, close other applications rather than lowering the floor. The floor for 3 December is set in the Makefile and runbook after the drill.
+- **Heavy slot 1 overflow.** Run measures in descending expected size; start no new measure after 14:20; the package and `combine --provisional` always run (about 6 minutes). Measures not run move to heavy slot 2, and G2 is posted as partial, naming them.
+- **Forecast.** The pipeline scores on the OBR's October 2026 forecast. On 3 December the reviewer decides whether to follow the Scottish Fiscal Commission's; with no decision by T+10, the integrator keeps the OBR overlay and the SFC overlay follows as a labelled update. The drill rehearses the T+10 rule: at 14:10 the integrator logs the decision, or its absence and the OBR default.
 
 ## Engine and data pair
 
@@ -55,7 +61,7 @@ No other drill runs on the machine, so the heavy slots are this drill's alone. H
 
 ## Gates
 
-- **G0, pair record (by 13:30).** From the run branch, post `uv run --extra model scottish-budget freeze` as a PR comment. It must show:
+- **G0, pair record (by 13:30).** Cut the run branch from `engine-6.20.3-b891aa69` (#28, the certified pair), not from this branch or `template-dashboard`, and merge `drill-plan-13` into it for this file. From the run branch, post `uv run --extra model scottish-budget freeze` as a PR comment. It must show:
   - the start SHA and a clean tree;
   - the policyengine, policyengine-uk and core versions;
   - the bundle's dataset id and SHA-256;
@@ -65,22 +71,23 @@ No other drill runs on the machine, so the heavy slots are this drill's alone. H
 - **G1, coverage ledger (14:00–14:10).** One line per statement item in `data_inputs/drill/coverage-ledger.csv` (`line,statement_item,route,cause,trap,basis,upstream_draft,zero_reason,notes`). Items already in the baseline are flagged (`trap` True) and not coded. Then:
   - set values and `placeholder=False` in `reforms.py`, and delete the entries the statement doesn't contain;
   - run `uv run pytest`, which must pass;
-  - commit a copy as `data_outputs/drill/coverage-ledger-g1.csv`.
-- **G2, provisional numbers (by 14:30, heavy slot 1).** For each coded measure, run `generate --reforms <id>`, then `generate --package provisional` and `combine --provisional`. Hand-check one household per measure, starting from `data_inputs/household_fixtures/`. The fixtures must be regenerated on the new pair; if they aren't, log a defect. The reviewer checks one household.
+  - commit a copy as `data_outputs/drill/coverage-ledger-g1.csv`. `data_outputs/` is ignored by git, so add every scored copy with `git add -f`.
+- **G2, provisional numbers (by 14:30, heavy slot 1).** Run every coded measure with `make measures IDS="…" MIN_FREE_GB=17`, then `make package MODE=provisional MIN_FREE_GB=17` and `uv run --extra model scottish-budget combine --provisional`. Hand-check one household per measure, starting from `data_inputs/household_fixtures/`. The fixtures hold inputs only, so they need no regeneration on the new pair; compute every hand-checked value on 6.20.3. The reviewer checks one household.
 - **G3, re-base and reconcile (14:40–15:10).**
   - Re-base to the costings' baseline.
-  - Fill `data_inputs/drill/reconciliation.csv` and run `reconcile` until it exits 0.
+  - Enter the released costings in `data_inputs/official/sfc_costings_2027_28.csv`, copied from `costings_template.csv` and in its columns (see `data_inputs/official/README.md`). It is the file `combine` reads and the scorer takes from the stop commit. Only measures still in `reforms.py` after G1 go in it, since `reconcile` and `combine` refuse an unknown measure id; every other costings line goes in `national.csv`.
+  - Write each gap's reason and cause in that file's `reason` and `cause` columns, and run `scottish-budget reconcile --official data_inputs/official/sfc_costings_2027_28.csv --out data_outputs/drill/reconciliation.csv` until it exits 0.
   - Fill `data_outputs/drill/national.csv`.
   - Write a gap class and reason for every gap over 10%.
   - The reviewer signs off each measure in a PR comment before the integrator sets `publish=True`.
 - **G5, correction (15:15–15:35, heavy slot 2).**
   - Log the correction's arrival time and hash check.
-  - Re-run every affected measure and the package, then run `combine` **against the corrected costings file**, and record the file's SHA-256 in the G5 comment.
+  - Correct `data_inputs/official/sfc_costings_2027_28.csv` in place and commit it. Re-run every affected measure and the package, then run `scottish-budget combine --official data_inputs/official/sfc_costings_2027_28.csv`, and record that file's SHA-256 in the G5 comment.
   - Re-run every hand-checked household into `data_outputs/drill/g5-household-checks.csv`.
   - Record the new `results_sha256` beside the old one.
 - **G4, publication path (by 15:45, heavy slot 2).**
-  1. Run `generate --package final` and `combine`, then `uv run python scripts/check_public_data.py dashboard/public/data`.
-  2. Under the lock, run `cd dashboard && bun run check-public && NEXT_PUBLIC_MOCK=1 bun run build && bun run start`. **Record the build's wall-clock time.**
+  1. Run `make package MODE=final MIN_FREE_GB=17` and `uv run --extra model scottish-budget combine --official data_inputs/official/sfc_costings_2027_28.csv` (always name the file, so the record shows which costings `combine` read), then `uv run python scripts/check_public_data.py dashboard/public/data`.
+  2. Run `NEXT_PUBLIC_MOCK=1 make build MIN_FREE_GB=17` (it takes the lock and runs `check-public`), then `cd dashboard && bun run start`. **Record the build's wall-clock time.**
   3. Run `scripts/smoke-built-site.sh http://localhost:3000/uk/scottish-budget-2027-28 MOCK`.
   4. Check the robots meta and `X-Robots-Tag` with curl.
   5. Record the floor counts: method and smallest count for each table.
@@ -100,6 +107,7 @@ By 16:10, before the answer key, post `FREEZE.txt` on the drill PR. It holds the
 - the filled scoring sheets;
 - both ledger copies;
 - `national.csv` and `reconciliation.csv`;
+- `data_inputs/official/sfc_costings_2027_28.csv` (the scorer checks its SHA-256 against the G5 comment);
 - `results.json` and `receipt.json`;
 - every hand-check file;
 - `report-draft.md` (or the template copy).
