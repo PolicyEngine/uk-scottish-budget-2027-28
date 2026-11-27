@@ -3,6 +3,12 @@
 Run with the model extra: ``uv run --extra model pytest -m engine``. They
 skip when policyengine_uk is not installed (the CI python job), and need
 no microdata.
+
+They test the engine and the measure machinery, not the day's values: each
+builds its reform with explicit amounts instead of reading the registry,
+which G1 edits (values filled, entries deleted, modifier amounts changed),
+so they pass before and after G1. Only the uprating check reads the live
+registry, and only the placeholders still in it.
 """
 
 import pytest
@@ -19,8 +25,25 @@ from scottish_budget.household import (  # noqa: E402
     situation_for,
     state_pension_amount,
 )
+from scottish_budget.measure_templates import rate_change  # noqa: E402
+from scottish_budget.measures.benefit_cap_mitigation import (  # noqa: E402
+    benefit_cap_mitigation,
+)
+from scottish_budget.measures.council_tax_freeze import (  # noqa: E402
+    WEIGHT_GROWTH,
+    council_tax_growth_change,
+)
+from scottish_budget.measures.energy_payment_scotland import (  # noqa: E402
+    energy_payment_scotland,
+)
+from scottish_budget.measures.scottish_property_rates import (  # noqa: E402
+    scottish_property_rates,
+)
+from scottish_budget.measures.young_parent_top_up import (  # noqa: E402
+    young_parent_top_up,
+)
 from scottish_budget.models import Reform  # noqa: E402
-from scottish_budget.reforms import MEASURES, measure  # noqa: E402
+from scottish_budget.reforms import MEASURES, SCOT_RATES  # noqa: E402
 from scottish_budget.years import POLICY_YEARS  # noqa: E402
 
 YEAR = 2027
@@ -60,7 +83,11 @@ def test_pensioner_preset_is_the_full_new_state_pension():
 
 
 def test_energy_payment_reaches_scottish_band_a_to_d_only():
-    reform = measure("energy_payment_bands_a_d").reform
+    reform = _modifier_reform(
+        lambda sim: energy_payment_scotland(
+            sim, amount=100, bands=("A", "B", "C", "D")
+        )
+    )
     a = _single("A", employment_income=20_000)
     e = _single("E", employment_income=20_000)
     assert calculate(a, YEAR, [reform])["household_net_income"] - calculate(
@@ -72,7 +99,9 @@ def test_energy_payment_reaches_scottish_band_a_to_d_only():
 
 
 def test_property_add_on_is_two_pence_on_taxable_property_income():
-    reform = measure("scottish_property_income_rates").reform
+    reform = _modifier_reform(
+        lambda sim: scottish_property_rates(sim, add_on=0.02)
+    )
     s = _single(employment_income=30_000, property_income=10_000)
     base = calculate(s, YEAR)["income_tax"]
     new = calculate(s, YEAR, [reform])["income_tax"]
@@ -82,7 +111,9 @@ def test_property_add_on_is_two_pence_on_taxable_property_income():
 
 
 def test_young_parent_top_up_pays_the_lone_parent_preset():
-    reform = measure("young_parent_top_up").reform
+    reform = _modifier_reform(
+        lambda sim: young_parent_top_up(sim, weekly_amount=10.0, max_age=25)
+    )
     s = presets()["lone_parent_under_one"]["situation"]
     gain = (
         calculate(s, YEAR, [reform])["household_net_income"]
@@ -92,7 +123,9 @@ def test_young_parent_top_up_pays_the_lone_parent_preset():
 
 
 def test_benefit_cap_mitigation_runs():
-    reform = measure("benefit_cap_mitigation").reform
+    reform = _modifier_reform(
+        lambda sim: benefit_cap_mitigation(sim, take_up=1.0)
+    )
     s = presets()["couple_two_children_uc"]["situation"]
     gain = (
         calculate(s, YEAR, [reform])["household_net_income"]
@@ -104,9 +137,14 @@ def test_benefit_cap_mitigation_runs():
 def test_council_tax_freeze_reads_weight_growth_from_the_release():
     from policyengine_uk.system import system
 
-    from scottish_budget.measures.council_tax_freeze import WEIGHT_GROWTH
-
-    changes = measure("council_tax_freeze").reform.to_scenario()
+    freeze = Reform(
+        id="t",
+        name="t",
+        parameter_changes_factory=lambda: council_tax_growth_change(
+            "scotland", 2027, 0.0
+        ),
+    )
+    changes = freeze.to_scenario()
     w = system.parameters.get_child(WEIGHT_GROWTH)("2027-01-01")
     ((path, values),) = changes.parameter_changes.items()
     assert values == {"2027-01-01.2027-12-31": round(float(w), 6)}
@@ -127,7 +165,13 @@ def test_no_placeholder_sits_below_its_baseline_in_any_policy_year():
 
     params = forecast_parameters()
     for m in MEASURES:
-        if m.placeholder_sign != -1 or not m.reform.parameter_changes:
+        # Values filled at G1 are the statement's: only the placeholders
+        # still in the registry are checked.
+        if (
+            not m.placeholder
+            or m.placeholder_sign != -1
+            or not m.reform.parameter_changes
+        ):
             continue
         for path, values in m.reform.parameter_changes.items():
             if not isinstance(next(iter(values.values())), float):
@@ -140,9 +184,14 @@ def test_no_placeholder_sits_below_its_baseline_in_any_policy_year():
 def test_income_tax_curve_compares_scotland_with_the_rest_of_the_uk():
     from scottish_budget.household import income_tax_curve
 
-    rows = income_tax_curve(
-        YEAR, [measure("intermediate_rate_plus_1p").reform]
+    intermediate_plus_1p = Reform(
+        id="t",
+        name="t",
+        parameter_changes=rate_change(
+            f"{SCOT_RATES}[2].rate", {"2027": 0.22, "2028": 0.22}
+        ),
     )
+    rows = income_tax_curve(YEAR, [intermediate_plus_1p])
     assert rows[0]["gross"] == 0 and rows[-1]["gross"] == 150_000
     at_60k = next(r for r in rows if r["gross"] == 60_000)
     assert at_60k["scotland_current_law"] > at_60k["rest_of_uk"]
