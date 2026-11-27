@@ -23,13 +23,13 @@ The figures will come from PolicyEngine UK, a static microsimulation model of th
 
 | Component | Version |
 |---|---|
-| policyengine-uk | 2.177.7 (`uv.lock`; the version the build below was made on) |
+| policyengine.py | 6.20.3 (`uv.lock`): the certified bundle, through `pe.uk.managed_microsimulation` |
+| policyengine-uk | 2.179.2 (pinned by policyengine.py; the version the build below was made on) |
 | policyengine-core | 3.34.10 (likewise) |
-| Microcosm | build `uk-frs-calibration-attempt-20261112T133744Z-6f918b81` (SHA-256 `e268e3af7932…`) |
-| policyengine.py | not used: no release covers this pair |
+| Microcosm | build `uk-frs-calibration-attempt-20261122T100732Z-b891aa69` (SHA-256 `ae116bc3cff7…`), certified in policyengine 6.20.3 |
 | Forecast | OBR October 2026, applied to every simulation |
 
-Every figure is labelled "build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release".
+Every figure is labelled "build b891aa69, policyengine-uk 2.179.2, certified in policyengine 6.20.3".
 
 `docs/METHOD.md` explains the pin and what it lacks; a run records what it actually loaded in `receipt.json`.
 

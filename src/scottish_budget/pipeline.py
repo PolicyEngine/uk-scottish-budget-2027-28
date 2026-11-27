@@ -30,6 +30,7 @@ from scottish_budget.engine import (
     git_identity,
     installed_versions,
     pinned_dataset,
+    repo_path,
 )
 from scottish_budget.forecast import forecast_record
 from scottish_budget.household import presets
@@ -45,13 +46,12 @@ from scottish_budget.years import BASIS, POLICY_YEARS, fiscal_year_label
 ROOT = Path(__file__).resolve().parents[2]
 PARTIAL_DIR = ROOT / "data_outputs" / "partials"
 
-# The pinned pair (``data_build.DATA_BUILD``), for the placeholder file
+# The pinned bundle (``data_build.DATA_BUILD``), for the placeholder file
 # only. A model run records what is installed (``installed_versions``) and
 # what the simulation loaded (the partials' provenance).
-# tests/test_provenance.py checks these against uv.lock. No policyengine.py
-# release covers the pair, so ``policyengine`` is None.
+# tests/test_provenance.py checks these against uv.lock.
 LOCKED_ENGINE = {
-    "policyengine": None,
+    "policyengine": DATA_BUILD.policyengine,
     "policyengine_uk": DATA_BUILD.engine,
     "dataset": DATA_BUILD.id,
     "engine_label": LABEL,
@@ -269,6 +269,57 @@ def run_package(
     return path
 
 
+def last_costings(receipt) -> str | None:
+    """The costings file the last combine into a folder read, as its
+    receipt.json records it (relative to the repository), or None."""
+    receipt = Path(receipt)
+    if not receipt.is_file():
+        return None
+    last = (
+        json.loads(receipt.read_text()).get("official_costings") or {}
+    ).get("path")
+    if last and Path(last).is_absolute():  # receipts written before 27 Nov
+        last = repo_path(last)
+    return last
+
+
+def choose_costings(official, receipt) -> Path | None:
+    """The costings file a ``combine`` reads (None: the default file).
+
+    A named file must exist. With none named, combine reads the default
+    file (absent until G3), unless the last combine into the same folder
+    read another one, such as corrected costings after G5: then it
+    refuses, so a later plain ``combine`` never undoes a correction.
+    ``receipt`` is the receipt.json beside the output. A named file must
+    be inside the repository, so the published comparison rests on a file
+    the repository can hold."""
+    if official is not None:
+        given = str(official)
+        official = Path(official).resolve()
+        if not official.is_file():
+            raise CombineError(f"No costings file at {given}.")
+        if not official.is_relative_to(ROOT):
+            raise CombineError(
+                f"{official.name} is outside the repository: copy it into "
+                "data_inputs/official/ and name that copy."
+            )
+        return official
+    last = last_costings(receipt)
+    default = repo_path(OFFICIAL_COSTINGS)
+    if last and last != default:
+        back = (
+            f", or --official {default} to go back to the default file"
+            if OFFICIAL_COSTINGS.is_file()
+            else ""
+        )
+        raise CombineError(
+            f"The last combine into {repo_path(receipt.parent)} read the "
+            f"costings in {last}, not {default}. Name the file this combine "
+            f"should read: --official {last} to keep those costings{back}."
+        )
+    return None
+
+
 def official_costings(path=OFFICIAL_COSTINGS) -> list[dict]:
     """The official costings, once filled in on the day (G3)."""
     if not Path(path).exists():
@@ -316,9 +367,13 @@ def _engine_meta(partials: dict[str, dict]) -> dict:
     versions = json.loads(versions_json) or {}
     # Agreeing with each other is not enough: partials are git-ignored and
     # survive branch switches, so old runs on another engine and data pair
-    # would otherwise be published. Refuse anything but DATA_BUILD's pair.
+    # would otherwise be published. Refuse anything but DATA_BUILD's bundle.
     expected = {
         "dataset SHA-256": (sha, DATA_BUILD.sha256),
+        "policyengine": (
+            versions.get("policyengine"),
+            DATA_BUILD.policyengine,
+        ),
         "policyengine-uk": (
             versions.get("policyengine-uk"),
             DATA_BUILD.engine,
@@ -336,15 +391,16 @@ def _engine_meta(partials: dict[str, dict]) -> dict:
     if wrong:
         raise CombineError(
             f"The partials are not on build {DATA_BUILD.id} with "
-            f"policyengine-uk {DATA_BUILD.engine}: {'; '.join(wrong)}. "
-            "Delete them and re-run each measure on the pinned pair."
+            f"policyengine-uk {DATA_BUILD.engine} (policyengine "
+            f"{DATA_BUILD.policyengine}): {'; '.join(wrong)}. "
+            "Delete them and re-run each measure on the pinned bundle."
         )
     provenance = next(iter(partials.values())).get("provenance") or {}
     return {
         "policyengine": versions.get("policyengine"),
         "policyengine_uk": versions.get("policyengine-uk"),
         "policyengine_core": versions.get("policyengine-core"),
-        "dataset": provenance.get("runtime_dataset_revision") or name,
+        "dataset": name,
         "dataset_sha256": sha,
         "engine_label": provenance.get("label"),
     }
@@ -398,8 +454,21 @@ def combine(
     calculate=None,
     with_households: bool = True,
     curve=None,
+    official=None,
 ) -> tuple[dict, dict]:
-    """results.json and its receipt from the partials and the registry."""
+    """results.json and its receipt from the partials and the registry.
+
+    ``official`` is the official costings file (default
+    ``OFFICIAL_COSTINGS``, absent until G3). After a correction, pass the
+    corrected file; a named file must exist. The receipt records the path
+    (relative to the repository) and SHA-256 of the file read, so G5 can
+    show which costings the published comparison rests on."""
+    if official is None:
+        official = OFFICIAL_COSTINGS
+    else:
+        official = Path(official)
+        if not official.is_file():
+            raise CombineError(f"No costings file at {official}.")
     partials = read_partials(out_dir)
     if not partials:
         raise CombineError(
@@ -438,7 +507,8 @@ def combine(
         if sorted(package.get("measures", [])) != sorted(m.id for m in scored):
             raise CombineError(
                 "The package run covers other measures than this file: "
-                "re-run `scottish-budget generate --package`."
+                "re-run the package in this file's mode (`make package "
+                "MODE=final` for the final file, `MODE=provisional` for G2)."
             )
         # Winners and losers, poverty and the rest do not add up across
         # measures, so they come from the package run only.
@@ -476,7 +546,7 @@ def combine(
         "poverty": poverty,
         "council_tax_bands": bands,
         "scotland_vs_rest_of_uk": versus,
-        "official_costings": official_costings(),
+        "official_costings": official_costings(official),
         "households": (
             household_rows(scored, calculate) if with_households else []
         ),
@@ -495,6 +565,14 @@ def combine(
         "dataset_sha256": engine["dataset_sha256"],
         "measures_scored": [m.id for m in scored],
         "placeholders_dropped": dropped,
+        "official_costings": {
+            "path": repo_path(official),
+            "sha256": (
+                hashlib.sha256(official.read_bytes()).hexdigest()
+                if official.exists()
+                else None
+            ),
+        },
         "results_sha256": manifest(results)["sha256"],
     }
     return results, receipt

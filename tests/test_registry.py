@@ -16,11 +16,20 @@ def test_ids_unique():
     assert len(ids) == len(set(ids))
 
 
-def test_every_measure_is_a_held_back_placeholder():
+def test_a_placeholder_is_never_published():
+    """Holds before and after G1: only a measure with the statement's
+    values (placeholder=False) can be signed off for publication."""
     for m in MEASURES:
+        assert m.reform.description, m.id
+        if m.placeholder:
+            assert not m.publish, m.id
+    assert all(not m.placeholder for m in publishable())
+
+
+def test_the_template_is_held_back(template):
+    for m in template:
         assert m.placeholder, m.id
         assert not m.publish, m.id
-        assert m.reform.description, m.id
     assert publishable() == []
 
 
@@ -48,7 +57,8 @@ def test_limits_and_issues_resolve(m):
         data_limit(limit_id)
     for limit_id in m.model_limits:
         model_limit(limit_id)
-    assert all(1 <= i <= 8 for i in m.issues)
+    # G1 may cite any issue, including ones filed on the day.
+    assert all(isinstance(i, int) and i > 0 for i in m.issues)
 
 
 def test_not_computable_measures_name_a_blocking_data_limit():
@@ -63,13 +73,15 @@ def test_needs_pe_uk_first_names_a_model_limit():
             assert m.model_limits, m.id
 
 
-def test_there_is_a_trap_row_already_in_the_baseline():
-    traps = [m for m in MEASURES if m.in_baseline]
-    assert traps
-    assert all(m.route == "ledger" for m in traps)
+def test_trap_rows_are_ledger_lines():
+    assert all(m.route == "ledger" for m in MEASURES if m.in_baseline)
 
 
-def test_starter_basic_central_case_encoding():
+def test_the_template_has_a_trap_row(template):
+    assert any(m.in_baseline for m in template)
+
+
+def test_starter_basic_central_case_encoding(template):
     from scottish_budget.reforms import measure
 
     changes = measure("starter_basic_thresholds").reform.parameter_changes

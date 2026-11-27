@@ -7,7 +7,8 @@ One integrator pushes. Everyone else posts defects as PR comments within 5 minut
 ## Set-up
 
 - `uv sync --locked --extra dev --extra model`, then `cd dashboard && bun install --frozen-lockfile`.
-- `HUGGING_FACE_TOKEN` must be set (copy `.env.example` to `.env` and fill it, or export it). The pinned Microcosm build (`data_build.DATA_BUILD`) is in a private Hugging Face dataset repository; `uv run python -m scottish_budget.certified_data` checks the token can read it and that its SHA-256 matches the pin, without downloading it. Never print the token.
+- Run every command as `uv run --extra model scottish-budget ...` (or through `make`) inside the checkout you mean; the tables below shorten it. The command uses the code, data and outputs of the checkout it is installed from, so it refuses to run from another directory.
+- `HUGGING_FACE_TOKEN` (or `HF_TOKEN`) must be exported in the shell that runs the commands: policyengine.py reads only environment variables (never a saved Hugging Face login), and nothing here reads `.env`. To keep it in `.env`, copy `.env.example` to `.env`, fill it, and run `set -a; . ./.env; set +a` in each new shell. The pinned Microcosm build (`data_build.DATA_BUILD`) is in a private Hugging Face dataset repository; `uv run python -m scottish_budget.certified_data` checks the token can read it and that its SHA-256 matches the pin, without downloading it. With no `--dataset`, G0's `freeze` fetches it the way runs do, through policyengine.py into `./data/` at the repository root (git-ignored, about 430 MB, downloaded once per machine), so G0 fails wherever a run could not load it; runs reuse that copy from any directory. Commands write their default outputs under the repository root (`dashboard/public/data/`, `data_outputs/`) wherever they start, and print paths relative to it. Never print the token.
 
 ## Heavy runs
 
@@ -21,32 +22,32 @@ until [ "$(free_gb)" -ge 22 ]; do sleep 30; done
 uv run --extra model scottish-budget generate --reforms <measure id>
 ```
 
-One measure took 2 min 16 s and peaked at 11.3 GB resident (6 November, 6.14.0 on a6299504, cached data); the package run builds three simulations one after another, so allow about 3 to 4 minutes for it. `make measures IDS="a b c"` runs that block once per measure, each in its own process. Unit tests, lint and the household engine tests (`pytest -m engine`) do not need the lock.
+On 26 November (policyengine 6.20.3, build b891aa69, cached data) a measure took about 2.5 minutes and peaked at 15 to 17 GB resident; the package run, which builds three simulations one after another, took about 4 minutes at 16.5 GB, and `combine` 2 minutes at 1.3 GB. `make measures IDS="a b c"` runs that block once per measure, each in its own process. Unit tests, lint and the household engine tests (`pytest -m engine`) do not need the lock.
 
 ## Gates
 
 | Gate | When | What | Command |
 |---|---|---|---|
-| G0 | by T−60 | Freeze record in the PR: start SHA, policyengine, policyengine-uk and core versions, dataset name and SHA-256 (must be the pinned build's), `engine_matches_build: true`, and the label "build uk-frs-calibration-attempt-20261112T133744Z-6f918b81, policyengine-uk 2.177.7, not in a policyengine.py release" | `uv run --extra model scottish-budget freeze` |
+| G0 | by T−60 | Freeze record in the PR: start SHA, policyengine, policyengine-uk and core versions, the bundle's dataset name and SHA-256 (must be the pinned build's), the build's own manifest, the dataset file a run would load (fetched as runs fetch it), `engine_matches_build: true` (installed packages, policyengine.py's pins, the build's manifest and that file all agree with `DATA_BUILD`; the command exits 1 otherwise), and the label "build b891aa69, policyengine-uk 2.179.2, certified in policyengine 6.20.3" | `uv run --extra model scottish-budget freeze` |
 | G1 | T+0 to T+10 | Coverage ledger: every statement line gets a route and a cause class (`docs/candidate-reforms.md` lists the expected lines). Trap rows (already in the baseline) are recorded, not costed. Set each kept measure's values and `placeholder=False`; delete entries the statement does not have | |
 | G2 | T+30 | Provisional numbers, and one hand-checked example household per coded measure (`data_inputs/household_fixtures/`) | `generate --reforms ID` per measure, `generate --package provisional`, `combine --provisional` |
 | G3 | documents + 30 min | Re-base and reconcile against the Scottish Fiscal Commission's costings in `data_inputs/official/sfc_costings_2027_28.csv`. Each gap over 10% gets a written reason and a cause class. Then set `publish=True` for each reconciled measure | `scottish-budget reconcile --official data_inputs/official/sfc_costings_2027_28.csv` |
-| G4 | before release | Full page on a production build: banner text, noindex meta and `X-Robots-Tag` checked in the served page; every published measure on the page | `generate --package final`, `combine`, then the build and `scripts/smoke-built-site.sh` |
+| G4 | before release | Full page on a production build: banner text, noindex meta and `X-Robots-Tag` checked in the served page; every published measure on the page | `generate --package final`, `combine --official data_inputs/official/sfc_costings_2027_28.csv`, then the build and `scripts/smoke-built-site.sh` |
 | G5 | whenever a correction arrives, before or after G4 | Re-run every affected measure and the package, including hand-computed household rows; new results SHA-256; update ledger causes; if after G4, run G4 again | as G2 to G4 |
 
 ## On the day, in order
 
-1. G0: `scottish-budget freeze` (add `--dataset PATH --dataset-sha256 SHA` if running on a named file). Paste the output into the PR.
+1. G0: `scottish-budget freeze` (add `--dataset PATH` if running on a named file; it must be a copy of the build's file). On a new machine it downloads the file first. Paste the output into the PR.
 2. G1: replace each placeholder's values with the statement's; set `placeholder=False`. Code in waves: parameters first, then modifiers in `src/scottish_budget/measures/`, then anything needing a new variable (held as `needs-pe-uk-first`, with an upstream draft filed the same day).
 3. G2: under the lock, `generate --reforms ID` for each computable measure (one process each), then `generate --package provisional`, then `combine --provisional`. Hand-check one household per measure.
 4. G3: copy `data_inputs/official/costings_template.csv` to `sfc_costings_2027_28.csv`, fill it from the costings, run `reconcile` until it exits 0, then set `publish=True` on each reconciled measure.
-5. G4: `generate --package final`, `combine` (writes `results.json` and `receipt.json`), `uv run python scripts/check_public_data.py dashboard/public/data`, then under the lock `cd dashboard && bun run build && bun run start` and `scripts/smoke-built-site.sh`. Kill the server and release the lock.
+5. G4: `generate --package final`, `combine --official data_inputs/official/sfc_costings_2027_28.csv` (writes `results.json` and `receipt.json`; always name the costings file, so the record shows which costings `combine` read), `uv run python scripts/check_public_data.py dashboard/public/data`, then under the lock `cd dashboard && bun run build && bun run start`, and from the repository root in a second shell `scripts/smoke-built-site.sh`. Kill the server and release the lock.
 6. Remove the pre-release banner and noindex only when every published measure has passed G3, and only with the go-ahead to publish.
 
 ## Corrections (G5)
 
 1. Record the correction (time received, what it changes) as a PR comment.
-2. Change the affected measures; re-run each one and the package under the lock; `combine`.
+2. Change the affected measures; re-run each one and the package under the lock. When the correction changes the costings, correct `data_inputs/official/sfc_costings_2027_28.csv` in place and commit it (git keeps the uncorrected version), then run `reconcile --official data_inputs/official/sfc_costings_2027_28.csv` until it exits 0, and `combine --official data_inputs/official/sfc_costings_2027_28.csv` (or `make combine OFFICIAL=data_inputs/official/sfc_costings_2027_28.csv`). `--official` must name a file that exists inside the repository; if a combine ever reads another costings file, a later plain `combine` refuses until that file is named again. The output and `receipt.json` give the path (relative to the repository) and SHA-256 of the costings file read: put that SHA-256 in the G5 comment.
 3. The new `results.json` SHA-256 (`receipt.json`, `results_sha256`) is the new scoring SHA; record it beside the old one.
 4. On a published page, add a dated correction note to the Methodology tab saying what changed, and keep the old figures out of the page.
 
@@ -74,5 +75,5 @@ State gross or net, cash or accrued, fiscal or calendar year, and static or beha
 
 - A gap over 10% against a costing that includes behaviour, or that is a grant to councils, is cause `basis`. Our figures are static and household-level; that costing is not. Do not call it take-up. On the last check, 7 of the 11 line-years over 10% were of this kind (María Juaristi, 13 November 2026).
 - Take-up or caseload is a reason only where the official costing has no behaviour in it. On that check this applied to two lines only: the Scottish Child Payment under-one premium and the young parent top-up. Record it with cause `data_calibration` and name take-up or caseload in the reason.
-- Before writing take-up or caseload, check what the build is calibrated to. Build `…-6f918b81` meets its 2025 targets for Scottish Child Payment spending, Scottish Universal Credit households with a child under one, and babies under one. Nothing targets young parents, so a young parent top-up gap can be caseload; an under-one premium gap on this build is less likely to be.
+- Before writing take-up or caseload, check what the build is calibrated to. Build `…-b891aa69` meets its 2025 targets for Scottish Child Payment spending, Scottish Universal Credit households with a child under one, and babies under one. Nothing targets young parents, so a young parent top-up gap can be caseload; an under-one premium gap on this build is less likely to be.
 - Household examples are not take-up evidence: hand-built households claim everything they are eligible for unless marked not claiming (`household.not_claiming`). Population runs use the stored take-up draws.

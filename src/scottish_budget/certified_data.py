@@ -2,10 +2,9 @@
 
 Copied from the Autumn Budget 2026 dashboard (``uk_budget_data.certified_data``).
 
-The dashboard runs on the Microcosm build pinned in
-``data_build.DATA_BUILD`` (with the policyengine-uk version it was built on;
-no policyengine.py release covers the pair), downloaded from a private
-Hugging Face dataset repository. CI runs this check so a missing or rejected
+The dashboard runs on the Microcosm build that policyengine.py certifies
+(``data_build.DATA_BUILD``), downloaded from a private Hugging Face dataset
+repository at the revision policyengine.py pins. CI runs this check so a missing or rejected
 credential fails at once with an actionable message instead of surfacing as
 a download error during a run, or as a silent skip.
 
@@ -23,16 +22,19 @@ Usage::
 
 import argparse
 import hashlib
-import os
 import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from scottish_budget.data_build import DATA_BUILD, HF_REPO, HF_REPO_TYPE
-
-TOKEN_ENV = "HUGGING_FACE_TOKEN"
+from scottish_budget.data_build import (
+    DATA_BUILD,
+    HF_REPO,
+    HF_REPO_TYPE,
+    TOKEN_ENVS,
+    hf_token,
+)
 
 ACCESS_HINT = (
     "CI reads the token from the organisation secret "
@@ -68,14 +70,15 @@ class Artifact:
 
 
 def pinned_artifacts() -> list[Artifact]:
-    """The pinned build's dataset file (``data_build.DATA_BUILD``)."""
+    """The certified build's dataset file, at the revision policyengine.py
+    pins (``data_build.DATA_BUILD``)."""
     return [
         Artifact(
             name=DATA_BUILD.id,
             repo_id=HF_REPO,
             repo_type=HF_REPO_TYPE,
             path=DATA_BUILD.hf_path,
-            revision="main",
+            revision=DATA_BUILD.revision,
             sha256=DATA_BUILD.sha256,
         )
     ]
@@ -112,8 +115,8 @@ def check_access(
     """
     if not token:
         raise CertifiedDataAccessError(
-            f"{TOKEN_ENV} is not set, so the certified dataset cannot be "
-            f"downloaded. {ACCESS_HINT}"
+            f"None of {', '.join(TOKEN_ENVS)} is set, so the certified "
+            f"dataset cannot be downloaded. {ACCESS_HINT}"
         )
     if api is None:
         from huggingface_hub import HfApi
@@ -236,7 +239,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.parse_args(argv)
     try:
         artifacts = pinned_artifacts()
-        for line in check_access(os.environ.get(TOKEN_ENV), artifacts):
+        for line in check_access(hf_token(), artifacts):
             print(line)
     except CertifiedDataAccessError as error:
         print(f"::error::{error}", file=sys.stderr)

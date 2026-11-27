@@ -5,14 +5,15 @@ import json
 
 import pytest
 
-from scottish_budget import pipeline, reforms
+from scottish_budget import pipeline
 from scottish_budget.publication import validate_results
 from scottish_budget.years import POLICY_YEARS
 
-SHA = "e268e3af7932784ad4471f008097a5acc6c3c5bc15c4c54fbb5a489b2a0ac9ae"
-BUILD = "uk-frs-calibration-attempt-20261112T133744Z-6f918b81"
+SHA = "ae116bc3cff798fe68df253083f0b26d779e02a0a818ee68df7d29fbc557165a"
+BUILD = "uk-frs-calibration-attempt-20261122T100732Z-b891aa69"
+REVISION = "a80a4bf70ab4ffeac77357fe0633d3cee4ce7401"
 LABEL = (
-    f"build {BUILD}, policyengine-uk 2.177.7, not in a policyengine.py release"
+    "build b891aa69, policyengine-uk 2.179.2, certified in policyengine 6.20.3"
 )
 
 
@@ -47,13 +48,13 @@ def _partial(measure_id):
         ],
         "poverty": [],
         "versions": {
-            "policyengine": None,
-            "policyengine-uk": "2.177.7",
+            "policyengine": "6.20.3",
+            "policyengine-uk": "2.179.2",
             "policyengine-core": "3.34.10",
         },
         "provenance": {
             "runtime_dataset": BUILD,
-            "runtime_dataset_revision": BUILD,
+            "runtime_dataset_revision": REVISION,
             "runtime_dataset_sha256": SHA,
             "label": LABEL,
         },
@@ -61,9 +62,10 @@ def _partial(measure_id):
 
 
 @pytest.fixture
-def day(monkeypatch, tmp_path):
-    """The registry as on the day: the two threshold-style measures real,
-    one signed off; everything else dropped as not in the statement."""
+def day(monkeypatch, tmp_path, template):
+    """The registry as on the day, built on the frozen template: the two
+    threshold-style measures real, one signed off; everything else
+    dropped as not in the statement."""
     real = {
         "starter_basic_thresholds": True,
         "scp_increase": False,
@@ -74,7 +76,7 @@ def day(monkeypatch, tmp_path):
         dataclasses.replace(m, placeholder=False, publish=real[m.id])
         if m.id in real
         else m
-        for m in reforms.MEASURES
+        for m in template
     )
     monkeypatch.setattr(pipeline, "MEASURES", measures)
     by_id = {m.id: m for m in measures}
@@ -150,6 +152,7 @@ def _old_pair(measure_id, **changes):
     eeb6093e. The fields can be set one at a time."""
     partial = _partial(measure_id)
     sha = changes.get("sha", "0a9b77db" + "0" * 56)
+    partial["versions"]["policyengine"] = changes.get("pe", "6.17.2")
     partial["versions"]["policyengine-uk"] = changes.get("uk", "2.174.1")
     partial["versions"]["policyengine-core"] = changes.get("core", "3.34.10")
     partial["provenance"] = {
@@ -177,9 +180,18 @@ def test_partials_from_another_engine_and_data_pair_are_refused(day):
 @pytest.mark.parametrize(
     "changes",
     [
-        {"sha": SHA, "build": BUILD},  # right file, old engine
-        {"uk": "2.177.7"},  # right engine, old file
-        {"sha": SHA, "build": BUILD, "uk": "2.177.7", "core": "3.34.0"},
+        {"sha": SHA, "build": BUILD, "pe": "6.20.3"},  # right file, old engine
+        {"pe": "6.20.3", "uk": "2.179.2"},  # right engine, old file
+        {
+            "sha": SHA,
+            "build": BUILD,
+            "pe": "6.20.3",
+            "uk": "2.179.2",
+            "core": "3.34.0",
+        },
+        # right file and engine, loaded outside policyengine.py (the old
+        # route for 2.177.7)
+        {"sha": SHA, "build": BUILD, "pe": None, "uk": "2.179.2"},
     ],
 )
 def test_any_one_field_off_the_build_is_refused(day, changes):
@@ -193,8 +205,11 @@ def test_partials_on_the_pinned_pair_are_accepted(day):
         provisional=True, out_dir=day, with_households=False
     )
     assert results["meta"]["dataset_sha256"] == SHA
-    assert results["meta"]["policyengine_uk"] == "2.177.7"
+    assert results["meta"]["dataset"] == BUILD
+    assert results["meta"]["policyengine"] == "6.20.3"
+    assert results["meta"]["policyengine_uk"] == "2.179.2"
     assert results["meta"]["policyengine_core"] == "3.34.10"
+    assert results["meta"]["engine_label"] == LABEL
 
 
 def test_household_rows_need_the_build_engine(day, monkeypatch):
@@ -282,3 +297,188 @@ def test_cells_below_the_floor_must_be_withheld(day):
     )
     with pytest.raises(PublicationError, match="below the disclosure floor"):
         pipeline.combine(provisional=True, out_dir=day, with_households=False)
+
+
+def test_combine_reads_the_costings_file_it_is_given(day, tmp_path):
+    """After a correction, combine reads the corrected file and the
+    receipt records which one (drill 12 read the uncorrected file)."""
+    import hashlib
+
+    header = "measure_id,year,official_value_bn,official_source,basis\n"
+    first = tmp_path / "costings.csv"
+    first.write_text(header + "starter_basic_thresholds,2027,-0.10,SFC,\n")
+    corrected = tmp_path / "costings-corrected.csv"
+    corrected.write_text(header + "starter_basic_thresholds,2027,-0.12,SFC,\n")
+    for path, value in ((first, -0.10), (corrected, -0.12)):
+        results, receipt = pipeline.combine(
+            provisional=True,
+            out_dir=day,
+            with_households=False,
+            official=path,
+        )
+        assert [
+            r["official_value_bn"] for r in results["official_costings"]
+        ] == [value]
+        # Relative to the repository, or just the name outside it: the
+        # receipt is served with the page, so never a home directory.
+        assert receipt["official_costings"] == {
+            "path": path.name,
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        }
+
+
+def test_a_named_costings_file_must_exist(day, tmp_path):
+    """A misspelt --official is an error, never a page with no costings."""
+    missing = tmp_path / "costings-corected.csv"
+    with pytest.raises(pipeline.CombineError, match="No costings file"):
+        pipeline.combine(
+            provisional=True,
+            out_dir=day,
+            with_households=False,
+            official=missing,
+        )
+    with pytest.raises(pipeline.CombineError, match="No costings file"):
+        pipeline.choose_costings(missing, tmp_path / "receipt.json")
+
+
+def test_the_receipt_records_no_local_directory(day):
+    from pathlib import Path
+
+    from scottish_budget import engine
+
+    results, receipt = pipeline.combine(
+        provisional=True, out_dir=day, with_households=False
+    )
+    # The template fixture's absent default (outside the repository): its
+    # name only. The real default is named relative to the repository.
+    assert receipt["official_costings"] == {
+        "path": "sfc_costings_2027_28.csv",
+        "sha256": None,
+    }
+    real = (
+        pipeline.ROOT / "data_inputs" / "official" / "sfc_costings_2027_28.csv"
+    )
+    assert engine.repo_path(real) == (
+        "data_inputs/official/sfc_costings_2027_28.csv"
+    )
+    text = json.dumps(receipt)
+    assert str(pipeline.ROOT) not in text
+    assert str(Path.home()) not in text
+
+
+HEADER = "measure_id,year,official_value_bn,official_source,basis\n"
+
+
+@pytest.fixture
+def repo(monkeypatch, tmp_path):
+    """A stand-in repository root, so costings files can sit inside it."""
+    from scottish_budget import engine
+
+    root = tmp_path.resolve()
+    monkeypatch.setattr(engine, "ROOT", root)
+    monkeypatch.setattr(pipeline, "ROOT", root)
+    default = root / "data_inputs" / "official" / "sfc_costings_2027_28.csv"
+    monkeypatch.setattr(pipeline, "OFFICIAL_COSTINGS", default)
+    default.parent.mkdir(parents=True)
+    return root
+
+
+def test_a_plain_combine_never_undoes_a_correction(day, repo, capsys):
+    """Drill 12: after combine --official reads another costings file, a
+    plain combine refuses (one line, exit 1) instead of going back to the
+    default file. Naming the file again works. Output names paths
+    relative to the repository."""
+    from scottish_budget import cli
+
+    corrected = repo / "data_inputs" / "official" / "corrected.csv"
+    corrected.write_text(HEADER + "starter_basic_thresholds,2027,-0.12,SFC,\n")
+    out = repo / "site" / "results.json"
+    plain = [
+        "combine",
+        "--provisional",
+        "--no-households",
+        "--partial-dir",
+        str(day),
+        "--out",
+        str(out),
+    ]
+    assert cli.main(plain) == 0
+    capsys.readouterr()
+    assert cli.main([*plain, "--official", str(corrected)]) == 0
+    printed = json.loads(capsys.readouterr().out)
+    assert printed["written"] == "site/results.json"
+    assert printed["official_costings"]["path"] == (
+        "data_inputs/official/corrected.csv"
+    )
+    assert cli.main(plain) == 1
+    err = capsys.readouterr().err
+    assert err.startswith("error: ") and "Traceback" not in err
+    assert "--official data_inputs/official/corrected.csv" in err
+    assert "go back" not in err  # no default file to go back to yet
+    receipt = json.loads((out.parent / "receipt.json").read_text())
+    assert receipt["official_costings"]["path"] == (
+        "data_inputs/official/corrected.csv"
+    )
+    assert cli.main([*plain, "--official", str(corrected)]) == 0
+    pipeline.OFFICIAL_COSTINGS.write_text(HEADER)
+    assert cli.main(plain) == 1
+    assert "go back to the default file" in capsys.readouterr().err
+    # Naming another file than the last one read works, with a note.
+    default = str(pipeline.OFFICIAL_COSTINGS)
+    assert cli.main([*plain, "--official", default]) == 0
+    assert "note: the last combine here read the costings in" in (
+        capsys.readouterr().err
+    )
+
+
+def test_costings_outside_the_repository_are_refused(tmp_path):
+    outside = tmp_path / "corrected.csv"
+    outside.write_text(HEADER)
+    with pytest.raises(pipeline.CombineError, match="outside the repository"):
+        pipeline.choose_costings(outside, tmp_path / "receipt.json")
+
+
+def test_cli_defaults_sit_under_the_repository_root():
+    """Whatever directory a command starts in (G4 leaves the shell in
+    dashboard/), the default outputs are the repository's."""
+    from scottish_budget import cli, engine
+
+    for path in (cli.DEFAULT_OUT, cli.DEFAULT_RECONCILIATION):
+        assert path.is_absolute() and path.is_relative_to(engine.ROOT)
+    assert engine.repo_path(cli.DEFAULT_OUT) == (
+        "dashboard/public/data/results.json"
+    )
+
+
+def test_a_receipt_naming_the_default_file_allows_a_plain_combine(tmp_path):
+    """Including receipts written before paths were made relative."""
+    receipt = tmp_path / "receipt.json"
+    for recorded in (
+        str(pipeline.OFFICIAL_COSTINGS),
+        "data_inputs/official/sfc_costings_2027_28.csv",
+    ):
+        receipt.write_text(
+            json.dumps({"official_costings": {"path": recorded}})
+        )
+        assert pipeline.choose_costings(None, receipt) is None
+    assert pipeline.choose_costings(None, tmp_path / "none.json") is None
+
+
+def test_the_cli_runs_only_inside_its_own_checkout(
+    monkeypatch, tmp_path, capsys
+):
+    """Run from another checkout, the installed command would quietly use
+    this checkout's code, data and outputs: it refuses instead."""
+    from scottish_budget import cli
+
+    monkeypatch.chdir(tmp_path)
+    assert cli.main(["freeze"]) == 2
+    err = capsys.readouterr().err
+    assert "outside it" in err and str(tmp_path) not in err
+
+
+def test_an_unknown_measure_is_one_line(capsys):
+    from scottish_budget import cli
+
+    assert cli.main(["generate", "--reforms", "no_such_measure"]) == 2
+    assert capsys.readouterr().err == "error: no measure 'no_such_measure'\n"

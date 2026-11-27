@@ -28,3 +28,6 @@ next-env.d.ts
 
 # Pipeline outputs (partials, reconciliation): regenerated, never committed
 data_outputs/
+
+# policyengine.py bundle cache (pe.uk.managed_microsimulation downloads here)
+/data

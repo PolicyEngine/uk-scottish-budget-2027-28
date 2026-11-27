@@ -11,10 +11,12 @@ matter (issue #1):
 - 2.170.2 and later: the Budget 2026 measures (Pension Tax Allowance,
   household energy payment, 24/44/49 property rates). policyengine.py
   6.17.2 pins 2.174.1 with Microcosm eeb6093e (this repo's pair until 13
-  November 2026). This repo now runs 2.177.7 with Microcosm build
-  uk-frs-calibration-attempt-20261112T133744Z-6f918b81, the version that
-  build was made on (``data_build.DATA_BUILD``); no policyengine.py
-  release covers that pair.
+  November 2026); from 13 to 26 November the repo ran 2.177.7 with build
+  6f918b81, outside any policyengine.py release. It now runs the bundle in
+  policyengine.py 6.20.3: policyengine-uk 2.179.2 with Microcosm build
+  uk-frs-calibration-attempt-20261122T100732Z-b891aa69
+  (``data_build.DATA_BUILD``). Releases up to 2.180.2 (checked 26 November
+  2026) lift none of the limits below that 2.177.7 had.
 
 A limit here is either worked round in this repo (a modifier in
 ``measures/``) or makes a measure ``needs-pe-uk-first``.
@@ -23,10 +25,10 @@ A limit here is either worked round in this repo (a modifier in
 from dataclasses import dataclass
 
 # The release this repo runs (``data_build.DATA_BUILD.engine``).
-PINNED_RELEASE = "2.177.7"
+PINNED_RELEASE = "2.179.2"
 NEXT_BUNDLE_RELEASE = "2.165.1"
 BUDGET_2026_RELEASE = "2.170.2"
-NEWEST_RELEASE = "2.177.7"
+NEWEST_RELEASE = "2.180.2"
 
 
 @dataclass(frozen=True)

@@ -17,16 +17,15 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# The engine for real runs: the policyengine-uk and policyengine-core
-# versions Microcosm build uk-frs-calibration-attempt-20261112T133744Z-6f918b81
-# was built and certified on (src/scottish_budget/data_build.py). No
-# policyengine.py release pins this pair, so simulations load
-# policyengine_uk directly (src/scottish_budget/engine.py). Keep these pins
-# equal to DATA_BUILD.engine and DATA_BUILD.core; see docs/METHOD.md and
-# issue #1 before changing them.
+# The engine for real runs: the certified bundle. policyengine 6.20.3 pins
+# policyengine-uk 2.179.2 and policyengine-core 3.34.10, and certifies
+# Microcosm build uk-frs-calibration-attempt-20261122T100732Z-b891aa69 with
+# them (src/scottish_budget/data_build.py). Every population simulation goes
+# through policyengine.py's pe.uk.managed_microsimulation
+# (src/scottish_budget/engine.py). Keep DATA_BUILD equal to the bundle;
+# tests/test_provenance.py checks it against uv.lock.
 model = [
-    "policyengine-uk==2.177.7",
-    "policyengine-core==3.34.10",
+    "policyengine[uk]==6.20.3",
     "huggingface-hub>=0.25",
     "pandas>=2.2.0",
     "numpy>=1.24.0",
