@@ -26,7 +26,6 @@ installed.
 import contextlib
 import hashlib
 import json
-import os
 import subprocess
 from importlib import metadata
 from pathlib import Path
@@ -37,6 +36,7 @@ from scottish_budget.data_build import (
     HF_REPO,
     HF_REPO_TYPE,
     LABEL,
+    hf_token,
 )
 
 PACKAGES = ("policyengine", "policyengine-uk", "policyengine-core")
@@ -143,7 +143,7 @@ def build_manifest() -> dict:
         filename=DATA_BUILD.manifest_path,
         repo_type=HF_REPO_TYPE,
         revision=DATA_BUILD.revision,
-        token=os.environ.get("HUGGING_FACE_TOKEN") or None,
+        token=hf_token(),  # None: huggingface_hub's own lookup
     )
     manifest = json.loads(Path(path).read_text())
     artifact = manifest.get("artifacts", {}).get(Path(HF_FILE).stem, {})
@@ -311,7 +311,8 @@ def check_dataset(path, expected_sha256: str | None) -> str:
     actual = sha256_file(path)
     if expected_sha256 and actual != expected_sha256.lower():
         raise DatasetMismatch(
-            f"{path} has SHA-256 {actual}, not the {expected_sha256} "
+            f"{repo_path(path)} has SHA-256 {actual}, not the "
+            f"{expected_sha256} "
             "recorded at G0. Refusing to run on a different dataset."
         )
     return actual

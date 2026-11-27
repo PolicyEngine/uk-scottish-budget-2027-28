@@ -31,10 +31,14 @@ FORBIDDEN = {
     "weight",
 }
 AREA_CODE = re.compile(r"\b(S12|S14|S16|S01|E14|W07|N06)\d{6}\b")
-# A local directory (a home folder or temp dir) at the start of a value:
-# public files name local files relative to the repository.
+# A local directory (a home folder, temp dir or drive) where a path starts:
+# public files name local files relative to the repository. Inside a URL
+# or a longer relative path the same letters are not a local directory.
 LOCAL_PATH = re.compile(
-    r'(?:^|[",\s])(?:/Users/|/home/|/private/|/var/folders/)'
+    r"(?:^|[^\w.\-/])"
+    r"(?:~/|/Users/|/home/|/root/|/private/|/tmp/|/var/folders/|/Volumes/)"
+    r"|file://"
+    r"|\b[A-Za-z]:\\{1,2}[A-Za-z0-9]"
 )
 VALUE_KEYS = ("avg_change_gbp", "pct_change", "value")
 

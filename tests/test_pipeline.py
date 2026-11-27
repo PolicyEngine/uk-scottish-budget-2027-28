@@ -90,7 +90,8 @@ def test_floor_withholds_small_cells():
     assert "withheld" in cells[0]
 
 
-def test_validation_rejects_a_zero_for_a_not_computable_measure():
+def test_validation_rejects_a_zero_for_a_not_computable_measure(template):
+    # On the template: G1 may delete every not-computable entry.
     results = placeholder_results()
     row = next(
         m for m in results["measures"] if m["status"] == "not-computable"

@@ -22,16 +22,19 @@ Usage::
 
 import argparse
 import hashlib
-import os
 import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from scottish_budget.data_build import DATA_BUILD, HF_REPO, HF_REPO_TYPE
-
-TOKEN_ENV = "HUGGING_FACE_TOKEN"
+from scottish_budget.data_build import (
+    DATA_BUILD,
+    HF_REPO,
+    HF_REPO_TYPE,
+    TOKEN_ENVS,
+    hf_token,
+)
 
 ACCESS_HINT = (
     "CI reads the token from the organisation secret "
@@ -112,8 +115,8 @@ def check_access(
     """
     if not token:
         raise CertifiedDataAccessError(
-            f"{TOKEN_ENV} is not set, so the certified dataset cannot be "
-            f"downloaded. {ACCESS_HINT}"
+            f"None of {', '.join(TOKEN_ENVS)} is set, so the certified "
+            f"dataset cannot be downloaded. {ACCESS_HINT}"
         )
     if api is None:
         from huggingface_hub import HfApi
@@ -236,7 +239,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.parse_args(argv)
     try:
         artifacts = pinned_artifacts()
-        for line in check_access(os.environ.get(TOKEN_ENV), artifacts):
+        for line in check_access(hf_token(), artifacts):
             print(line)
     except CertifiedDataAccessError as error:
         print(f"::error::{error}", file=sys.stderr)

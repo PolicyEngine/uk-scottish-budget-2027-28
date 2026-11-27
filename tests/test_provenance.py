@@ -85,8 +85,10 @@ def test_dataset_guard_refuses_a_different_file(tmp_path):
 
     from scottish_budget.engine import DatasetMismatch
 
-    with pytest.raises(DatasetMismatch):
+    with pytest.raises(DatasetMismatch) as caught:
         check_dataset(path, "0" * 64)
+    # The message is pasted into PR comments: no local directory in it.
+    assert str(tmp_path) not in str(caught.value)
     assert re.fullmatch(r"[0-9a-f]{64}", sha)
 
 
@@ -299,3 +301,42 @@ def test_local_paths_are_recorded_relative_to_the_repository(tmp_path):
     inside = engine.ROOT / "data_inputs" / "official" / "costings.csv"
     assert engine.repo_path(inside) == "data_inputs/official/costings.csv"
     assert engine.repo_path(tmp_path / "corrected.csv") == "corrected.csv"
+
+
+def test_every_check_reads_the_token_where_runs_read_it(monkeypatch):
+    """The data check and G0 read the token from the same variables, in
+    the same order, as policyengine.py's managed download."""
+    from scottish_budget.data_build import TOKEN_ENVS, hf_token
+
+    for name in TOKEN_ENVS:
+        monkeypatch.delenv(name, raising=False)
+    assert hf_token() is None
+    monkeypatch.setenv("HUGGINGFACE_HUB_TOKEN", "c")
+    monkeypatch.setenv("HF_TOKEN", "b")
+    assert hf_token() == "b"
+    monkeypatch.setenv("HUGGING_FACE_TOKEN", "a")
+    assert hf_token() == "a"
+    try:
+        from policyengine.provenance.manifest import hugging_face_auth_headers
+    except ImportError:  # no model extra (the CI python job)
+        return
+    for name in TOKEN_ENVS:
+        assert hugging_face_auth_headers() == {
+            "Authorization": f"Bearer {hf_token()}"
+        }
+        monkeypatch.delenv(name)
+
+
+def test_the_data_check_names_every_token_variable():
+    import pytest
+
+    from scottish_budget.certified_data import (
+        CertifiedDataAccessError,
+        check_access,
+    )
+
+    with pytest.raises(
+        CertifiedDataAccessError,
+        match="HUGGING_FACE_TOKEN, HF_TOKEN, HUGGINGFACE_HUB_TOKEN",
+    ):
+        check_access(None, [])

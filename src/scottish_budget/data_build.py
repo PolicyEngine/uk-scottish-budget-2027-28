@@ -10,7 +10,22 @@ must match it (tests/test_provenance.py), and at run time ``engine.py``
 refuses an installed bundle that differs from it.
 """
 
+import os
 from dataclasses import dataclass
+
+# The variables policyengine.py reads the Hugging Face token from for its
+# managed download, in its order (never a saved login). Every check here
+# reads the same ones, so a check passes only where a run can download.
+TOKEN_ENVS = ("HUGGING_FACE_TOKEN", "HF_TOKEN", "HUGGINGFACE_HUB_TOKEN")
+
+
+def hf_token() -> str | None:
+    """The Hugging Face token a run would use, or None."""
+    for name in TOKEN_ENVS:
+        if os.environ.get(name):
+            return os.environ[name]
+    return None
+
 
 HF_REPO = "policyengine/populace-uk-private"
 HF_REPO_TYPE = "dataset"

@@ -17,10 +17,14 @@ import json
 import sys
 from pathlib import Path
 
+from scottish_budget.engine import repo_path
 from scottish_budget.publication import manifest
 
-DEFAULT_OUT = Path("dashboard/public/data/results.json")
-DEFAULT_RECONCILIATION = Path("data_outputs/reconciliation.csv")
+# Under the repository root whatever directory a command starts in (G4
+# leaves the shell in dashboard/). Output names paths relative to the root.
+ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_OUT = ROOT / "dashboard" / "public" / "data" / "results.json"
+DEFAULT_RECONCILIATION = ROOT / "data_outputs" / "reconciliation.csv"
 
 
 def _generate(args) -> int:
@@ -42,7 +46,7 @@ def _generate(args) -> int:
     if args.placeholder:
         results = placeholder_results()
         path = write(results, args.out)
-        print(json.dumps({"written": str(path), **manifest(results)}))
+        print(json.dumps({"written": repo_path(path), **manifest(results)}))
         return 0
     if args.package:
         from scottish_budget.pipeline import run_package
@@ -52,7 +56,7 @@ def _generate(args) -> int:
             args.dataset,
             args.partial_dir or PARTIAL_DIR,
         )
-        print(json.dumps({"partial": str(path)}))
+        print(json.dumps({"partial": repo_path(path)}))
         return 0
     if not args.reforms:
         print(
@@ -62,7 +66,7 @@ def _generate(args) -> int:
         )
         return 2
     path = run_one(args.reforms, args.dataset, args.partial_dir or PARTIAL_DIR)
-    print(json.dumps({"partial": str(path)}))
+    print(json.dumps({"partial": repo_path(path)}))
     return 0
 
 
@@ -90,7 +94,7 @@ def _combine(args) -> int:
     print(
         json.dumps(
             {
-                "written": str(path),
+                "written": repo_path(path),
                 **manifest(results),
                 "official_costings": receipt["official_costings"],
             }
@@ -130,7 +134,7 @@ def _reconcile(args) -> int:
     print(
         json.dumps(
             {
-                "written": str(args.out),
+                "written": repo_path(args.out),
                 "rows": len(rows),
                 "flagged": len(flagged),
             }
@@ -189,7 +193,22 @@ def main(argv=None) -> int:
     rec.set_defaults(func=_reconcile)
 
     args = parser.parse_args(argv)
-    return args.func(args)
+    from scottish_budget.engine import DatasetMismatch, EngineMismatch
+    from scottish_budget.pipeline import CombineError
+    from scottish_budget.reconcile import ReconcileError
+
+    try:
+        return args.func(args)
+    except (
+        CombineError,
+        DatasetMismatch,
+        EngineMismatch,
+        ReconcileError,
+    ) as error:
+        # One line, no traceback: output is pasted into PR comments, and a
+        # traceback names local directories.
+        print(f"error: {error}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":

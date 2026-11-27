@@ -276,11 +276,19 @@ def choose_costings(official, receipt) -> Path | None:
     file (absent until G3), unless the last combine into the same folder
     read another one, such as corrected costings after G5: then it
     refuses, so a later plain ``combine`` never undoes a correction.
-    ``receipt`` is the receipt.json beside the output."""
+    ``receipt`` is the receipt.json beside the output. A named file must
+    be inside the repository, so the published comparison rests on a file
+    the repository can hold."""
     if official is not None:
+        given = str(official)
         official = Path(official).resolve()
         if not official.is_file():
-            raise CombineError(f"No costings file at {official}.")
+            raise CombineError(f"No costings file at {given}.")
+        if not official.is_relative_to(ROOT):
+            raise CombineError(
+                f"{official.name} is outside the repository: copy it into "
+                "data_inputs/official/ and name that copy."
+            )
         return official
     receipt = Path(receipt)
     if not receipt.is_file():
@@ -292,11 +300,15 @@ def choose_costings(official, receipt) -> Path | None:
         last = repo_path(last)
     default = repo_path(OFFICIAL_COSTINGS)
     if last and last != default:
+        back = (
+            f", or --official {default} to go back to the default file"
+            if OFFICIAL_COSTINGS.is_file()
+            else ""
+        )
         raise CombineError(
             f"The last combine into {repo_path(receipt.parent)} read the "
             f"costings in {last}, not {default}. Name the file this combine "
-            f"should read: --official {last} to keep those costings, or "
-            f"--official {default} to go back to the default file."
+            f"should read: --official {last} to keep those costings{back}."
         )
     return None
 

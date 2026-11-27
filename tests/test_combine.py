@@ -355,18 +355,33 @@ def test_the_receipt_records_no_local_directory(day):
     assert str(Path.home()) not in text
 
 
-def test_a_plain_combine_never_undoes_a_correction(day, tmp_path):
-    """Drill 12 and 13: after combine --official reads corrected costings
-    (G5), a plain combine (G4) refuses instead of going back to the
-    default file. Naming the corrected file again works."""
+HEADER = "measure_id,year,official_value_bn,official_source,basis\n"
+
+
+@pytest.fixture
+def repo(monkeypatch, tmp_path):
+    """A stand-in repository root, so costings files can sit inside it."""
+    from scottish_budget import engine
+
+    root = tmp_path.resolve()
+    monkeypatch.setattr(engine, "ROOT", root)
+    monkeypatch.setattr(pipeline, "ROOT", root)
+    default = root / "data_inputs" / "official" / "sfc_costings_2027_28.csv"
+    monkeypatch.setattr(pipeline, "OFFICIAL_COSTINGS", default)
+    default.parent.mkdir(parents=True)
+    return root
+
+
+def test_a_plain_combine_never_undoes_a_correction(day, repo, capsys):
+    """Drill 12: after combine --official reads another costings file, a
+    plain combine refuses (one line, exit 1) instead of going back to the
+    default file. Naming the file again works. Output names paths
+    relative to the repository."""
     from scottish_budget import cli
 
-    corrected = tmp_path / "costings-corrected.csv"
-    corrected.write_text(
-        "measure_id,year,official_value_bn,official_source,basis\n"
-        "starter_basic_thresholds,2027,-0.12,SFC,\n"
-    )
-    out = tmp_path / "site" / "results.json"
+    corrected = repo / "data_inputs" / "official" / "corrected.csv"
+    corrected.write_text(HEADER + "starter_basic_thresholds,2027,-0.12,SFC,\n")
+    out = repo / "site" / "results.json"
     plain = [
         "combine",
         "--provisional",
@@ -377,12 +392,45 @@ def test_a_plain_combine_never_undoes_a_correction(day, tmp_path):
         str(out),
     ]
     assert cli.main(plain) == 0
+    capsys.readouterr()
     assert cli.main([*plain, "--official", str(corrected)]) == 0
-    with pytest.raises(pipeline.CombineError, match="--official"):
-        cli.main(plain)
+    printed = json.loads(capsys.readouterr().out)
+    assert printed["written"] == "site/results.json"
+    assert printed["official_costings"]["path"] == (
+        "data_inputs/official/corrected.csv"
+    )
+    assert cli.main(plain) == 1
+    err = capsys.readouterr().err
+    assert err.startswith("error: ") and "Traceback" not in err
+    assert "--official data_inputs/official/corrected.csv" in err
+    assert "go back" not in err  # no default file to go back to yet
     receipt = json.loads((out.parent / "receipt.json").read_text())
-    assert receipt["official_costings"]["path"] == corrected.name
+    assert receipt["official_costings"]["path"] == (
+        "data_inputs/official/corrected.csv"
+    )
     assert cli.main([*plain, "--official", str(corrected)]) == 0
+    pipeline.OFFICIAL_COSTINGS.write_text(HEADER)
+    assert cli.main(plain) == 1
+    assert "go back to the default file" in capsys.readouterr().err
+
+
+def test_costings_outside_the_repository_are_refused(tmp_path):
+    outside = tmp_path / "corrected.csv"
+    outside.write_text(HEADER)
+    with pytest.raises(pipeline.CombineError, match="outside the repository"):
+        pipeline.choose_costings(outside, tmp_path / "receipt.json")
+
+
+def test_cli_defaults_sit_under_the_repository_root():
+    """Whatever directory a command starts in (G4 leaves the shell in
+    dashboard/), the default outputs are the repository's."""
+    from scottish_budget import cli, engine
+
+    for path in (cli.DEFAULT_OUT, cli.DEFAULT_RECONCILIATION):
+        assert path.is_absolute() and path.is_relative_to(engine.ROOT)
+    assert engine.repo_path(cli.DEFAULT_OUT) == (
+        "dashboard/public/data/results.json"
+    )
 
 
 def test_a_receipt_naming_the_default_file_allows_a_plain_combine(tmp_path):

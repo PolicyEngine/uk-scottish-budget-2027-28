@@ -30,4 +30,4 @@ next-env.d.ts
 data_outputs/
 
 # policyengine.py bundle cache (pe.uk.managed_microsimulation downloads here)
-/data/
+/data
