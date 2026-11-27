@@ -13,8 +13,8 @@ The order of 3 December on one page. Detail and reasons are in [`RUNBOOK.md`](RU
 | documents | Reconciler | Fill `data_inputs/official/sfc_costings_2027_28.csv` from the costings |
 | documents + 30 | Reconciler | **G3**: `scottish-budget reconcile --official ...` exits 0; integrator sets `publish=True` per reconciled measure |
 | after G3 | Integrator | `generate --package final`; `combine --official data_inputs/official/sfc_costings_2027_28.csv`; public data checks |
-| after G3 | Integrator | **G4**: under the lock, `cd dashboard && bun run build && bun run start`; `scripts/smoke-built-site.sh`; kill the server |
-| any time | Integrator | **G5** on a correction: re-run affected measures and the package; correct `data_inputs/official/sfc_costings_2027_28.csv` in place and commit it; `combine --official data_inputs/official/sfc_costings_2027_28.csv` and record the costings SHA-256 it prints; new SHA; G4 again |
+| after G3 | Integrator | **G4**: under the lock, `cd dashboard && bun run build && bun run start`; from the repository root, `scripts/smoke-built-site.sh`; kill the server |
+| any time | Integrator | **G5** on a correction: re-run affected measures and the package; correct `data_inputs/official/sfc_costings_2027_28.csv` in place and commit it; `reconcile` until it exits 0; `combine --official data_inputs/official/sfc_costings_2027_28.csv` and record the costings SHA-256 it prints; new SHA; G4 again |
 | on go-ahead | Dashboard owner | Remove banner and noindex in a PR; merge only with the go-ahead |
 
 ## Never

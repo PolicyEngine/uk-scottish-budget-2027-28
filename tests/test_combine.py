@@ -344,10 +344,21 @@ def test_a_named_costings_file_must_exist(day, tmp_path):
 def test_the_receipt_records_no_local_directory(day):
     from pathlib import Path
 
+    from scottish_budget import engine
+
     results, receipt = pipeline.combine(
         provisional=True, out_dir=day, with_households=False
     )
-    assert receipt["official_costings"]["path"] == (
+    # The template fixture's absent default (outside the repository): its
+    # name only. The real default is named relative to the repository.
+    assert receipt["official_costings"] == {
+        "path": "sfc_costings_2027_28.csv",
+        "sha256": None,
+    }
+    real = (
+        pipeline.ROOT / "data_inputs" / "official" / "sfc_costings_2027_28.csv"
+    )
+    assert engine.repo_path(real) == (
         "data_inputs/official/sfc_costings_2027_28.csv"
     )
     text = json.dumps(receipt)
@@ -412,6 +423,12 @@ def test_a_plain_combine_never_undoes_a_correction(day, repo, capsys):
     pipeline.OFFICIAL_COSTINGS.write_text(HEADER)
     assert cli.main(plain) == 1
     assert "go back to the default file" in capsys.readouterr().err
+    # Naming another file than the last one read works, with a note.
+    default = str(pipeline.OFFICIAL_COSTINGS)
+    assert cli.main([*plain, "--official", default]) == 0
+    assert "note: the last combine here read the costings in" in (
+        capsys.readouterr().err
+    )
 
 
 def test_costings_outside_the_repository_are_refused(tmp_path):
@@ -445,3 +462,23 @@ def test_a_receipt_naming_the_default_file_allows_a_plain_combine(tmp_path):
         )
         assert pipeline.choose_costings(None, receipt) is None
     assert pipeline.choose_costings(None, tmp_path / "none.json") is None
+
+
+def test_the_cli_runs_only_inside_its_own_checkout(
+    monkeypatch, tmp_path, capsys
+):
+    """Run from another checkout, the installed command would quietly use
+    this checkout's code, data and outputs: it refuses instead."""
+    from scottish_budget import cli
+
+    monkeypatch.chdir(tmp_path)
+    assert cli.main(["freeze"]) == 2
+    err = capsys.readouterr().err
+    assert "outside it" in err and str(tmp_path) not in err
+
+
+def test_an_unknown_measure_is_one_line(capsys):
+    from scottish_budget import cli
+
+    assert cli.main(["generate", "--reforms", "no_such_measure"]) == 2
+    assert capsys.readouterr().err == "error: no measure 'no_such_measure'\n"

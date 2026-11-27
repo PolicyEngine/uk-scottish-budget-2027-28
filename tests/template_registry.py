@@ -15,11 +15,14 @@ modifier and a not-computable line.
 """
 
 from scottish_budget.measure_templates import threshold_change
-from scottish_budget.measures.energy_payment_scotland import (
-    energy_payment_scotland,
-)
 from scottish_budget.models import Reform
 from scottish_budget.reforms import SCOT_RATES, SCP, Measure
+
+
+def _modifier_stub(sim):
+    """Stands in for a structural measure's modifier: these tests never
+    build a simulation, and G1 may rename or delete the real module."""
+    return sim
 
 
 def _flat(value):
@@ -126,7 +129,7 @@ TEMPLATE: tuple[Measure, ...] = (
             description=(
                 "A one-off £100 for each Scottish household in Bands A to D."
             ),
-            simulation_modifier=energy_payment_scotland,
+            simulation_modifier=_modifier_stub,
         ),
         route="dashboard-structural",
         cause="coverage",

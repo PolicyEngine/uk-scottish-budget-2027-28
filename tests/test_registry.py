@@ -57,7 +57,8 @@ def test_limits_and_issues_resolve(m):
         data_limit(limit_id)
     for limit_id in m.model_limits:
         model_limit(limit_id)
-    assert all(1 <= i <= 8 for i in m.issues)
+    # G1 may cite any issue, including ones filed on the day.
+    assert all(isinstance(i, int) and i > 0 for i in m.issues)
 
 
 def test_not_computable_measures_name_a_blocking_data_limit():

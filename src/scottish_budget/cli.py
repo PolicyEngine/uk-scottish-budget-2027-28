@@ -48,6 +48,12 @@ def _generate(args) -> int:
         path = write(results, args.out)
         print(json.dumps({"written": repo_path(path), **manifest(results)}))
         return 0
+    if args.reforms:
+        from scottish_budget.reforms import MEASURES
+
+        if args.reforms not in {m.id for m in MEASURES}:
+            print(f"error: no measure {args.reforms!r}", file=sys.stderr)
+            return 2
     if args.package:
         from scottish_budget.pipeline import run_package
 
@@ -75,14 +81,22 @@ def _combine(args) -> int:
         PARTIAL_DIR,
         choose_costings,
         combine,
+        last_costings,
         write,
     )
 
     # Before writing: a plain combine after one that read other costings
-    # (a G5 correction) refuses rather than undo the correction.
-    official = choose_costings(
-        args.official, args.out.with_name("receipt.json")
-    )
+    # (a G5 correction) refuses rather than undo the correction; a named
+    # file other than the last one read is pointed out.
+    receipt_path = args.out.with_name("receipt.json")
+    official = choose_costings(args.official, receipt_path)
+    last = last_costings(receipt_path)
+    if official is not None and last and last != repo_path(official):
+        print(
+            f"note: the last combine here read the costings in {last}; "
+            f"this one reads {repo_path(official)}.",
+            file=sys.stderr,
+        )
     results, receipt = combine(
         provisional=args.provisional,
         out_dir=args.partial_dir or PARTIAL_DIR,
@@ -193,8 +207,20 @@ def main(argv=None) -> int:
     rec.set_defaults(func=_reconcile)
 
     args = parser.parse_args(argv)
+    if not Path.cwd().resolve().is_relative_to(ROOT):
+        # This command runs the code, data and outputs of the checkout it
+        # is installed from (ROOT): run from another checkout, it would
+        # quietly use this one's.
+        print(
+            f"error: this scottish-budget belongs to the {ROOT.name} "
+            "checkout and the working directory is outside it. Run `uv run "
+            "--extra model scottish-budget ...` inside the checkout you mean.",
+            file=sys.stderr,
+        )
+        return 2
     from scottish_budget.engine import DatasetMismatch, EngineMismatch
     from scottish_budget.pipeline import CombineError
+    from scottish_budget.publication import PublicationError
     from scottish_budget.reconcile import ReconcileError
 
     try:
@@ -203,6 +229,8 @@ def main(argv=None) -> int:
         CombineError,
         DatasetMismatch,
         EngineMismatch,
+        FileNotFoundError,
+        PublicationError,
         ReconcileError,
     ) as error:
         # One line, no traceback: output is pasted into PR comments, and a

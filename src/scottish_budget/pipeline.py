@@ -269,6 +269,20 @@ def run_package(
     return path
 
 
+def last_costings(receipt) -> str | None:
+    """The costings file the last combine into a folder read, as its
+    receipt.json records it (relative to the repository), or None."""
+    receipt = Path(receipt)
+    if not receipt.is_file():
+        return None
+    last = (
+        json.loads(receipt.read_text()).get("official_costings") or {}
+    ).get("path")
+    if last and Path(last).is_absolute():  # receipts written before 27 Nov
+        last = repo_path(last)
+    return last
+
+
 def choose_costings(official, receipt) -> Path | None:
     """The costings file a ``combine`` reads (None: the default file).
 
@@ -290,14 +304,7 @@ def choose_costings(official, receipt) -> Path | None:
                 "data_inputs/official/ and name that copy."
             )
         return official
-    receipt = Path(receipt)
-    if not receipt.is_file():
-        return None
-    last = (
-        json.loads(receipt.read_text()).get("official_costings") or {}
-    ).get("path")
-    if last and Path(last).is_absolute():  # receipts written before 27 Nov
-        last = repo_path(last)
+    last = last_costings(receipt)
     default = repo_path(OFFICIAL_COSTINGS)
     if last and last != default:
         back = (
@@ -500,7 +507,8 @@ def combine(
         if sorted(package.get("measures", [])) != sorted(m.id for m in scored):
             raise CombineError(
                 "The package run covers other measures than this file: "
-                "re-run `scottish-budget generate --package`."
+                "re-run the package in this file's mode (`make package "
+                "MODE=final` for the final file, `MODE=provisional` for G2)."
             )
         # Winners and losers, poverty and the rest do not add up across
         # measures, so they come from the package run only.
