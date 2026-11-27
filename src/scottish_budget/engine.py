@@ -10,8 +10,12 @@ loads must all agree with it. A build is never mixed with another engine
 version.
 
 With no dataset path, policyengine.py downloads the certified file into
-``./data/`` (needs HUGGING_FACE_TOKEN) and checks its SHA-256. A named path
-must be a copy of that file: its SHA-256 is checked here before it loads.
+``./data/`` at the repository root, whatever directory a command starts in,
+and checks its SHA-256. The download reads the token from the environment
+only (HUGGING_FACE_TOKEN, HF_TOKEN or HUGGINGFACE_HUB_TOKEN; never a saved
+login or ``.env``). G0 fetches the file the same way, so it fails wherever a
+run could not load the data. A named path must be a copy of that file: its
+SHA-256 is checked here before it loads.
 
 Versions and SHA-256s are read at run time, never typed in by hand.
 ``policyengine`` and ``policyengine_uk`` are imported only when a simulation
@@ -19,6 +23,7 @@ is built or the bundle is read, so the tests run without the engine
 installed.
 """
 
+import contextlib
 import hashlib
 import json
 import os
@@ -51,6 +56,26 @@ class DatasetMismatch(RuntimeError):
 
 class EngineMismatch(RuntimeError):
     """The installed engine or bundle is not the one DATA_BUILD names."""
+
+
+def repo_path(path) -> str:
+    """A local file as recorded in anything published or pasted into a PR:
+    relative to the repository root, or just its name when it lies
+    outside the repository, so no home directory is ever recorded."""
+    path = Path(path).resolve()
+    try:
+        return path.relative_to(ROOT).as_posix()
+    except ValueError:
+        return path.name
+
+
+def _public(text: str) -> str:
+    """An error message with local directories left out."""
+    return (
+        str(text)
+        .replace(str(ROOT), "<repository>")
+        .replace(str(Path.home()), "~")
+    )
 
 
 def installed_version(name: str) -> str | None:
@@ -177,6 +202,50 @@ def manifest_differences(manifest: dict) -> list[str]:
     )
 
 
+def fetch_certified_file() -> dict:
+    """The certified file, fetched exactly as a run fetches it:
+    policyengine.py's managed download into ``./data/`` at the repository
+    root, with the token from the environment. A cached copy with the
+    right SHA-256 is reused without a download. Raises if a run could not
+    get the file."""
+    from policyengine.provenance.dataset_materialization import (
+        materialize_dataset,
+    )
+
+    with contextlib.chdir(ROOT):
+        path = Path(materialize_dataset("uk").path).resolve()
+    return {
+        "route": "managed download (policyengine.py)",
+        "path": repo_path(path),
+        "sha256": sha256_file(path),
+    }
+
+
+def named_file(path) -> dict:
+    """A dataset file named with ``--dataset``."""
+    return {
+        "route": "named file (--dataset)",
+        "path": repo_path(path),
+        "sha256": sha256_file(path),
+    }
+
+
+def dataset_differences(found: dict, sha256_flag: str | None = None) -> list:
+    """The file a run would load, against DATA_BUILD's SHA-256. A
+    ``--dataset-sha256`` other than DATA_BUILD's is a mismatch too."""
+    if "error" in found:
+        return [f"the dataset file could not be read: {found['error']}"]
+    wrong = _differences(
+        found, {"sha256": DATA_BUILD.sha256}, "the dataset file:"
+    )
+    if sha256_flag and sha256_flag.lower() != DATA_BUILD.sha256:
+        wrong.append(
+            f"--dataset-sha256 is {sha256_flag}, DATA_BUILD wants "
+            f"{DATA_BUILD.sha256}"
+        )
+    return wrong
+
+
 def check_engine() -> str:
     """The installed policyengine-uk; refuse an installed engine or
     policyengine.py bundle other than DATA_BUILD's."""
@@ -193,26 +262,36 @@ def check_engine() -> str:
     return DATA_BUILD.engine
 
 
-def pair_record() -> dict:
-    """The G0 pair check: the installed packages, policyengine.py's pins
-    and the build's own manifest, each against DATA_BUILD. The pair
-    matches only if all three agree."""
+def pair_record(dataset=None, dataset_sha256=None) -> dict:
+    """The G0 pair check: the installed packages, policyengine.py's pins,
+    the build's own manifest and the dataset file a run would load, each
+    against DATA_BUILD. With no ``dataset``, the file is fetched as runs
+    fetch it, so G0 fails wherever a run could not load the data. The
+    pair matches only if all four agree."""
     versions = installed_versions()
     bundle = installed_bundle()
     try:
         manifest = build_manifest()
     except Exception as error:  # no token, no network: the check fails
-        manifest = {"error": f"{type(error).__name__}: {error}"}
+        manifest = {"error": _public(f"{type(error).__name__}: {error}")}
+    try:
+        dataset_file = (
+            named_file(dataset) if dataset else fetch_certified_file()
+        )
+    except Exception as error:  # a run could not load it either
+        dataset_file = {"error": _public(f"{type(error).__name__}: {error}")}
     mismatches = (
         version_differences(versions)
         + bundle_differences(bundle)
         + manifest_differences(manifest)
+        + dataset_differences(dataset_file, dataset_sha256)
     )
     return {
         "versions": versions,
         "pinned_dataset": pinned_dataset(),
         "bundle": bundle,
         "build_manifest": manifest,
+        "dataset_file": dataset_file,
         "mismatches": mismatches,
         "engine_matches_build": not mismatches,
         "label": LABEL,
@@ -288,7 +367,13 @@ def build_microsimulation(dataset_path=None, scenario=None):
         f"hf://{HF_REPO}/{DATA_BUILD.hf_path}@{DATA_BUILD.revision}"
     )
     if dataset_path is None:
-        sim = pe.uk.managed_microsimulation(scenario=with_forecast(scenario))
+        # policyengine.py keeps the file in ./data/ under the working
+        # directory: from the repository root, every command reuses the one
+        # checked copy, wherever it was started.
+        with contextlib.chdir(ROOT):
+            sim = pe.uk.managed_microsimulation(
+                scenario=with_forecast(scenario)
+            )
         bundle = dict(getattr(sim, "policyengine_bundle", {}) or {})
         sha = bundle.get("runtime_dataset_sha256")
         if sha != DATA_BUILD.sha256:
@@ -299,7 +384,9 @@ def build_microsimulation(dataset_path=None, scenario=None):
         source = bundle.get("runtime_dataset_source")
         uri = bundle.get("runtime_dataset_uri") or certified_uri
     else:
-        path = Path(dataset_path)
+        # Resolved, so the string policyengine.py loads is the file hashed
+        # here, never a managed dataset name.
+        path = Path(dataset_path).resolve()
         sha = _checked_sha256(path)
         sim = pe.uk.managed_microsimulation(
             dataset=str(path),
@@ -307,7 +394,7 @@ def build_microsimulation(dataset_path=None, scenario=None):
             scenario=with_forecast(scenario),
         )
         bundle = dict(getattr(sim, "policyengine_bundle", {}) or {})
-        source = str(path)
+        source = repo_path(path)
         uri = certified_uri
     sim.scottish_budget_provenance = {
         "runtime_dataset": DATA_BUILD.id,

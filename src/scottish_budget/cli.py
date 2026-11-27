@@ -5,9 +5,10 @@
   (heavy: take the lock, one measure per process), written as a partial.
 ``scottish-budget generate --package provisional|final``: the scored
   measures together, for the figures that do not add across measures.
-``scottish-budget combine [--provisional]``: partials into results.json and
-  receipt.json.
-``scottish-budget freeze``: the G0 record.
+``scottish-budget combine [--provisional] [--official CSV]``: partials into
+  results.json and receipt.json.
+``scottish-budget freeze [--dataset PATH]``: the G0 record (fetches the
+  certified file as runs do).
 ``scottish-budget reconcile --official CSV``: G3 gaps.
 """
 
@@ -66,13 +67,23 @@ def _generate(args) -> int:
 
 
 def _combine(args) -> int:
-    from scottish_budget.pipeline import PARTIAL_DIR, combine, write
+    from scottish_budget.pipeline import (
+        PARTIAL_DIR,
+        choose_costings,
+        combine,
+        write,
+    )
 
+    # Before writing: a plain combine after one that read other costings
+    # (a G5 correction) refuses rather than undo the correction.
+    official = choose_costings(
+        args.official, args.out.with_name("receipt.json")
+    )
     results, receipt = combine(
         provisional=args.provisional,
         out_dir=args.partial_dir or PARTIAL_DIR,
         with_households=not args.no_households,
-        official=args.official,
+        official=official,
     )
     path = write(results, args.out)
     write(receipt, path.with_name("receipt.json"))
@@ -89,15 +100,17 @@ def _combine(args) -> int:
 
 
 def _freeze(args) -> int:
-    from scottish_budget.engine import check_dataset, git_identity, pair_record
+    from scottish_budget.engine import git_identity, pair_record
 
-    record = {**git_identity(), **pair_record()}
-    if args.dataset:
-        record["dataset_path"] = str(args.dataset)
-        record["dataset_sha256"] = check_dataset(
-            args.dataset,
-            args.dataset_sha256 or record["pinned_dataset"]["sha256"],
-        )
+    if args.dataset_sha256 and not args.dataset:
+        print("--dataset-sha256 needs --dataset", file=sys.stderr)
+        return 2
+    # The dataset file is checked against DATA_BUILD's SHA-256 whatever
+    # --dataset-sha256 says; with no --dataset, it is fetched as runs do.
+    record = {
+        **git_identity(),
+        **pair_record(args.dataset, args.dataset_sha256),
+    }
     print(json.dumps(record, indent=2))
     return 0 if record["engine_matches_build"] else 1
 
@@ -155,7 +168,10 @@ def main(argv=None) -> int:
     com.add_argument(
         "--official",
         type=Path,
-        help="Official costings file (after a correction, the corrected one)",
+        help=(
+            "Official costings file. After a correction, name the corrected "
+            "file in every later combine: a plain combine refuses until then"
+        ),
     )
     com.add_argument("--partial-dir", type=Path)
     com.add_argument("--out", type=Path, default=DEFAULT_OUT)
@@ -163,7 +179,7 @@ def main(argv=None) -> int:
 
     frz = sub.add_parser("freeze", help="Print the G0 record")
     frz.add_argument("--dataset", type=Path)
-    frz.add_argument("--dataset-sha256")
+    frz.add_argument("--dataset-sha256", help="Must be DATA_BUILD's")
     frz.set_defaults(func=_freeze)
 
     rec = sub.add_parser("reconcile", help="G3 gaps against official costings")

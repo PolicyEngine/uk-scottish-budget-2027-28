@@ -1,6 +1,7 @@
 # Data contract
 
-- Microdata never enter this repository. `*.h5` files are ignored; runs read Microcosm from the Hugging Face cache.
+- Microdata never enter this repository. `*.h5` files are ignored; runs read the certified Microcosm file, which policyengine.py downloads into `./data/` at the repository root (git-ignored).
+- Public files and the G0 record name local files relative to the repository root, never with a home directory.
 - Only generated files go in `dashboard/public/data/`. Hand edits fail `tests/test_pipeline.py`.
 - Public files hold aggregates only: no record identifiers, no weights, no cell below 10 survey households, and no area codes (`scripts/check_public_data.py`, `dashboard/scripts/check-public-files.mjs`). Both run in CI.
 - Take-up: population runs use the take-up draws stored in the Microcosm file. Build `…-b891aa69` meets its 2025 calibration targets for Scottish Child Payment spending, Scottish Universal Credit households with a child under one, and babies under one; nothing targets young parents. Hand-built households (presets, the calculator) claim UC and SCP unless marked not claiming (`household.not_claiming`).

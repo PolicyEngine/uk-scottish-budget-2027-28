@@ -319,7 +319,81 @@ def test_combine_reads_the_costings_file_it_is_given(day, tmp_path):
         assert [
             r["official_value_bn"] for r in results["official_costings"]
         ] == [value]
+        # Relative to the repository, or just the name outside it: the
+        # receipt is served with the page, so never a home directory.
         assert receipt["official_costings"] == {
-            "path": str(path),
+            "path": path.name,
             "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         }
+
+
+def test_a_named_costings_file_must_exist(day, tmp_path):
+    """A misspelt --official is an error, never a page with no costings."""
+    missing = tmp_path / "costings-corected.csv"
+    with pytest.raises(pipeline.CombineError, match="No costings file"):
+        pipeline.combine(
+            provisional=True,
+            out_dir=day,
+            with_households=False,
+            official=missing,
+        )
+    with pytest.raises(pipeline.CombineError, match="No costings file"):
+        pipeline.choose_costings(missing, tmp_path / "receipt.json")
+
+
+def test_the_receipt_records_no_local_directory(day):
+    from pathlib import Path
+
+    results, receipt = pipeline.combine(
+        provisional=True, out_dir=day, with_households=False
+    )
+    assert receipt["official_costings"]["path"] == (
+        "data_inputs/official/sfc_costings_2027_28.csv"
+    )
+    text = json.dumps(receipt)
+    assert str(pipeline.ROOT) not in text
+    assert str(Path.home()) not in text
+
+
+def test_a_plain_combine_never_undoes_a_correction(day, tmp_path):
+    """Drill 12 and 13: after combine --official reads corrected costings
+    (G5), a plain combine (G4) refuses instead of going back to the
+    default file. Naming the corrected file again works."""
+    from scottish_budget import cli
+
+    corrected = tmp_path / "costings-corrected.csv"
+    corrected.write_text(
+        "measure_id,year,official_value_bn,official_source,basis\n"
+        "starter_basic_thresholds,2027,-0.12,SFC,\n"
+    )
+    out = tmp_path / "site" / "results.json"
+    plain = [
+        "combine",
+        "--provisional",
+        "--no-households",
+        "--partial-dir",
+        str(day),
+        "--out",
+        str(out),
+    ]
+    assert cli.main(plain) == 0
+    assert cli.main([*plain, "--official", str(corrected)]) == 0
+    with pytest.raises(pipeline.CombineError, match="--official"):
+        cli.main(plain)
+    receipt = json.loads((out.parent / "receipt.json").read_text())
+    assert receipt["official_costings"]["path"] == corrected.name
+    assert cli.main([*plain, "--official", str(corrected)]) == 0
+
+
+def test_a_receipt_naming_the_default_file_allows_a_plain_combine(tmp_path):
+    """Including receipts written before paths were made relative."""
+    receipt = tmp_path / "receipt.json"
+    for recorded in (
+        str(pipeline.OFFICIAL_COSTINGS),
+        "data_inputs/official/sfc_costings_2027_28.csv",
+    ):
+        receipt.write_text(
+            json.dumps({"official_costings": {"path": recorded}})
+        )
+        assert pipeline.choose_costings(None, receipt) is None
+    assert pipeline.choose_costings(None, tmp_path / "none.json") is None

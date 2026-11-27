@@ -31,3 +31,25 @@ def test_guard_catches_ids_floor_and_area_codes(tmp_path):
     assert "4 records" in text
     assert "area codes" in text
     assert "only .json and .csv" in text
+
+
+def test_guard_catches_a_local_directory(tmp_path):
+    """receipt.json is served with the page: a costings path recorded in
+    full would publish the integrator's home directory."""
+    (tmp_path / "receipt.json").write_text(
+        json.dumps(
+            {"official_costings": {"path": "/Users/someone/repo/costs.csv"}}
+        )
+    )
+    (tmp_path / "ok.json").write_text(
+        json.dumps(
+            {
+                "official_costings": {
+                    "path": "data_inputs/official/sfc_costings_2027_28.csv"
+                },
+                "source": "https://www.gov.scot/publications/",
+            }
+        )
+    )
+    problems = check_public_data.check_folder(tmp_path)
+    assert len(problems) == 1 and "local directory" in problems[0]

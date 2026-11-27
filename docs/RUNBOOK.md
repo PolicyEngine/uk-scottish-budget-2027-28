@@ -7,7 +7,7 @@ One integrator pushes. Everyone else posts defects as PR comments within 5 minut
 ## Set-up
 
 - `uv sync --locked --extra dev --extra model`, then `cd dashboard && bun install --frozen-lockfile`.
-- `HUGGING_FACE_TOKEN` must be set (copy `.env.example` to `.env` and fill it, or export it). The pinned Microcosm build (`data_build.DATA_BUILD`) is in a private Hugging Face dataset repository; `uv run python -m scottish_budget.certified_data` checks the token can read it and that its SHA-256 matches the pin, without downloading it. With no `--dataset`, the first run downloads it through policyengine.py into `./data/` (git-ignored, about 400 MB) and later runs reuse it. Never print the token.
+- `HUGGING_FACE_TOKEN` must be exported in the shell that runs the commands: policyengine.py reads only environment variables (never a saved Hugging Face login), and nothing here reads `.env`. To keep it in `.env`, copy `.env.example` to `.env`, fill it, and run `set -a; . ./.env; set +a` in each new shell. The pinned Microcosm build (`data_build.DATA_BUILD`) is in a private Hugging Face dataset repository; `uv run python -m scottish_budget.certified_data` checks the token can read it and that its SHA-256 matches the pin, without downloading it. With no `--dataset`, G0's `freeze` fetches it the way runs do, through policyengine.py into `./data/` at the repository root (git-ignored, about 430 MB, downloaded once per machine), so G0 fails wherever a run could not load it; runs reuse that copy from any directory. Never print the token.
 
 ## Heavy runs
 
@@ -21,32 +21,32 @@ until [ "$(free_gb)" -ge 22 ]; do sleep 30; done
 uv run --extra model scottish-budget generate --reforms <measure id>
 ```
 
-One measure took 2 min 16 s and peaked at 11.3 GB resident (6 November, 6.14.0 on a6299504, cached data); the package run builds three simulations one after another, so allow about 3 to 4 minutes for it. `make measures IDS="a b c"` runs that block once per measure, each in its own process. Unit tests, lint and the household engine tests (`pytest -m engine`) do not need the lock.
+On 26 November (policyengine 6.20.3, build b891aa69, cached data) a measure took about 2.5 minutes and peaked at 15 to 17 GB resident; the package run, which builds three simulations one after another, took about 4 minutes at 16.5 GB, and `combine` 2 minutes at 1.3 GB. `make measures IDS="a b c"` runs that block once per measure, each in its own process. Unit tests, lint and the household engine tests (`pytest -m engine`) do not need the lock.
 
 ## Gates
 
 | Gate | When | What | Command |
 |---|---|---|---|
-| G0 | by T−60 | Freeze record in the PR: start SHA, policyengine, policyengine-uk and core versions, the bundle's dataset name and SHA-256 (must be the pinned build's), the build's own manifest, `engine_matches_build: true` (installed packages, policyengine.py's pins and the build's manifest all agree with `DATA_BUILD`; the command exits 1 otherwise), and the label "build b891aa69, policyengine-uk 2.179.2, certified in policyengine 6.20.3" | `uv run --extra model scottish-budget freeze` |
+| G0 | by T−60 | Freeze record in the PR: start SHA, policyengine, policyengine-uk and core versions, the bundle's dataset name and SHA-256 (must be the pinned build's), the build's own manifest, the dataset file a run would load (fetched as runs fetch it), `engine_matches_build: true` (installed packages, policyengine.py's pins, the build's manifest and that file all agree with `DATA_BUILD`; the command exits 1 otherwise), and the label "build b891aa69, policyengine-uk 2.179.2, certified in policyengine 6.20.3" | `uv run --extra model scottish-budget freeze` |
 | G1 | T+0 to T+10 | Coverage ledger: every statement line gets a route and a cause class (`docs/candidate-reforms.md` lists the expected lines). Trap rows (already in the baseline) are recorded, not costed. Set each kept measure's values and `placeholder=False`; delete entries the statement does not have | |
 | G2 | T+30 | Provisional numbers, and one hand-checked example household per coded measure (`data_inputs/household_fixtures/`) | `generate --reforms ID` per measure, `generate --package provisional`, `combine --provisional` |
 | G3 | documents + 30 min | Re-base and reconcile against the Scottish Fiscal Commission's costings in `data_inputs/official/sfc_costings_2027_28.csv`. Each gap over 10% gets a written reason and a cause class. Then set `publish=True` for each reconciled measure | `scottish-budget reconcile --official data_inputs/official/sfc_costings_2027_28.csv` |
-| G4 | before release | Full page on a production build: banner text, noindex meta and `X-Robots-Tag` checked in the served page; every published measure on the page | `generate --package final`, `combine`, then the build and `scripts/smoke-built-site.sh` |
+| G4 | before release | Full page on a production build: banner text, noindex meta and `X-Robots-Tag` checked in the served page; every published measure on the page | `generate --package final`, `combine` (`--official FILE` after a costings correction), then the build and `scripts/smoke-built-site.sh` |
 | G5 | whenever a correction arrives, before or after G4 | Re-run every affected measure and the package, including hand-computed household rows; new results SHA-256; update ledger causes; if after G4, run G4 again | as G2 to G4 |
 
 ## On the day, in order
 
-1. G0: `scottish-budget freeze` (add `--dataset PATH --dataset-sha256 SHA` if running on a named file). Paste the output into the PR.
+1. G0: `scottish-budget freeze` (add `--dataset PATH` if running on a named file; it must be a copy of the build's file). On a new machine it downloads the file first. Paste the output into the PR.
 2. G1: replace each placeholder's values with the statement's; set `placeholder=False`. Code in waves: parameters first, then modifiers in `src/scottish_budget/measures/`, then anything needing a new variable (held as `needs-pe-uk-first`, with an upstream draft filed the same day).
 3. G2: under the lock, `generate --reforms ID` for each computable measure (one process each), then `generate --package provisional`, then `combine --provisional`. Hand-check one household per measure.
 4. G3: copy `data_inputs/official/costings_template.csv` to `sfc_costings_2027_28.csv`, fill it from the costings, run `reconcile` until it exits 0, then set `publish=True` on each reconciled measure.
-5. G4: `generate --package final`, `combine` (writes `results.json` and `receipt.json`), `uv run python scripts/check_public_data.py dashboard/public/data`, then under the lock `cd dashboard && bun run build && bun run start` and `scripts/smoke-built-site.sh`. Kill the server and release the lock.
+5. G4: `generate --package final`, `combine` (writes `results.json` and `receipt.json`; after a costings correction, `combine --official <corrected file>`: a plain `combine` refuses once a combine has read another costings file), `uv run python scripts/check_public_data.py dashboard/public/data`, then under the lock `cd dashboard && bun run build && bun run start` and `scripts/smoke-built-site.sh`. Kill the server and release the lock.
 6. Remove the pre-release banner and noindex only when every published measure has passed G3, and only with the go-ahead to publish.
 
 ## Corrections (G5)
 
 1. Record the correction (time received, what it changes) as a PR comment.
-2. Change the affected measures; re-run each one and the package under the lock; `combine --official <corrected costings file>` when the correction changes the costings. The output and `receipt.json` give the path and SHA-256 of the costings file read: put that SHA-256 in the G5 comment.
+2. Change the affected measures; re-run each one and the package under the lock; `combine --official <corrected costings file>` when the correction changes the costings. Every later `combine`, G4's included, names the same file (`make combine OFFICIAL=<file>`); a plain `combine` refuses until it does, so the correction is never undone. A named file that does not exist is an error. The output and `receipt.json` give the path (relative to the repository) and SHA-256 of the costings file read: put that SHA-256 in the G5 comment.
 3. The new `results.json` SHA-256 (`receipt.json`, `results_sha256`) is the new scoring SHA; record it beside the old one.
 4. On a published page, add a dated correction note to the Methodology tab saying what changed, and keep the old figures out of the page.
 

@@ -30,6 +30,7 @@ from scottish_budget.engine import (
     git_identity,
     installed_versions,
     pinned_dataset,
+    repo_path,
 )
 from scottish_budget.forecast import forecast_record
 from scottish_budget.household import presets
@@ -268,6 +269,38 @@ def run_package(
     return path
 
 
+def choose_costings(official, receipt) -> Path | None:
+    """The costings file a ``combine`` reads (None: the default file).
+
+    A named file must exist. With none named, combine reads the default
+    file (absent until G3), unless the last combine into the same folder
+    read another one, such as corrected costings after G5: then it
+    refuses, so a later plain ``combine`` never undoes a correction.
+    ``receipt`` is the receipt.json beside the output."""
+    if official is not None:
+        official = Path(official).resolve()
+        if not official.is_file():
+            raise CombineError(f"No costings file at {official}.")
+        return official
+    receipt = Path(receipt)
+    if not receipt.is_file():
+        return None
+    last = (
+        json.loads(receipt.read_text()).get("official_costings") or {}
+    ).get("path")
+    if last and Path(last).is_absolute():  # receipts written before 27 Nov
+        last = repo_path(last)
+    default = repo_path(OFFICIAL_COSTINGS)
+    if last and last != default:
+        raise CombineError(
+            f"The last combine into {repo_path(receipt.parent)} read the "
+            f"costings in {last}, not {default}. Name the file this combine "
+            f"should read: --official {last} to keep those costings, or "
+            f"--official {default} to go back to the default file."
+        )
+    return None
+
+
 def official_costings(path=OFFICIAL_COSTINGS) -> list[dict]:
     """The official costings, once filled in on the day (G3)."""
     if not Path(path).exists():
@@ -407,10 +440,16 @@ def combine(
     """results.json and its receipt from the partials and the registry.
 
     ``official`` is the official costings file (default
-    ``OFFICIAL_COSTINGS``). After a correction, pass the corrected file;
-    the receipt records the path and SHA-256 of the file read, so G5 can
+    ``OFFICIAL_COSTINGS``, absent until G3). After a correction, pass the
+    corrected file; a named file must exist. The receipt records the path
+    (relative to the repository) and SHA-256 of the file read, so G5 can
     show which costings the published comparison rests on."""
-    official = Path(official) if official is not None else OFFICIAL_COSTINGS
+    if official is None:
+        official = OFFICIAL_COSTINGS
+    else:
+        official = Path(official)
+        if not official.is_file():
+            raise CombineError(f"No costings file at {official}.")
     partials = read_partials(out_dir)
     if not partials:
         raise CombineError(
@@ -507,7 +546,7 @@ def combine(
         "measures_scored": [m.id for m in scored],
         "placeholders_dropped": dropped,
         "official_costings": {
-            "path": str(official),
+            "path": repo_path(official),
             "sha256": (
                 hashlib.sha256(official.read_bytes()).hexdigest()
                 if official.exists()

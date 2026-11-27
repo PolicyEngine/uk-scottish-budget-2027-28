@@ -22,7 +22,7 @@ help:
 	@echo "fixtures     regenerate data_inputs/household_fixtures/"
 	@echo "measures     IDS=\"a b\": one heavy run per measure, under the lock"
 	@echo "package      MODE=provisional|final: the package run, under the lock"
-	@echo "combine      partials into results.json (PROVISIONAL=1 for G2)"
+	@echo "combine      partials into results.json (PROVISIONAL=1 for G2; OFFICIAL=csv after a correction)"
 	@echo "build        production build of the page, under the lock"
 	@echo "smoke        check a served build (start it first)"
 
@@ -59,7 +59,7 @@ package:
 	$(LOCK) uv run --extra model scottish-budget generate --package $(or $(MODE),provisional)
 
 combine:
-	uv run --extra model scottish-budget combine $(if $(PROVISIONAL),--provisional,)
+	uv run --extra model scottish-budget combine $(if $(PROVISIONAL),--provisional,) $(if $(OFFICIAL),--official $(OFFICIAL),)
 
 build:
 	$(LOCK) cd dashboard && bun run build

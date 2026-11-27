@@ -146,3 +146,156 @@ def test_pair_differences_name_each_source():
     assert len(wrong) == 1 and "bundle" in wrong[0]
     # An unreadable manifest is a mismatch, never a pass.
     assert len(engine.manifest_differences({"error": "no token"})) == 3
+
+
+def _matching_pair(monkeypatch, engine):
+    """Installed packages, policyengine.py's pins and the build's manifest
+    all DATA_BUILD's."""
+    monkeypatch.setattr(
+        engine,
+        "installed_version",
+        lambda name: {
+            "policyengine": DATA_BUILD.policyengine,
+            "policyengine-uk": DATA_BUILD.engine,
+            "policyengine-core": DATA_BUILD.core,
+        }[name],
+    )
+    monkeypatch.setattr(engine, "installed_bundle", _bundle)
+    monkeypatch.setattr(
+        engine,
+        "build_manifest",
+        lambda: {
+            "policyengine_uk": DATA_BUILD.engine,
+            "policyengine_core": DATA_BUILD.core,
+            "sha256": DATA_BUILD.sha256,
+        },
+    )
+
+
+def test_g0_fails_where_a_run_could_not_load_the_data(monkeypatch):
+    """G0 fetches the file as runs do: if that fails (no token in the
+    environment, no cached copy), G0 fails rather than G2."""
+    import json
+
+    from scottish_budget import engine
+
+    _matching_pair(monkeypatch, engine)
+    monkeypatch.setattr(
+        engine,
+        "fetch_certified_file",
+        lambda: {"path": "data/file.h5", "sha256": DATA_BUILD.sha256},
+    )
+    assert engine.pair_record()["engine_matches_build"]
+
+    def refused():
+        raise RuntimeError(
+            f"Hugging Face rejected the configured credentials for "
+            f"{engine.ROOT}/data/file.h5 in {Path.home()}"
+        )
+
+    monkeypatch.setattr(engine, "fetch_certified_file", refused)
+    record = engine.pair_record()
+    assert not record["engine_matches_build"]
+    assert record["mismatches"] == [
+        "the dataset file could not be read: RuntimeError: Hugging Face "
+        "rejected the configured credentials for <repository>/data/file.h5 "
+        "in ~"
+    ]
+    # The record is pasted into the PR: no local directory in it.
+    assert str(Path.home()) not in json.dumps(record)
+
+
+def test_g0_checks_a_named_dataset_against_the_build(
+    monkeypatch, tmp_path, capsys
+):
+    """A file named with --dataset passes G0 only if it is the build's
+    file, whatever --dataset-sha256 says."""
+    import json
+
+    from scottish_budget import cli, engine
+
+    _matching_pair(monkeypatch, engine)
+    path = tmp_path / "copy.h5"
+    path.write_bytes(b"not the build")
+    own = sha256_file(path)
+    for flags in ([], ["--dataset-sha256", own]):
+        assert cli.main(["freeze", "--dataset", str(path), *flags]) == 1
+        record = json.loads(capsys.readouterr().out)
+        assert record["engine_matches_build"] is False
+        assert record["dataset_file"] == {
+            "route": "named file (--dataset)",
+            "path": "copy.h5",
+            "sha256": own,
+        }
+    assert cli.main(["freeze", "--dataset-sha256", own]) == 2
+
+
+def test_g0_fetches_the_file_from_the_repository_root(monkeypatch, tmp_path):
+    """policyengine.py keeps the file in ./data/ under the working
+    directory: G0 and runs both fetch it from the repository root."""
+    import sys
+    import types
+
+    from scottish_budget import engine
+
+    cached = tmp_path / "file.h5"
+    cached.write_bytes(b"cached")
+    seen = []
+
+    def materialize_dataset(country_id):
+        seen.append((country_id, Path.cwd()))
+        return types.SimpleNamespace(path=str(cached))
+
+    monkeypatch.setitem(
+        sys.modules,
+        "policyengine.provenance.dataset_materialization",
+        types.SimpleNamespace(materialize_dataset=materialize_dataset),
+    )
+    monkeypatch.chdir(tmp_path)
+    found = engine.fetch_certified_file()
+    assert seen == [("uk", engine.ROOT)]
+    assert Path.cwd() == tmp_path.resolve()
+    assert found["path"] == "file.h5"
+    assert found["sha256"] == sha256_file(cached)
+
+
+def test_managed_runs_start_from_the_repository_root(monkeypatch, tmp_path):
+    import sys
+    import types
+
+    from scottish_budget import engine, forecast
+
+    seen = []
+
+    def managed_microsimulation(**kwargs):
+        seen.append(Path.cwd())
+        sim = types.SimpleNamespace()
+        sim.policyengine_bundle = {
+            "runtime_dataset_sha256": DATA_BUILD.sha256,
+            "runtime_dataset_source": "data/file.h5",
+        }
+        return sim
+
+    fake = types.SimpleNamespace(
+        uk=types.SimpleNamespace(
+            managed_microsimulation=managed_microsimulation
+        )
+    )
+    monkeypatch.setitem(sys.modules, "policyengine", fake)
+    monkeypatch.setattr(engine, "check_engine", lambda: DATA_BUILD.engine)
+    monkeypatch.setattr(forecast, "with_forecast", lambda scenario: scenario)
+    monkeypatch.chdir(tmp_path)
+    sim = engine.build_microsimulation()
+    assert seen == [engine.ROOT]
+    assert Path.cwd() == tmp_path.resolve()
+    assert sim.scottish_budget_provenance["runtime_dataset_source"] == (
+        "data/file.h5"
+    )
+
+
+def test_local_paths_are_recorded_relative_to_the_repository(tmp_path):
+    from scottish_budget import engine
+
+    inside = engine.ROOT / "data_inputs" / "official" / "costings.csv"
+    assert engine.repo_path(inside) == "data_inputs/official/costings.csv"
+    assert engine.repo_path(tmp_path / "corrected.csv") == "corrected.csv"

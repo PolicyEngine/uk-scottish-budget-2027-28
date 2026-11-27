@@ -31,6 +31,11 @@ FORBIDDEN = {
     "weight",
 }
 AREA_CODE = re.compile(r"\b(S12|S14|S16|S01|E14|W07|N06)\d{6}\b")
+# A local directory (a home folder or temp dir) at the start of a value:
+# public files name local files relative to the repository.
+LOCAL_PATH = re.compile(
+    r'(?:^|[",\s])(?:/Users/|/home/|/private/|/var/folders/)'
+)
 VALUE_KEYS = ("avg_change_gbp", "pct_change", "value")
 
 
@@ -57,6 +62,8 @@ def check_file(path: Path) -> list[str]:
     text = path.read_text(encoding="utf-8")
     if AREA_CODE.search(text):
         problems.append(f"{path}: area codes present")
+    if LOCAL_PATH.search(text):
+        problems.append(f"{path}: a local directory path")
     if path.suffix == ".json":
         _walk(json.loads(text), str(path), problems)
     elif path.suffix == ".csv":

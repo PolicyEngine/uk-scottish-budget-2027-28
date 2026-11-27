@@ -1,6 +1,6 @@
 # results.json schema
 
-Written to `dashboard/public/data/results.json` by `scottish-budget generate --placeholder` (before the day) or `scottish-budget combine` (on the day). `publication.validate_results` enforces the rules. `combine` also writes `receipt.json` beside it: git SHA and clean-tree flag, installed versions, bundle dataset, dataset SHA-256, the time, the measures scored, the placeholders dropped and the SHA-256 of `results.json`.
+Written to `dashboard/public/data/results.json` by `scottish-budget generate --placeholder` (before the day) or `scottish-budget combine` (on the day). `publication.validate_results` enforces the rules. `combine` also writes `receipt.json` beside it: git SHA and clean-tree flag, installed versions, bundle dataset, dataset SHA-256, the time, the measures scored, the placeholders dropped, the official costings file read (its path relative to the repository and its SHA-256) and the SHA-256 of `results.json`.
 
 ## meta
 
